@@ -429,11 +429,15 @@ svg{display:inline-block;vertical-align:middle}
 .spinning .refresh-ico{animation:spin .8s linear infinite}
 
 /* 雷达图容器（勒索专项复用暗色风格） */
-.radar-dark{background:linear-gradient(180deg,#111827 0%,#0f172a 100%);border-radius:8px;padding:20px}
-.radar-dark text{fill:#94a3b8;font-size:10px}
+.radar-dark{background:linear-gradient(180deg,#101c31 0%,#0b1527 100%);border-radius:8px;padding:20px}
+.radar-dark text{fill:#dbeafe;font-size:10.5px;font-weight:500}
 .radar-dim{cursor:pointer;transition:fill .15s}
 .radar-dim:hover{fill:#fff}
-.radar-dim.zero{fill:#475569}
+.radar-dim.zero{fill:#64748b}
+.radar-legend{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;justify-content:center}
+.radar-legend .lg{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:4px 6px;border-radius:4px;color:#cbd5e1;font-size:11px;cursor:pointer}
+.radar-legend .lg:hover{background:rgba(96,165,250,.09)}
+.radar-legend .dot{width:8px;height:8px;border-radius:50%;display:inline-block;box-shadow:0 0 5px rgba(96,165,250,.35)}
 /* 扫光旋转动画（参考山石智·感雷达实现） */
 .radar-sweep{transform-origin:200px 132px;animation:sweep 4.5s linear infinite}
 @keyframes sweep{to{transform:rotate(360deg)}}
@@ -776,51 +780,42 @@ function pageOverview(){
 }
 
 /* ================= 页面：勒索专项 ================= */
-const ransomDims=[['感染勒索病毒',9,-150],['黑客勒索攻击',4,-90],['勒索C&C通信',7,-30],['勒索常用端口',5,30],['勒索常用漏洞',6,90],['RDP爆破',3,150]];
+const ransomDims=[['感染勒索病毒',6,-150],['黑客勒索攻击',4,-90],['勒索C&C通信',8,-30],['勒索常用端口',5,30],['勒索常用漏洞',7,90],['RDP爆破',4,150]];
 function radarSvg(){
  const cx=200,cy=132,R=88;
  const pt=(ang,r)=>{const a=ang*Math.PI/180;return [cx+r*Math.cos(a),cy+r*Math.sin(a)]};
  let rings='';
  [1/3,2/3,1].forEach(f=>{
   const pts=ransomDims.map(d=>pt(d[2],R*f).map(v=>v.toFixed(1)).join(',')).join(' ');
-  rings+='<polygon points="'+pts+'" fill="none" stroke="rgba(148,163,184,.22)" stroke-width="1"/>';
+  rings+='<polygon points="'+pts+'" fill="none" stroke="rgba(96,165,250,.22)" stroke-width="1"/>';
  });
  let axes='',labels='';
  ransomDims.forEach(d=>{
   const p=pt(d[2],R);
-  axes+='<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0].toFixed(1)+'" y2="'+p[1].toFixed(1)+'" stroke="rgba(148,163,184,.2)"/>';
+  axes+='<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0].toFixed(1)+'" y2="'+p[1].toFixed(1)+'" stroke="rgba(96,165,250,.18)" stroke-width="1"/>';
   const lp=pt(d[2],R+20);
   const anch=Math.abs(Math.cos(d[2]*Math.PI/180))<0.3?'middle':(Math.cos(d[2]*Math.PI/180)>0?'start':'end');
-  labels+='<text class="radar-dim'+(d[1]===0?' zero':'')+'" data-dim="'+d[0]+'" data-n="'+d[1]+'" x="'+lp[0].toFixed(1)+'" y="'+(lp[1]+4).toFixed(1)+'" text-anchor="'+anch+'" fill="'+(d[1]===0?'#475569':'#e2e8f0')+'">'+d[0]+'('+d[1]+')</text>';
+  labels+='<text class="radar-dim" data-dim="'+d[0]+'" data-n="'+d[1]+'" x="'+lp[0].toFixed(1)+'" y="'+(lp[1]+4).toFixed(1)+'" text-anchor="'+anch+'">'+d[0]+' ('+d[1]+')</text>';
  });
- const dotSeed=[[0.32,-12],[0.45,8],[0.55,-4],[0.65,12],[0.75,-10],[0.88,5],[0.95,-3]];
+ const radialSeed=[0.2,0.31,0.42,0.53,0.64,0.75,0.86,0.95];
  const srcs=['SAC3000-NDR','DPtech-FW'];
- let dots='',di=0;
- /* 构建数据点多边形顶点 */
- const areaPts=[];
- ransomDims.forEach(d=>{
-  if(d[1]===0){areaPts.push(pt(d[2],0).map(v=>v.toFixed(1)).join(','));return}
-  const maxV=Math.max.apply(null,ransomDims.map(d=>d[1]));const ratio=Math.min(d[1]/maxV,1)*0.85+0.15;
-  areaPts.push(pt(d[2],R*ratio).map(v=>v.toFixed(1)).join(','));
+ const srcColors={'SAC3000-NDR':'#60a5fa','DPtech-FW':'#2563eb'};
+ let dots='';
+ ransomDims.forEach((d,di)=>{
   for(let k=0;k<d[1];k++){
-   const s=dotSeed[(di*3+k)%dotSeed.length];
-   const p=pt(d[2]+s[1],R*ratio*s[0]/0.7);
-   const src=srcs[(di+k)%2];
-   dots+='<circle data-src="'+src+'" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="4.5" fill="#1890ff" opacity=".95" style="filter:drop-shadow(0 0 4px rgba(24,144,255,.7))"><title>'+d[0]+' · '+src+'</title></circle>';
+   const radius=R*radialSeed[(k+di*2)%radialSeed.length];
+   const p=pt(d[2],radius);
+   const src=srcs[(di+k)%srcs.length];
+   dots+='<circle data-src="'+src+'" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="3.8" fill="'+srcColors[src]+'" opacity=".94" style="filter:drop-shadow(0 0 3px rgba(59,130,246,.72))"><title>'+d[0]+' · '+src+'</title></circle>';
   }
-  di++;
  });
  const g1=pt(-30,R),g2=pt(26,R);
- return '<svg width="100%" height="276" viewBox="0 0 400 276" role="img">'
- +'<defs>'
- +'<linearGradient id="swg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1890ff" stop-opacity="0"/><stop offset="1" stop-color="#1890ff" stop-opacity=".35"/></linearGradient>'
- +'<linearGradient id="areaFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b82f6" stop-opacity=".25"/><stop offset="1" stop-color="#8b5cf6" stop-opacity=".15"/></linearGradient>'
- +'</defs>'
+ return '<svg width="100%" height="276" viewBox="0 0 400 276" role="img" aria-label="迪普勒索六维联动检测雷达图，34个检测散点">'
+ +'<defs><linearGradient id="swg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3b82f6" stop-opacity="0"/><stop offset="1" stop-color="#60a5fa" stop-opacity=".38"/></linearGradient></defs>'
  +rings+axes
- +(areaPts.length?'<polygon points="'+areaPts.join(' ')+'" fill="url(#areaFill)" stroke="rgba(59,130,246,.5)" stroke-width="1.5" stroke-linejoin="round"/>':'')
  +'<g class="radar-sweep"><path d="M'+cx+' '+cy+' L'+g1[0].toFixed(1)+' '+g1[1].toFixed(1)+' A'+R+' '+R+' 0 0 0 '+g2[0].toFixed(1)+' '+g2[1].toFixed(1)+' Z" fill="url(#swg)"/></g>'
  +dots
- +'<circle cx="'+cx+'" cy="'+cy+'" r="4" fill="#1890ff" style="filter:drop-shadow(0 0 4px rgba(24,144,255,.6))"/>'
+ +'<circle cx="'+cx+'" cy="'+cy+'" r="4" fill="#60a5fa" style="filter:drop-shadow(0 0 5px rgba(96,165,250,.8))"/>'
  +labels+'</svg>';
 }
 
@@ -858,10 +853,10 @@ function pageRansom(){
  c.innerHTML=pageHeader('勒索专项检测')
  +'<div style="display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:16px;margin-bottom:16px">'
  +'<div class="card"><div class="card-head">六维联动检测雷达<span class="sub">点击维度联动过滤</span></div><div class="radar-dark" style="padding:16px">'+radarSvg()
- +'<div style="display:flex;gap:12px;margin-top:10px;justify-content:center">'
- +'<span style="font-size:11px;color:rgba(255,255,255,.5);cursor:pointer" data-src="NDR">⬤ NDR</span>'
- +'<span style="font-size:11px;color:rgba(255,255,255,.7);cursor:pointer" data-src="SAC3000-NDR">⬤ SAC3000-NDR (1)</span>'
- +'<span style="font-size:11px;color:rgba(255,255,255,.5);cursor:pointer" data-src="DPtech-FW">⬤ DPtech-FW (1)</span>'
+ +'<div class="radar-legend">'
+ +'<span class="lg" data-src="NDR"><i class="dot" style="background:#94a3b8"></i>NDR</span>'
+ +'<span class="lg" data-src="SAC3000-NDR"><i class="dot" style="background:#60a5fa"></i>SAC3000-NDR</span>'
+ +'<span class="lg" data-src="DPtech-FW"><i class="dot" style="background:#2563eb"></i>DPtech-FW</span>'
  +'</div></div></div>'
  +assetCard(1,2)
  +'<div class="card"><div class="card-head">受害资产攻击Top5</div><div class="card-body" style="padding:14px 16px">'
