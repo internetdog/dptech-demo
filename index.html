@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>威胁感知大数据平台 - DPtech</title>
+<style>
+/* ================= DPtech 浅色企业后台风设计系统 ================= */
+:root{
+  --sb-bg:#1a3d6c;
+  --sb-active:#234b82;
+  --sb-hover:#24558f;
+  --sb-text:#e8f0fc;
+  --sb-text-dim:#9bb8e0;
+  --sb-width:220px;
+  --topbar-h:56px;
+  --primary:#1890ff;
+  --primary-hover:#40a9ff;
+  --primary-light:#e6f7ff;
+  --danger:#ff4d4f;
+  --danger-light:#fff1f0;
+  --warn:#faad14;
+  --warn-light:#fffbe6;
+  --ok:#52c41a;
+  --ok-light:#f6ffed;
+  --bg:#f0f2f5;
+  --card:#ffffff;
+  --border:#e8e8e8;
+  --border-light:#f0f0f0;
+  --text-primary:#262626;
+  --text-secondary:#8c8c8c;
+  --text-third:#bfbfbf;
+  --shadow:0 1px 2px rgba(0,0,0,.06);
+  --shadow-card:0 1px 4px rgba(0,0,0,.08);
+  --radius:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;font-size:14px;color:var(--text-primary);background:var(--bg);line-height:1.5715}
+a{color:var(--primary);text-decoration:none;cursor:pointer}
+button{font-family:inherit;font-size:14px;cursor:pointer;border:none;background:none;color:inherit}
+input,select{color:inherit;font-family:inherit;font-size:14px}
+:focus{outline:none}
+:focus-visible{outline:2px solid var(--primary);outline-offset:1px;border-radius:2px}
+::selection{background:var(--primary);color:#fff}
+svg{display:inline-block;vertical-align:middle}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#c1c1c1;border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#a8a8a8}
+
+/* ================= 布局骨架 ================= */
+.app-layout{display:flex;height:100vh;overflow:hidden}
+
+/* ===== 左侧导航栏 ===== */
+.sidebar{
+  width:var(--sb-width);min-width:var(--sb-width);
+  background:var(--sb-bg);color:var(--sb-text);
+  display:flex;flex-direction:column;
+  overflow-y:auto;overflow-x:hidden;
+  transition:transform .2s;z-index:100;
+}
+.sb-logo{
+  height:56px;display:flex;align-items:center;padding:0 20px;
+  gap:10px;border-bottom:1px solid rgba(255,255,255,.08);
+  flex-shrink:0;
+}
+.sb-logo-icon{width:28px;height:28px;color:#69c1ff;flex-shrink:0}
+.sb-logo-text{font-size:15px;font-weight:600;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-menu{padding:8px 0;flex:1}
+.sb-group-title{
+  padding:10px 20px 6px;font-size:12px;color:var(--sb-text-dim);
+  text-transform:uppercase;letter-spacing:1px;font-weight:500;
+}
+.sb-item{
+  display:flex;align-items:center;padding:10px 20px;
+  cursor:pointer;transition:all .15s;
+  font-size:14px;gap:10px;position:relative;
+  user-select:none;
+}
+.sb-item:hover{background:var(--sb-hover)}
+.sb-item.active{
+  background:var(--sb-active);
+  color:#fff;
+}
+.sb-item.active::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--primary);
+}
+.sb-item .sb-ico{width:16px;height:16px;flex-shrink:0;opacity:.85}
+.sb-item .sb-arrow{margin-left:auto;font-size:11px;opacity:.5;transition:transform .2s}
+.sb-item.open>.sb-arrow{transform:rotate(90deg)}
+.sb-sub{overflow:hidden;transition:max-height .25s ease}
+.sb-sub .sb-item{padding-left:44px;font-size:13px}
+.sb-footer{
+  padding:16px 20px;border-top:1px solid rgba(255,255,255,.08);
+  font-size:11px;color:var(--sb-text-dim);line-height:1.6;
+}
+
+/* ===== 右侧主区域 ===== */
+.main-area{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden;background:var(--bg)}
+
+/* ===== 顶栏 ===== */
+.topbar{
+  height:var(--topbar-h);background:#fff;
+  display:flex;align-items:center;padding:0 24px;
+  border-bottom:1px solid var(--border-light);
+  flex-shrink:0;z-index:50;
+}
+.tb-breadcrumb{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--text-secondary);flex-shrink:0;margin-right:auto}
+.tb-breadcrumb .cur{color:var(--text-primary);font-weight:500}
+.tb-date-range{
+  display:flex;align-items:center;gap:8px;
+  padding:5px 12px;border:1px solid var(--border);border-radius:var(--radius);
+  font-size:13px;color:var(--text-secondary);cursor:pointer;
+  background:#fff;transition:border-color .15s;
+}
+.tb-date-range:hover{border-color:var(--primary)}
+.tb-actions{display:flex;align-items:center;gap:16px;margin-left:16px}
+.tb-icon-btn{
+  width:32px;height:32px;border-radius:var(--radius);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .15s;color:var(--text-secondary);
+  position:relative;
+}
+.tb-icon-btn:hover{color:var(--primary);background:var(--primary-light)}
+.tb-icon-btn .dot{
+  position:absolute;top:6px;right:6px;width:6px;height:6px;
+  background:var(--danger);border-radius:50%;
+}
+.tb-user-dropdown{
+  display:flex;align-items:center;gap:6px;
+  cursor:pointer;padding:4px 8px;border-radius:var(--radius);
+  font-size:13px;transition:background .15s;
+}
+.tb-user-dropdown:hover{background:var(--bg)}
+.tb-avatar-sm{
+  width:26px;height:26px;border-radius:50%;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;
+}
+.btn-primary-dp{
+  background:var(--primary);color:#fff!important;
+  padding:6px 16px;border-radius:var(--radius);
+  font-size:13px;font-weight:500;transition:all .15s;
+  display:inline-flex;align-items:center;gap:4px;
+}
+.btn-primary-dp:hover{background:var(--primary-hover)}
+
+/* ===== 内容区 ===== */
+.content-area{flex:1;overflow-y:auto;padding:20px 24px}
+
+/* ================= 卡片组件 ================= */
+.card{
+  background:var(--card);border-radius:var(--radius);
+  box-shadow:var(--shadow-card);border:1px solid var(--border-light);
+  overflow:hidden;
+}
+.card-head{
+  display:flex;align-items:center;padding:16px 20px;
+  border-bottom:1px solid var(--border-light);
+  font-size:15px;font-weight:600;color:var(--text-primary);
+}
+.card-head .sub{font-size:12px;font-weight:400;color:var(--text-secondary);margin-left:10px}
+.card-body{padding:16px 20px}
+
+/* ================= 统计卡片行 ================= */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+.stat-card{
+  background:var(--card);border-radius:var(--radius);
+  padding:20px;box-shadow:var(--shadow-card);
+  border:1px solid var(--border-light);
+  display:flex;align-items:center;gap:16px;
+}
+.stat-icon{
+  width:48px;height:48px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;
+}
+.stat-icon.blue{background:var(--primary-light);color:var(--primary)}
+.stat-icon.orange{background:var(--warn-light);color:var(--warn)}
+.stat-icon.red{background:var(--danger-light);color:var(--danger)}
+.stat-icon.green{background:var(--ok-light);color:var(--ok)}
+.stat-info{flex:1}
+.stat-value{font-size:26px;font-weight:700;line-height:1.2;color:var(--text-primary)}
+.stat-label{font-size:13px;color:var(--text-secondary);margin-top:4px}
+.stat-trend{font-size:12px;margin-top:4px}
+.stat-trend.up{color:var(--danger)}
+.stat-trend.down{color:var(--ok)}
+
+/* ================= 图表区域（三列） ================= */
+.chart-row{display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:16px;margin-bottom:20px}
+.chart-box{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-card);border:1px solid var(--border-light)}
+.chart-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border-light);font-size:14px;font-weight:600}
+.chart-body{padding:18px;display:flex;align-items:center;justify-content:center;min-height:240px;position:relative}
+
+/* 环形图 */
+.donut-wrap{display:flex;flex-direction:column;align-items:center;gap:10px}
+.donut-center{text-align:center}
+.donut-num{font-size:32px;font-weight:800;color:var(--text-primary);line-height:1}
+.donut-label{font-size:13px;color:var(--text-secondary)}
+.donut-legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:8px}
+.donut-legend-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-secondary)}
+.donut-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
+/* 柱状图 */
+.bar-chart{width:100%}
+.bar-row{display:flex;align-items:center;margin-bottom:10px;gap:10px}
+.bar-label{width:120px;font-size:12px;color:var(--text-secondary);text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{flex:1;height:22px;background:var(--bg);border-radius:4px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.22,1,.36,1);display:flex;align-items:center;padding-right:8px;justify-content:flex-end;font-size:11px;color:#fff;font-weight:600;min-width:0}
+.bar-val{width:40px;font-size:13px;font-weight:600;color:var(--text-primary);text-align:right;flex-shrink:0}
+
+/* ================= 数据表格 ================= */
+.table-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-card);border:1px solid var(--border-light)}
+.table-toolbar{
+  display:flex;align-items:center;padding:12px 16px;
+  border-bottom:1px solid var(--border-light);gap:8px;
+}
+.table-wrap{overflow-x:auto}
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{
+  background:#fafafa;padding:10px 12px;text-align:left;
+  font-weight:600;color:var(--text-secondary);white-space:nowrap;
+  border-bottom:1px solid var(--border);position:sticky;top:0;
+}
+.data-table td{
+  padding:10px 12px;border-bottom:1px solid var(--border-light);
+  color:var(--text-primary);vertical-align:middle;
+}
+.data-table tbody tr:hover{background:var(--primary-light)}
+.data-table tbody tr:nth-child(even){background:#fafcfe}
+.pager-wrap{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;border-top:1px solid var(--border-light);
+  font-size:13px;color:var(--text-secondary);
+}
+.pager-info{}
+.pager-nav{display:flex;gap:4px}
+.pg-btn{
+  min-width:30px;height:30px;display:flex;align-items:center;
+  justify-content:center;border:1px solid var(--border);border-radius:4px;
+  cursor:pointer;font-size:12px;transition:all .15s;
+}
+.pg-btn:hover{border-color:var(--primary);color:var(--primary)}
+.pg-btn.cur{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* ================= 标签/药丸 ================= */
+.tag{
+  display:inline-block;padding:2px 10px;border-radius:4px;
+  font-size:12px;font-weight:500;white-space:nowrap;
+}
+.tag-red{background:var(--danger-light);color:var(--danger);border:1px solid #ffa39e}
+.tag-orange{background:var(--warn-light);color:#d48806;border:1px solid #ffe58f}
+.tag-blue{background:var(--primary-light);color:var(--primary);border:1px solid #91d5ff}
+.tag-green{background:var(--ok-light);color:var(--ok);border:1px solid #b7eb8f}
+.tag-gray{background:#f5f5f5;color:var(--text-secondary);border:1px solid #d9d9d9}
+
+/* ================= 按钮 ================= */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:4px;
+  padding:5px 12px;border-radius:var(--radius);font-size:13px;
+  border:1px solid var(--border);background:#fff;cursor:pointer;
+  transition:all .15s;color:var(--text-primary);
+}
+.btn:hover{border-color:var(--primary);color:var(--primary)}
+.btn-sm{padding:3px 10px;font-size:12px}
+.btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn-primary:hover{background:var(--primary-hover);color:#fff}
+
+/* ================= 登录页 ================= */
+.login-page{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#1a3d6c 0%,#0f2550 50%,#1a3d6c 100%);
+  position:relative;overflow:hidden;
+}
+.login-page::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 20% 80%,rgba(24,144,255,.15) 0%,transparent 50%),
+    radial-gradient(circle at 80% 20%,rgba(114,124,255,.1) 0%,transparent 50%);
+}
+.login-card{
+  width:400px;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);
+  border-radius:12px;padding:40px 36px;box-shadow:0 20px 60px rgba(0,0,0,.3);
+  position:relative;z-index:1;text-align:center;
+}
+.login-logo{margin-bottom:24px}
+.login-logo-icon{width:52px;height:52px;color:var(--primary)}
+.login-title{font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:6px}
+.login-sub{font-size:13px;color:var(--text-secondary);margin-bottom:28px}
+.login-field{
+  display:flex;align-items:center;gap:10px;
+  border:1px solid var(--border);border-radius:var(--radius);
+  padding:0 12px;margin-bottom:14px;background:#fff;
+  transition:border-color .15s;
+}
+.login-field:focus-within{border-color:var(--primary);box-shadow:0 0 0 2px rgba(24,144,255,.1)}
+.login-field input{flex:1;border:none;padding:11px 0;font-size:14px;background:transparent}
+.login-field input::placeholder{color:var(--text-third)}
+.login-btn{
+  width:100%;padding:11px;border-radius:var(--radius);
+  background:var(--primary);color:#fff;font-size:16px;font-weight:600;
+  margin-top:6px;transition:all .15s;border:none;cursor:pointer;
+}
+.login-btn:hover{background:var(--primary-hover)}
+.login-foot{margin-top:20px;font-size:12px;color:var(--text-third);line-height:1.6}
+
+/* ================= 大屏页面（暗色） ================= */
+.screen-page{
+  position:fixed;inset:0;z-index:200;
+  background:#0b1120;color:#e0e8f0;
+  overflow:hidden;
+}
+.screen-header{
+  height:60px;display:flex;align-items:center;justify-content:center;
+  padding:0 24px;border-bottom:1px solid rgba(255,255,255,.06);
+  position:relative;
+}
+.screen-title{font-size:20px;font-weight:700;letter-spacing:2px}
+.screen-exit{
+  position:absolute;left:20px;color:rgba(255,255,255,.5);
+  cursor:pointer;font-size:14px;display:flex;align-items:center;gap:4px;
+  transition:color .15s;
+}
+.screen-exit:hover{color:#fff}
+.screen-time{position:absolute;right:24px;font-size:13px;color:rgba(255,255,255,.4);font-variant-numeric:tabular-nums}
+.screen-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;
+  padding:16px 20px;height:calc(100vh - 60px);overflow-y:auto;
+}
+.screen-panel{
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+  border-radius:8px;overflow:hidden;
+}
+.screen-panel-head{
+  padding:12px 16px;font-size:14px;font-weight:600;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  display:flex;align-items:center;gap:8px;
+}
+.screen-panel-body{padding:14px 16px}
+
+/* 世界地图占位 */
+.world-map{
+  width:100%;height:280px;
+  background:
+    radial-gradient(ellipse at 50% 40%,rgba(250,173,20,.12) 0%,transparent 55%),
+    radial-gradient(ellipse at 30% 60%,rgba(24,144,255,.08) 0%,transparent 45%),
+    linear-gradient(180deg,rgba(255,255,255,.02),transparent);
+  border-radius:6px;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.map-country{position:absolute;border-radius:2px;opacity:.6;transition:opacity .3s}
+.map-country.hot{opacity:.9;box-shadow:0 0 12px rgba(250,173,20,.3)}
+
+/* 攻击来源列表 */
+.attack-list{display:flex;flex-direction:column;gap:8px}
+.attack-item{
+  display:flex;align-items:center;gap:10px;padding:8px 10px;
+  background:rgba(255,255,255,.03);border-radius:6px;
+}
+.attack-flag{font-size:18px;width:28px;text-align:center}
+.attack-name{flex:1;font-size:12px;color:rgba(255,255,255,.7);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.attack-bar-track{width:80px;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
+.attack-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#faad14,#ff7a45)}
+.attack-count{font-size:13px;font-weight:700;color:#faad14;width:36px;text-align:right}
+
+/* 地区卡片 */
+.region-cards{display:flex;flex-direction:column;gap:8px}
+.region-card{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;
+  background:rgba(255,255,255,.04);border-radius:6px;
+  border:1px solid rgba(255,255,255,.06);
+}
+.region-flag{font-size:20px;width:32px;text-align:center}
+.region-info{flex:1}
+.region-name{font-size:13px;font-weight:600;color:rgba(255,255,255,.85)}
+.region-detail{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
+.region-stat{font-size:18px;font-weight:700;color:#1890ff;text-align:right}
+
+/* Toast */
+.toast-container{
+  position:fixed;top:16px;right:16px;z-index:9999;
+  display:flex;flex-direction:column;gap:8px;
+}
+.toast{
+  padding:10px 20px;border-radius:var(--radius);font-size:13px;
+  box-shadow:0 4px 16px rgba(0,0,0,.15);animation:toastIn .25s ease;
+  display:flex;align-items:center;gap:8px;max-width:360px;
+}
+.toast.info{background:#fff;color:var(--text-primary);border:1px solid var(--border)}
+.toast.success{background:var(--ok-light);color:#389e0d;border:1px solid #b7eb8f}
+.toast.error{background:var(--danger-light);color:var(--danger);border:1px solid #ffa39e}
+@keyframes toastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+
+/* Modal / Drawer */
+.modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;display:flex;align-items:center;justify-content:center}
+.modal{
+  background:#fff;border-radius:8px;box-shadow:0 12px 40px rgba(0,0,0,.2);
+  width:480px;max-width:90vw;max-height:80vh;overflow-y:auto;
+}
+.modal-head{padding:16px 20px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;font-size:16px;font-weight:600}
+.modal-x{cursor:pointer;font-size:18px;color:var(--text-secondary);transition:color .15s}
+.modal-x:hover{color:var(--text-primary)}
+.modal-body{padding:20px;font-size:14px;line-height:1.8;color:var(--text-secondary)}
+.modal-foot{padding:12px 20px;border-top:1px solid var(--border-light);display:flex;justify-content:flex-end;gap:8px}
+
+.drawer-mask{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:300;transition:opacity .25s}
+.drawer{
+  position:fixed;right:0;top:0;bottom:0;width:520px;max-width:100vw;
+  background:#fff;z-index:301;box-shadow:-4px 0 24px rgba(0,0,0,.12);
+  display:flex;flex-direction:column;transform:translateX(0);
+  transition:transform .25s ease;
+}
+.drawer-head{padding:16px 20px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;font-size:16px;font-weight:600}
+.drawer-body{flex:1;overflow-y:auto;padding:16px 20px}
+.drawer-foot{padding:12px 20px;border-top:1px solid var(--border-light);display:flex;gap:8px}
+
+/* 抽屉标签页 */
+.d-tabs{display:flex;gap:0;border-bottom:1px solid var(--border-light);margin-bottom:14px}
+.d-tab{padding:8px 16px;cursor:pointer;font-size:13px;color:var(--text-secondary);border-bottom:2px solid transparent;transition:all .15s}
+.d-tab.cur{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+
+/* 动画 */
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}
+.shake{animation:shake .4s ease}
+@keyframes spin{to{transform:rotate(360deg)}}.spin{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:spin .6s linear infinite}
+.spinning .refresh-ico{animation:spin .8s linear infinite}
+
+/* 雷达图容器（勒索专项复用暗色风格） */
+.radar-dark{background:linear-gradient(180deg,#0d1626 0%,#0a1020 100%);border-radius:8px;padding:20px}
+
+/* 工具类 */
+.num{font-variant-numeric:tabular-nums}
+.hidden{display:none!important}
+.text-center{text-align:center}
+.mt-8{margin-top:8px}.mt-16{margin-top:16px}.mb-8{margin-bottom:8px}.mb-16{margin-bottom:16px}
+.flex{display:flex}.items-center{align-items:center}.gap-8{gap:8px}.gap-16{gap:16px}
+.gap-auto{gap:auto}.flex-1{flex:1}
+</style>
+</head>
+<body>
+<div id="appRoot"></div>
+<div id="fullRoot"></div>
+<div id="drawerRoot"></div>
+<div id="modalRoot"></div>
+<div class="toast-container" id="toastRoot"></div>
+
+<script>
+/* ================= 工具函数 ================= */
+const $=id=>document.getElementById(id);
+const $$=sel=>Array.from(document.querySelectorAll(sel));
+const esc=s=>String(s).replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const RM=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const I={
+ shield:'<svg class="sb-logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2l8 3.5v5.2c0 5-3.4 9.4-8 11.3-4.6-1.9-8-6.3-8-11.3V5.5L12 2z" stroke-linejoin="round"/><path d="M12 8v4m0 4h.01" stroke-linecap="round"/></svg>',
+ home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1v-9.5z" stroke-linejoin="round"/><path d="M9 21V12h6v9" stroke-linejoin="round"/></svg>',
+ chart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M18 20V10M12 20V4M6 20v-6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ analysis:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M21 21H3V3" stroke-linecap="round"/><path d="M18 9l-5 5-4-4-6 6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ threat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 9v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round"/></svg>',
+ globe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 2.6 4 5.7 4 9s-1.2 6.4-4 9c-2.8-2.6-4-5.7-4-9s1.2-6.4 4-9z"/></svg>',
+ user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.6-3.6 4.3-5 7.5-5s5.9 1.4 7.5 5" stroke-linecap="round"/></svg>',
+ bell:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 9a6 6 0 1112 0c0 5 2 6 2 6H4s2-1 2-6z" stroke-linejoin="round"/><path d="M10 19a2 2 0 004 0" stroke-linecap="round"/></svg>',
+ refresh:'<svg class="refresh-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12a8 8 0 11-2.34-5.66M20 4v5h-5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ search:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.2-4.2" stroke-linecap="round"/></svg>',
+ virus:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ff4d4f" stroke-width="1.7"><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.4" fill="#ff4d4f" stroke="none"/><path d="M12 3v3.5M12 17.5V21M3 12h3.5M17.5 12H21M5.6 5.6l2.5 2.5M15.9 15.9l2.5 2.5M18.4 5.6l-2.5 2.5M8.1 15.9l-2.5 2.5" stroke-linecap="round"/></svg>',
+ server:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><circle cx="7.5" cy="7.5" r="1" fill="currentColor" stroke="none"/><circle cx="7.5" cy="16.5" r="1" fill="currentColor" stroke="none"/></svg>',
+ monitor:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M9 20h6M12 16v4" stroke-linecap="round"/></svg>',
+ lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V8a4 4 0 018 0v2.5" stroke-linecap="round"/></svg>',
+ stageIco:'<svg class="stage-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l8 4.5v9L12 20l-8-4.5v-9L12 2z" stroke-linejoin="round"/></svg>',
+ link2:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1.2 1.2M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1.2-1.2" stroke-linecap="round"/></svg>',
+ info:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5" stroke-linecap="round"/><circle cx="12" cy="8" r="1.1" fill="currentColor" stroke="none"/></svg>',
+ copy:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 012-2h9" stroke-linecap="round"/></svg>',
+ more:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="19" r="1.5" fill="currentColor"/></svg>',
+};
+
+/* ================= 全局状态 ================= */
+const state={user:null,role:null,clockTimer:null,
+ ransomQ:'',ransomDim:'',miningQ:'',miningStage:'',
+ handled:{},drawer:null,drawerTab:0,bcClosed:false,modalShown:false};
+
+function go(h){location.hash=h}
+function toast(msg,type){
+ type=type||'info';
+ const r=document.getElementById('toastRoot');
+ const el=document.createElement('div');
+ el.className='toast '+type;
+ el.innerHTML=(type==='success'?'✅':type==='error'?'❌':'ℹ️')+' <span>'+esc(msg)+'</span>';
+ r.appendChild(el);
+ setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(40px)';setTimeout(()=>el.remove(),250)},2600);
+}
+function openModal(html){
+ $('#modalRoot').innerHTML='<div class="modal-mask" id="modalMask"><div class="modal" role="dialog" aria-modal="true">'+html+'</div></div>';
+ $('#modalMask').addEventListener('click',e=>{if(e.target.id==='modalMask')closeModal()});
+ const f=$('#modalRoot .modal [data-autofocus]'); if(f)f.focus();
+}
+function closeModal(){ $('#modalRoot').innerHTML='' }
+
+/* ================= 通用小件 ================= */
+function donut(pct,color,size,sw){
+ size=size||64;sw=sw||8;
+ const r=(size-sw)/2,c=2*Math.PI*r,off=c*(1-pct/100);
+ return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'" role="img">'
+ +'<circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" stroke="#f0f0f0" stroke-width="'+sw+'" fill="none"/>'
+ +'<circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" stroke="'+color+'" stroke-width="'+sw+'" fill="none" stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 '+size/2+' '+size/2+')"/></svg>';
+}
+function countup(el,target,dur){
+ if(RM){el.textContent=target.toLocaleString();return}
+ dur=dur||900;const t0=performance.now();
+ (function step(t){const p=Math.min(1,(t-t0)/dur),v=Math.round(target*(1-Math.pow(1-p,3)));
+  el.textContent=v.toLocaleString(); if(p<1)requestAnimationFrame(step)})(t0);
+}
+function bindRefresh(id){
+ const b=$(id); if(!b)return;
+ b.addEventListener('click',()=>{
+  const ic=b.querySelector('.refresh-ico'); if(ic){ic.classList.remove('spinning');void ic.offsetWidth;ic.classList.add('spinning')}
+  toast('数据已刷新','success');
+ });
+}
+
+/* ================= 路由 ================= */
+const routes={'#/login':pageLogin,'#/overview':pageOverview,'#/threat/ransom':pageRansom,'#/threat/mining':pageMining,'#/screen':pageScreen};
+function router(){
+ const h=location.hash||'#/login';
+ const fn=routes[h]||pageLogin;
+ const full=(h==='#/login'||h==='#/screen');
+ closeDrawer(true);closeModal();
+ if(state.clockTimer){clearInterval(state.clockTimer);state.clockTimer=null}
+ if(full){
+  $('#appRoot').innerHTML='';
+  fn(); window.scrollTo(0,0);return;
+ }
+ renderLayout(h);
+ fn(); window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',router);
+
+/* ================= 布局渲染：侧边栏+顶栏+内容区 ================= */
+function renderLayout(h){
+ const menuHtml = buildSidebar(h);
+ const topbarHtml = buildTopbar(h);
+ $('#appRoot').innerHTML=
+ '<div class="app-layout">'
+ +'<div class="sidebar">'+menuHtml+'</div>'
+ +'<div class="main-area">'+topbarHtml+'<div class="content-area" id="content"></div></div>'
+ +'</div>';
+ bindSidebarEvents();
+ bindTopbarEvents(h);
+}
+
+function buildSidebar(activeHash){
+ const items=[
+  {ico:I.home,label:'首页',go:'#/overview'},
+  {ico:I.threat,label:'安全态势',children:[
+   {label:'态势概览',go:'#/overview'},
+   {label:'威胁分析',go:'#/threat/ransom'},
+   {label:'外部威胁',go:'#/threat/ransom'},
+   {label:'内部威胁',go:'#/threat/mining'},
+   {label:'用户行为',go:'#/threat/mining'},
+  ]},
+  {ico:I.analysis,label:'安全分析',open:true,children:[
+   {label:'威胁分析',go:'#/threat/ransom',active:true},
+   {label:'威胁概览',go:'#/overview'},
+   {label:'外连威胁',go:'#/overview'},
+   {label:'对外威胁',go:'#/overview'},
+   {label:'内联威胁',go:'#/overview'},
+   {label:'用户威胁',go:'#/overview'},
+  ]},
+  {ico:I.server,label:'5G信创',go:'#/overview'},
+  {ico:I.monitor,label:'深度分析',children:[
+   {label:'资产发现',go:'#/overview'},
+   {label:'资产监控',go:'#/overview'},
+   {label:'探测处理',go:'#/overview'},
+  ]},
+  {ico:I.lock,label:'系统管理',go:'#/overview'},
+ ];
+ let html='<div class="sb-logo">'
+  +'<div class="sb-logo-icon">'+I.shield+'</div>'
+  +'<div class="sb-logo-text">威胁感知大数据平台</div>'
+  +'</div><div class="sb-menu">';
+ items.forEach(g=>{
+  if(!g.children){
+   const ac=(activeHash===g.go)?' active':'';
+   html+='<div class="sb-item'+ac+'" data-go="'+g.go+'"><span class="sb-ico">'+(g.ico||I.chart)+'</span>'+g.label+'</div>';
+  }else{
+   const isOpen=g.open?' open':'';
+   html+='<div class="sb-group-title">'+g.label+'</div><div class="sb-sub'+isOpen+'">';
+   g.children.forEach(c=>{
+    const ac=(activeHash===c.go||(c.active&&activeHash.startsWith('#/threat')))?' active':'';
+    html+='<div class="sb-item'+ac+'" data-go="'+c.go+'">'+c.label+'</div>';
+   });
+   html+='</div>';
+  }
+ });
+ html+='</div>'
+ +'<div class="sb-footer">SAC3000-P-GA-H<br>DPtech © 2026</div>';
+ return html;
+}
+
+function buildTopbar(h){
+ const tabs = h.includes('threat') ? ['威胁分析','外连威胁'] : ['威胁分析'];
+ const curTab = h.includes('mining') ? '外连威胁' : (h.includes('ransom')||h.includes('threat') ? '威胁分析' : '威胁分析');
+ return '<div class="topbar">'
+ +'<div class="tb-breadcrumb">'
+ +'<span style="color:var(--primary);font-weight:600">威胁感知大数据平台</span>'
+ +'<span>/</span>'
+ +tabs.map(t=>'<span class="'+(t===curTab?'cur':'')+'">'+t+'</span>').join(' / ')
+ +'</div>'
+ +'<div class="tb-date-range">📅 2024-08-12 ～ 2024-08-12</div>'
+ +'<div class="tb-actions">'
+ +'<select style="padding:4px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;color:var(--text-secondary)"><option>所有架构</option><option>教学区</option><option>办公区</option><option>宿舍区</option></select>'
+ +'<div class="tb-icon-btn" title="通知">'+I.bell+'<span class="dot"></span></div>'
+ +'<div class="tb-user-dropdown" id="userDrop">'
+ +'<div class="tb-avatar-sm">'+esc((state.user||'A').slice(0,1).toUpperCase())+'</div>'
+ +'<span>'+(esc(state.user)||'admin')+'</span>'
+ +' <span style="font-size:10px;color:var(--text-third)">▼</span>'
+ +'</div>'
+ +'<button class="btn-primary-dp">🔍 威胁检索</button>'
+ +'</div></div>';
+}
+
+function bindSidebarEvents(){
+ $$('#appRoot .sb-item[data-go]').forEach(el=>{
+  el.addEventListener('click',()=>go(el.getAttribute('data-go')));
+ });
+}
+function bindTopbarEvents(h){
+ const ub=$('#userDrop');
+ if(ub)ub.addEventListener('click',()=>toast('当前登录：'+esc(state.user||'admin')+'（'+esc(state.role||'系统管理员')+'）'));
+ $$('.tb-icon-btn').forEach(el=>el.addEventListener('click',()=>toast('演示环境，通知模块暂未开放')));
+}
+
+/* ================= 页面：登录 ================= */
+const ACCOUNTS={
+ 'admin':{pw:'Dptech@2026',role:'系统管理员'},
+ 'school':{pw:'Ycyz@2026',role:'学校信息中心'},
+ 'operator':{pw:'Sac@202607',role:'安全运营'},
+ 'guest':{pw:'Guest@2026',role:'只读访客'}
+};
+function pageLogin(){
+ $('#fullRoot').innerHTML='<div class="login-page">'
+ +'<div class="login-card">'
+ +'<div class="login-logo"><div class="login-logo-icon">'+I.shield+'</div></div>'
+ +'<div class="login-title">威胁感知大数据平台</div>'
+ +'<div class="login-sub">DPtech · 让网络更简单、智能、安全</div>'
+ +'<div class="login-field">'+I.user+'<input id="lgUser" value="admin" autocomplete="username"></div>'
+ +'<div class="login-field">'+I.lock+'<input id="lgPass" type="password" value="Dptech@2026" autocomplete="current-password"></div>'
+ +'<div id="lgErr" style="display:none;color:var(--danger);font-size:12px;margin:-6px 0 10px;text-align:left">账号或密码错误，请重试</div>'
+ +'<button class="login-btn" id="lgBtn">登 录 系 统</button>'
+ +'<div class="login-foot">迪普科技 SAC3000-P-GA-H 威胁感知大数据平台 · 功能演示环境<br>杭州迪普科技股份有限公司</div>'
+ +'</div></div>';
+ const btn=$('#lgBtn'),err=$('#lgErr');
+ const doLogin=()=>{
+  if(btn.disabled)return;
+  const u=$('#lgUser').value.trim(),p=$('#lgPass').value;
+  const acc=ACCOUNTS[u];
+  if(!acc||acc.pw!==p){
+   err.style.display='block';
+   ['lgUser'].forEach(id=>{const f=$('#'+id);f.style.borderColor='var(--danger)';f.classList.add('shake');void f.offsetWidth;f.classList.remove('shake')});
+   setTimeout(()=>{$('#lgUser').style.borderColor=''},1600);
+   return;
+  }
+  err.style.display='none';
+  state.user=u;state.role=acc.role;
+  btn.disabled=true;btn.innerHTML='<span class="spin"></span> 正在登录…';
+  setTimeout(()=>go('#/threat/ransom'),800);
+ };
+ btn.addEventListener('click',doLogin);
+ $('#lgPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+}
+
+/* ================= 页面：威胁分析概览（截图1主界面） ================= */
+function pageOverview(){
+ const c=$('#content'); if(!c)return;
+ /* 威胁级别分布数据 */
+ const levelData=[{label:'高危攻击',val:0,color:'#ff4d4f'},{label:'中危攻击',val:146,color:'#faad14'},{label:'低危攻击',val:11,color:'#1890ff'}];
+ const total=levelData.reduce((a,d)=>a+d.val,0);
+ /* 外连地址 Top5 */
+ const top5Data=[
+  {ip:'185.48.59.52',val:152},
+  {ip:'64.106.246.244',val:130},
+  {ip:'112.213.689.136',val:98},
+  {ip:'46.165.254.194',val:67},
+  {ip:'0.0.0.0',val:145},
+ ];
+ const maxVal=Math.max(...top5Data.map(d=>d.val));
+ /* 威胁类型 Top5 */
+ const typeData=[
+  {label:'钓鱼网站',pct:34.5,color:'#1890ff'},
+  {label:'恶意木马',pct:24.1,color:'#ff4d4f'},
+  {label:'恶意网站',pct:17.3,color:'#faad14'},
+  {label:'僵尸网络',pct:13.8,color:'#722ed1'},
+  {label:'其他',pct:10.3,color:'#8c8c8c'},
+ ];
+ /* 表格数据 */
+ const tableRows=[
+  {seq:1,addr:'',port:0,victim:'86.1.1.11',org:'ips',group:'ips',typeTag:'钓鱼网站',typeName:'发现钓鱼网站威胁情报信息',count:49},
+  {seq:2,addr:'',port:0,victim:'86.1.1.10',org:'ips',group:'ips',typeTag:'钓鱼网站',typeName:'发现钓鱼网站威胁情报信息',count:48},
+  {seq:3,addr:'',port:0,victim:'86.6.6.9',org:'ips',group:'ips',typeTag:'钓鱼网站',typeName:'发现钓鱼网站威胁情报信息',count:24},
+  {seq:4,addr:'',port:0,victim:'10.121.62.61',org:'ips',group:'ips',typeTag:'钓鱼网站',typeName:'发现钓鱼网站威胁情报信息',count:10},
+  {seq:5,addr:'🇩🇪 46.165.254.194',port:0,victim:'10.121.62.61',org:'ips',group:'ips',typeTag:'钓鱼网站',typeName:'发现钓鱼网站威胁情报信息',count:10},
+  {seq:6,addr:'🇻🇳 112.213.89.136',port:0,victim:'10.121.62.61',org:'ips',group:'ips',typeTag:'恶意木马',typeName:'发现C&C节点威胁情报信息',count:8},
+  {seq:7,addr:'',port:0,victim:'202.201.0.131',org:'ips',group:'ips',typeTag:'恶意网站',typeName:'发现色情勒索情报信息',count:2},
+ ];
+
+ c.innerHTML=
+ /* 统计卡片区 */
+ '<div class="stat-row">'
+ +'<div class="stat-card"><div class="stat-icon blue">'+I.bell+'</div><div class="stat-info"><div class="stat-value num" id="ovTotal">0</div><div class="stat-label">今日威胁总数</div></div></div>'
+ +'<div class="stat-card"><div class="stat-icon red">'+I.virus+'</div><div class="stat-info"><div class="stat-value num" id="ovHigh">0</div><div class="stat-label">高危告警</div></div></div>'
+ +'<div class="stat-card"><div class="stat-icon orange">'+I.server+'</div><div class="stat-info"><div class="stat-value num" id="ovAsset">0</div><div class="stat-label">受影响资产</div></div></div>'
+ +'<div class="stat-card"><div class="stat-icon green">'+I.monitor+'</div><div class="stat-info"><div class="stat-value num" id="ovHandled">0</div><div class="stat-label">今日已处置</div></div></div>'
+ +'</div>'
+ /* 图表三列 */
+ +'<div class="chart-row">'
+ /* 左：威胁级别分布环形图 */
+ +'<div class="chart-box"><div class="chart-head">威胁级别分布</div><div class="chart-body"><div class="donut-wrap">'
+ +'<div class="donut-center"><div class="donut-num num" id="donutTotal">'+total+'</div><div class="donut-label">总数</div></div>'
+ +donut(total>0?(levelData[1].val/total*100):0,'#faad14',140,16)
+ +'<div class="donut-legend">'+levelData.map(d=>'<div class="donut-legend-item"><span class="donut-dot" style="background:'+d.color+'"></span>'+d.label+' <b class="num">'+d.val+'</b></div>').join('')
+ +'</div></div></div></div>'
+ /* 中：威胁类型 Top5 */
+ +'<div class="chart-box"><div class="chart-head">威胁类型Top5</div><div class="chart-body"><div class="donut-wrap">'
+ +donut(typeData[0].pct,typeData[0].color,120,14)
+ +'<div style="margin-top:12px;text-align:left">'+typeData.map((d,i)=>'<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:12px"><span style="width:10px;height:10px;border-radius:2px;background:'+d.color+'"></span>'+d.label+' <span style="color:var(--text-secondary)">'+d.pct+'%</span></div>').join('')
+ +'</div></div></div></div>'
+ /* 右：外连地址 Top5 柱状图 */
+ +'<div class="chart-box"><div class="chart-head">外连地址Top5</div><div class="chart-body" style="display:block;padding:18px 20px"><div class="bar-chart">'
+ +top5Data.map(d=>'<div class="bar-row"><span class="bar-label">'+d.ip+'</span><div class="bar-track"><div class="bar-fill" style="width:0;background:var(--primary)" data-w="'+(d.val/maxVal*100)+'">'+d.val+'</div></div><span class="bar-val num">'+d.val+'</span></div>').join('')
+ +'</div></div></div>'
+ +'</div>'
+ /* 数据表格 */
+ +'<div class="table-card">'
+ +'<div class="table-toolbar">'
+ +'<button class="btn btn-sm">批量操作 ▾</button>'
+ +'<button class="btn btn-sm">导出列表</button>'
+ +'<span style="flex:1"></span>'
+ +'<span style="position:relative;display:inline-flex;align-items:center"><span style="position:absolute;left:8px;color:var(--text-third)">'+I.search+'</span>'
+ +'<input placeholder="搜索威胁名称/IP" style="height:32px;padding:0 10px 0 28px;border:1px solid var(--border);border-radius:4px;font-size:12px;width:200px"></span>'
+ +'</div>'
+ +'<div class="table-wrap"><table class="data-table"><thead><tr>'
+ +'<th style="width:50px">序号</th><th>外连地址</th><th style="width:70px">外连端口</th><th>受害者</th><th>所属机构</th><th>所属分组</th><th>威胁类型</th><th>威胁名称</th><th style="width:70px">攻击次数</th><th style="width:60px">详情</th>'
+ +'</tr></thead><tbody>'
+ +tableRows.map(r=>'<tr>'
+ +'<td class="num">'+r.seq+'</td>'
+ +'<td>'+(r.addr?r.addr:'-')+'</td>'
+ +'<td class="num">'+r.port+'</td>'
+ +'<td><span style="color:var(--primary)">'+I.monitor+' '+r.victim+'</span></td>'
+ +'<td>'+r.org+'</td><td>'+r.group+'</td>'
+ +'<td><span class="tag '+(r.typeTag.indexOf('钓鱼')>=0?'tag-orange':r.typeTag.indexOf('木马')>=0?'tag-red':r.typeTag.indexOf('恶意')>=0?'tag-blue':'tag-gray')+'">'+r.typeTag+'</span></td>'
+ +'<td>'+I.virus+' '+r.typeName+'</td>'
+ +'<td class="num" style="font-weight:600;color:var(--primary)">'+r.count+'</td>'
+ +'<td><button class="btn btn-sm" style="color:var(--primary)">📋</button></td>'
+ +'</tr>').join('')
+ +'</tbody></table></div>'
+ +'<div class="pager-wrap"><div class="pager-info">当前显示第 <b>1</b> 到 <b>'+Math.min(13,tableRows.length)+'</b> 条，共 <b class="num">'+tableRows.length+'</b> 条记录，共 13 条记录，每页显示 50 条记录</div>'
+ +'<div class="pager-nav"><span class="pg-btn cur">1</span></div></div>'
+ +'</div>';
+
+ countup($('#ovTotal'),157);countup($('#ovHigh'),0);countup($('#ovAsset'),3);countup($('#ovHandled'),89);
+ requestAnimationFrame(()=>setTimeout(()=>{
+  $$('.bar-fill[data-w]').forEach(b=>{b.style.width=b.getAttribute('data-w')+'%'});
+ },80));
+}
+
+/* ================= 页面：勒索专项 ================= */
+const ransomDims=[['感染勒索病毒',2,-150],['黑客勒索攻击',0,-90],['勒索C&C通信',3,-30],['勒索常用端口',0,30],['勒索常用漏洞',1,90],['RDP爆破',1,150]];
+function radarSvg(){
+ const cx=200,cy=132,R=88;
+ const pt=(ang,r)=>{const a=ang*Math.PI/180;return [cx+r*Math.cos(a),cy+r*Math.sin(a)]};
+ let rings='';
+ [1/3,2/3,1].forEach(f=>{
+  const pts=ransomDims.map(d=>pt(d[2],R*f).map(v=>v.toFixed(1)).join(',')).join(' ');
+  rings+='<polygon points="'+pts+'" fill="none" stroke="rgba(255,255,255,.09)" stroke-width="1"/>';
+ });
+ let axes='',labels='';
+ ransomDims.forEach(d=>{
+  const p=pt(d[2],R);
+  axes+='<line x1="'+cx+'" y1="'+cy+'" x2="'+p[0].toFixed(1)+'" y2="'+p[1].toFixed(1)+'" stroke="rgba(255,255,255,.09)"/>';
+  const lp=pt(d[2],R+16);
+  const anch=Math.abs(Math.cos(d[2]*Math.PI/180))<0.3?'middle':(Math.cos(d[2]*Math.PI/180)>0?'start':'end');
+  labels+='<text class="radar-dim'+(d[1]===0?' zero':'')+'" data-dim="'+d[0]+'" data-n="'+d[1]+'" x="'+lp[0].toFixed(1)+'" y="'+(lp[1]+4).toFixed(1)+'" text-anchor="'+anch+'">'+d[0]+'('+d[1]+')</text>';
+ });
+ const dotSeed=[[0.28,-14],[0.4,10],[0.52,-6],[0.62,14],[0.72,-12],[0.84,6],[0.94,-4]];
+ const srcs=['SAC3000-NDR','DPtech-FW'];
+ let dots='',di=0;
+ ransomDims.forEach(d=>{
+  for(let k=0;k<d[1];k++){
+   const s=dotSeed[(di*3+k)%dotSeed.length];
+   const p=pt(d[2]+s[1],R*s[0]);
+   const src=srcs[(di+k)%2];
+   dots+='<circle data-src="'+src+'" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="3.4" fill="#ff4d4d" opacity=".9" style="filter:drop-shadow(0 0 3px rgba(255,77,77,.8))"><title>'+d[0]+' · '+src+'</title></circle>';
+  }
+  if(d[1]>0)di++;
+ });
+ const g1=pt(-30,R),g2=pt(26,R);
+ return '<svg width="100%" height="268" viewBox="0 0 400 268" role="img">'
+ +'<defs><linearGradient id="swg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1890ff" stop-opacity="0"/><stop offset="1" stop-color="#1890ff" stop-opacity=".3"/></linearGradient></defs>'
+ +rings+axes
+ +'<g class="radar-sweep"><path d="M'+cx+' '+cy+' L'+g1[0].toFixed(1)+' '+g1[1].toFixed(1)+' A'+R+' '+R+' 0 0 0 '+g2[0].toFixed(1)+' '+g2[1].toFixed(1)+' Z" fill="url(#swg)"/></g>'
+ +dots
+ +'<circle cx="'+cx+'" cy="'+cy+'" r="3" fill="#1890ff"/>'
+ +labels+'</svg>';
+}
+
+const ransomRows=[
+ {t:'2024-08-12 02:31:08',desc:'感染matrix家族勒索软件',fam:'matrix',risk:'感染勒索病毒',stage:'命令执行',level:'高威胁',vip:'192.168.16.8',vtype:'终端',aip:'49.51.173.30',n:14,nature:'病毒'},
+ {t:'2024-08-12 03:15:22',desc:'检测到LockBit3.0勒索通信特征',fam:'LockBit3.0',risk:'勒索C&C通信',stage:'C2通信',level:'高威胁',vip:'192.168.16.8',vtype:'终端',aip:'45.155.204.117',n:9,nature:'病毒'},
+ {t:'2024-08-12 05:42:51',desc:'MS17-010永恒之蓝漏洞利用尝试',fam:'MS17-010',risk:'勒索常用漏洞',stage:'渗透利用',level:'中威胁',vip:'192.168.20.8',vtype:'服务器',aip:'103.78.112.0',n:5,nature:'其他'},
+ {t:'2024-08-12 07:18:33',desc:'RDP暴力破解(用户admin)',fam:'RDP爆破',risk:'RDP爆破',stage:'初始访问',level:'中威胁',vip:'192.168.20.33',vtype:'服务器',aip:'91.121.87.44',n:3,nature:'其他'},
+ {t:'2024-08-12 09:04:17',desc:'感染Phobos家族勒索软件',fam:'Phobos',risk:'感染勒索病毒',stage:'载荷投递',level:'高威胁',vip:'192.168.16.21',vtype:'终端',aip:'185.220.101.3',n:3,nature:'病毒'},
+ {t:'2024-08-12 11:27:45',desc:'检测到Makop勒索变种活动',fam:'Makop',risk:'感染勒索病毒',stage:'加密执行',level:'高威胁',vip:'192.168.16.8',vtype:'终端',aip:'194.169.0.88',n:2,nature:'病毒'},
+ {t:'2024-08-12 14:53:09',desc:'TellYouThePass勒索攻击特征匹配',fam:'TellYouThePass',risk:'黑客勒索攻击',stage:'数据窃取',level:'中威胁',vip:'192.168.56.101',vtype:'服务器',aip:'206.189.210.88',n:1,nature:'病毒'},
+];
+
+function pageHeader(t,extra){
+ return '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">'
+ +'<div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px;font-weight:700">'+t+'</span>'
+ +(extra||'')
+ +'</div>'
+ +'<div style="display:flex;align-items:center;gap:8px">'
+ +'<button class="btn btn-sm" id="rfBtn">'+I.refresh+' 刷新</button>'
+ +'<button class="btn btn-sm">最近 7 天 ▾</button>'
+ +'</div></div>';
+}
+
+function assetCard(srv,term){
+ return '<div class="card" style="padding:16px 20px"><div style="font-size:14px;font-weight:600;margin-bottom:12px">受害资产</div>'
+ +'<div style="display:flex;gap:24px">'
+ +'<div style="display:flex;align-items:center;gap:8px"><span style="color:var(--warn);font-size:20px">'+I.server+'</span><div><div style="font-size:22px;font-weight:700;color:var(--warn)" class="num">'+srv+'</div><div style="font-size:12px;color:var(--text-secondary)">影响服务器</div></div></div>'
+ +'<div style="display:flex;align-items:center;gap:8px"><span style="color:var(--danger);font-size:20px">'+I.monitor+'</span><div><div style="font-size:22px;font-weight:700;color:var(--danger)" class="num">'+term+'</div><div style="font-size:12px;color:var(--text-secondary)">影响终端</div></div></div>'
+ +'</div></div>';
+}
+
+function pageRansom(){
+ const c=$('#content'); if(!c)return;
+ c.innerHTML=pageHeader('勒索专项检测')
+ +'<div style="display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:16px;margin-bottom:16px">'
+ +'<div class="card"><div class="card-head">六维联动检测雷达<span class="sub">点击维度联动过滤</span></div><div class="radar-dark" style="padding:16px">'+radarSvg()
+ +'<div style="display:flex;gap:12px;margin-top:10px;justify-content:center">'
+ +'<span style="font-size:11px;color:rgba(255,255,255,.5);cursor:pointer" data-src="NDR">⬤ NDR</span>'
+ +'<span style="font-size:11px;color:rgba(255,255,255,.7);cursor:pointer" data-src="SAC3000-NDR">⬤ SAC3000-NDR (1)</span>'
+ +'<span style="font-size:11px;color:rgba(255,255,255,.5);cursor:pointer" data-src="DPtech-FW">⬤ DPtech-FW (1)</span>'
+ +'</div></div></div>'
+ +assetCard(1,2)
+ +'<div class="card"><div class="card-head">受害资产攻击Top5</div><div class="card-body" style="padding:14px 16px">'
+ +[['192.168.16.8',14],['192.168.20.8',9],['192.168.16.21',5]].map(t=>'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:12px;color:var(--text-secondary);width:120px" class="num">'+t[0]+'</span><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="height:100%;background:var(--primary);border-radius:3px;width:0" data-rw="'+(t[1]/14*100)+'"></div></div><span style="font-size:12px;font-weight:600;width:36px;text-align:right" class="num">'+t[1]+'次</span></div>').join('')
+ +'</div></div>'
+ +'</div>'
+ +'<div class="card"><div class="card-head">威胁事件列表</div>'
+ +'<div class="table-toolbar"><button class="btn btn-sm">批量操作 ▾</button><button class="btn btn-sm">导出</button><span id="dimChip"></span><span style="flex:1"></span>'
+ +'<span style="position:relative;display:inline-flex;align-items:center"><span style="position:absolute;left:8px;color:var(--text-third)">'+I.search+'</span>'
+ +'<input id="qR" placeholder="搜索威胁描述" style="height:32px;padding:0 10px 0 28px;border:1px solid var(--border);border-radius:4px;font-size:12px;width:200px"></span>'
+ +'</div>'
+ +'<div class="table-wrap"><table class="data-table"><thead><tr><th style="width:34px"><input type="checkbox" id="ckAll"></th><th>#</th><th>时间</th><th>威胁描述</th><th>定性</th><th>风险维度</th><th>阶段</th><th>等级</th><th>受害者IP</th><th>类型</th><th>攻击者</th><th>次数</th></tr></thead><tbody id="tbodyR"></tbody></table></div>'
+ +'<div class="pager-wrap"><div class="pager-info">共 <span class="num" id="pgN">0</span> 项</div><div class="pager-nav"><span class="pg-btn cur">1</span></div></div>'
+ +'</div>';
+
+ bindRefresh('#rfBtn');
+ $('#qR').addEventListener('input',e=>{state.ransomQ=e.target.value.trim();renderRansomTbody()});
+ $$('.radar-dim').forEach(el=>el.addEventListener('click',()=>{
+  const n=+el.getAttribute('data-n'),name=el.getAttribute('data-dim');
+  if(n===0){toast('该维度暂无告警');return}
+  state.ransomDim=name;renderRansomTbody();renderDimChip();
+ }));
+ requestAnimationFrame(()=>setTimeout(()=>$('[data-rw]').forEach(b=>b.style.width=b.getAttribute('data-rw')+'%'),60));
+ renderRansomTbody();renderDimChip();
+}
+function renderDimChip(){const c=$('#dimChip');if(!c)return;c.innerHTML=state.ransomDim?'<span class="chip tag tag-blue" id="dimClear">'+state.ransomDim+' ✕</span>':'';const x=$('#dimClear');if(x)x.addEventListener('click',()=>{state.ransomDim='';renderRansomTbody();renderDimChip()})}
+function renderRansomTbody(){
+ const tb=$('#tbodyR');if(!tb)return;
+ const q=state.ransomQ.toLowerCase();
+ const rows=ransomRows.map((r,i)=>({r:r,i:i})).filter(o=>{
+  if(state.ransomDim&&o.r.risk!==state.ransomDim)return false;
+  return !q||o.r.desc.toLowerCase().includes(q)||o.r.fam.toLowerCase().includes(q);
+ });
+ const pn=$('#pgN');if(pn)pn.textContent=rows.length;
+ if(!rows.length){tb.innerHTML='<tr><td colspan="12" style="text-align:center;color:var(--text-secondary);padding:30px">暂无数据</td></tr>';return}
+ tb.innerHTML=rows.map(o=>{
+  const r=o.r;
+  return '<tr data-i="'+o.i+'" tabindex="0" style="cursor:pointer">'
+  +'<td><input type="checkbox"></td><td class="num">'+(o.i+1)+'</td><td class="num">'+r.t+'</td>'
+  +'<td>'+I.virus+esc(r.desc)+'</td>'
+  +'<td>'+(r.nature==='病毒'?'<span class="tag tag-blue">病毒</span>':'<span class="tag tag-gray">其他</span>')+'</td>'
+  +'<td>'+r.risk+'</td><td>'+r.stage+'</td>'
+  +'<td>'+(r.level==='高威胁'?'<span class="tag tag-red">高威胁</span>':'<span class="tag tag-orange">中威胁</span>')+'</td>'
+  +'<td class="num">'+r.vip+'</td><td>'+r.vtype+'</td><td class="num">'+r.aip+'</td><td class="num">'+r.n+'</td></tr>';
+ }).join('');
+ $$('#tbodyR tr').forEach(tr=>{
+  tr.addEventListener('click',e=>{if(e.target.tagName==='INPUT')return;openDrawer('ransom',+tr.getAttribute('data-i'))});
+  tr.addEventListener('keydown',e=>{if(e.key==='Enter')openDrawer('ransom',+tr.getAttribute('data-i'))});
+ });
+ const all=$('#ckAll');if(all)all.addEventListener('change',()=>$$('#tbodyR input[type=checkbox]:not(#ckAll)').forEach(c=>c.checked=all.checked));
+}
+
+/* ================= 页面：挖矿专项 ================= */
+const miningRows=[
+ {t:'2024-08-12 01:22:14',desc:'感染bitcoinminer家族挖矿程序',fam:'bitcoinminer',tags:['挖矿','币种'],nature:'病毒',mstage:'与控制端建立通信',stage:'初始入侵',level:'高威胁',vip:'192.168.56.101',vtype:'服务器',pool:'198.23.214.117:7777',n:18},
+ {t:'2024-08-12 02:45:31',desc:'检测到xmrig挖矿木马通信',fam:'xmrig',tags:['挖矿','门罗币'],nature:'病毒',mstage:'登录矿池',stage:'持久化',level:'高威胁',vip:'192.168.56.101',vtype:'服务器',pool:'185.220.101.3:443',n:12},
+ {t:'2024-08-12 04:18:47',desc:'感染bitcoinminer变种(CPU)',fam:'bitcoinminer',tags:['挖矿','比特币'],nature:'病毒',mstage:'获取挖矿任务',stage:'横向移动',level:'中威胁',vip:'192.168.20.8',vtype:'服务器',pool:'45.155.204.117:3333',n:8},
+ {t:'2024-08-12 06:33:22',desc:'xmrig挖矿进程异常流量',fam:'xmrig',tags:['挖矿','门罗币'],nature:'病毒',mstage:'提交结果',stage:'命令控制',level:'中威胁',vip:'192.168.16.21',vtype:'终端',pool:'103.78.112.0:5555',n:5},
+ {t:'2024-08-12 08:51:03',desc:'kdevtmpfsi挖矿蠕虫传播',fam:'kdevtmpfsi',tags:['蠕虫','Linux'],nature:'病毒',mstage:'与控制端建立通信',stage:'初始访问',level:'高威胁',vip:'192.168.20.33',vtype:'服务器',pool:'206.189.210.88:8888',n:3},
+ {t:'2024-08-12 10:17:39',desc:'watchbog挖矿后门活动',fam:'watchbog',tags:['后门','持久化'],nature:'病毒',mstage:'登录矿池',stage:'提权',level:'中威胁',vip:'192.168.16.8',vtype:'终端',pool:'194.169.0.88:9999',n:2},
+ {t:'2024-08-12 12:44:55',desc:'bitcoinminer挖矿(DGPU)',fam:'bitcoinminer',tags:['挖矿','显卡'],nature:'病毒',mstage:'获取挖矿任务',stage:'资源滥用',level:'低威胁',vip:'192.168.56.201',vtype:'终端',pool:'91.121.87.44:2222',n:1},
+];
+
+function pageMining(){
+ const c=$('#content');if(!c)return;
+ const stages=[['与控制端建立通信',3],['登录矿池',1],['获取挖矿任务',1],['提交结果',0]];
+ c.innerHTML=pageHeader('挖矿专项检测')
+ +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">'
+ +'<div class="card"><div class="card-head">双引擎检测<span class="sub">本地规则引擎 + 云端主动探测</span></div><div class="card-body" style="display:flex;gap:16px">'
+ +'<div style="flex:1;padding:16px;background:var(--danger-light);border-radius:8px;border:1px solid #ffccc7;text-align:center">'
+ +'<div style="font-size:28px;font-weight:700;color:var(--danger)" class="num" id="engLocal">0</div>'
+ +'<div style="font-size:13px;color:var(--text-secondary);margin-top:4px">本地规则引擎</div>'
+ +'<div style="font-size:11px;color:var(--text-third);margin-top:4px">5.7W+ 规则 · 5分钟更新</div>'
+ +'</div>'
+ +'<div style="flex:1;padding:16px;background:var(--warn-light);border-radius:8px;border:1px solid #ffe58f;text-align:center">'
+ +'<div style="font-size:28px;font-weight:700;color:#d48806" class="num">128K</div>'
+ +'<div style="font-size:13px;color:var(--text-secondary);margin-top:4px">云端主动探测</div>'
+ +'<div style="font-size:11px;color:var(--text-third);margin-top:4px">100+ 币种 · 主动探测</div>'
+ +'</div>'
+ +'</div></div>'
+ +'<div class="card"><div class="card-head">挖矿阶段分布</div><div class="card-body" style="padding:14px 16px">'
+ +stages.map(s=>'<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;padding:6px 10px;border-radius:4px;transition:background .15s" data-stage="'+s[0]+'" data-n="'+s[1]+'">'
+ +I.link2+'<span style="flex:1;font-size:13px">'+s[0]+'</span>'
+ +'<span class="tag '+(s[1]>0?'tag-orange':'tag-gray')+'">'+s[1]+' 台</span>'
+ +'</div>').join('')
+ +'</div></div>'
+ +'</div>'
+ +assetCard(1,2)
+ +'<div class="card"><div class="card-head">挖矿事件列表</div>'
+ +'<div class="table-toolbar"><button class="btn btn-sm">批量操作 ▾</button><button class="btn btn-sm">导出</button><button class="btn btn-sm">导出IOC</button><span id="stageChip"></span><span style="flex:1"></span>'
+ +'<span style="position:relative;display:inline-flex;align-items:center"><span style="position:absolute;left:8px;color:var(--text-third)">'+I.search+'</span>'
+ +'<input id="qM" placeholder="搜索威胁描述/标签" style="height:32px;padding:0 10px 0 28px;border:1px solid var(--border);border-radius:4px;font-size:12px;width:200px"></span>'
+ +'</div>'
+ +'<div class="table-wrap"><table class="data-table"><thead><tr><th style="width:34px"><input type="checkbox" id="ckAll"></th><th>#</th><th>时间</th><th>描述</th><th>标签</th><th>定性</th><th>阶段</th><th>攻击阶段</th><th>等级</th><th>受害者IP</th><th>类型</th></tr></thead><tbody id="tbodyM"></tbody></table></div>'
+ +'<div class="pager-wrap"><div class="pager-info">共 <span class="num" id="pgN">0</span> 项</div><div class="pager-nav"><span class="pg-btn cur">1</span></div></div>'
+ +'</div>';
+
+ bindRefresh('#rfBtn');
+ $('#qM').addEventListener('input',e=>{state.miningQ=e.target.value.trim();renderMiningTbody()});
+ $$('.card [data-stage]').forEach(el=>el.addEventListener('click',()=>{
+  const n=+el.getAttribute('data-n'),name=el.getAttribute('data-stage');
+  if(n===0){toast('该阶段暂无失陷主机');return}
+  state.miningStage=state.miningStage===name?'':name;
+  renderMiningTbody();renderStageChip();
+ }));
+ countup($('#engLocal'),7);
+ renderMiningTbody();renderStageChip();
+}
+function renderStageChip(){const c=$('#stageChip');if(!c)return;c.innerHTML=state.miningStage?'<span class="chip tag tag-blue" id="stageClear">'+state.miningStage+' ✕</span>':'';const x=$('#stageClear');if(x)x.addEventListener('click',()=>{state.miningStage='';renderMiningTbody();renderStageChip()})}
+function renderMiningTbody(){
+ const tb=$('#tbodyM');if(!tb)return;
+ const q=state.miningQ.toLowerCase();
+ const rows=miningRows.map((r,i)=>({r:r,i:i})).filter(o=>{
+  if(state.miningStage&&o.r.mstage!==state.miningStage)return false;
+  if(!q)return true;
+  return o.r.desc.toLowerCase().includes(q)||o.r.tags.join(' ').toLowerCase().includes(q);
+ });
+ const pn=$('#pgN');if(pn)pn.textContent=rows.length;
+ if(!rows.length){tb.innerHTML='<tr><td colspan="11" style="text-align:center;color:var(--text-secondary);padding:30px">暂无数据</td></tr>';return}
+ tb.innerHTML=rows.map(o=>{
+  const r=o.r;
+  return '<tr data-i="'+o.i+'" tabindex="0" style="cursor:pointer">'
+  +'<td><input type="checkbox"></td><td class="num">'+(o.i+1)+'</td><td class="num">'+r.t+'</td>'
+  +'<td>'+I.virus+esc(r.desc)+'</td>'
+  +'<td><span class="tag tag-red" style="font-size:11px">'+esc(r.tags[0])+'</span> <span class="tag tag-orange" style="font-size:11px">'+esc(r.tags[1])+'</span></td>'
+  +'<td>'+(r.nature==='病毒'?'<span class="tag tag-blue">病毒</span>':'<span class="tag tag-gray">其他</span>')+'</td>'
+  +'<td>'+r.mstage+'</td><td>'+r.stage+'</td>'
+  +'<td>'+(r.level==='高威胁'?'<span class="tag tag-red">高威胁</span>':r.level==='中威胁'?'<span class="tag tag-orange">中威胁</span>':'<span class="tag tag-green">低威胁</span>')+'</td>'
+  +'<td class="num">'+r.vip+'</td><td>'+r.vtype+'</td></tr>';
+ }).join('');
+ $$('#tbodyM tr').forEach(tr=>{
+  tr.addEventListener('click',e=>{if(e.target.tagName==='INPUT')return;openDrawer('mining',+tr.getAttribute('data-i'))});
+  tr.addEventListener('keydown',e=>{if(e.key==='Enter')openDrawer('mining',+tr.getAttribute('data-i'))});
+ });
+}
+
+/* ================= 告警详情抽屉 ================= */
+function openDrawer(type,idx){state.drawer={type:type,idx:idx};state.drawerTab=0;renderDrawer()}
+function closeDrawer(silent){state.drawer=null;const r=$('#drawerRoot');if(r)r.innerHTML=''}
+function renderDrawer(){
+ const d=state.drawer;const root=$('#drawerRoot');
+ if(!d){root.innerHTML='';return}
+ const isR=d.type==='ransom';
+ const rows=isR?ransomRows:miningRows;
+ const r=rows[d.idx];if(!r)return;
+ const key=d.type+'-'+d.idx;
+ const st=state.handled[key];
+ const alarmId=(isR?2145000276:2145000331)-d.idx;
+ const stHtml=st==='doing'?'<span class="tag tag-orange">处置中</span>':st==='done'?'<span class="tag tag-green">已处置</span>':'<span class="tag tag-red">未处置</span>';
+ const tabs=['最近详情','命中规则','原始日志','处置建议'];
+ let tabBody='';
+ if(state.drawerTab===0){
+  tabBody='<div style="font-size:13px;line-height:2.2;color:var(--text-secondary)">'
+  +'<div style="display:flex;gap:12px;margin-bottom:8px"><b style="color:var(--text-primary);white-space:nowrap">时间线：</b>'
+  +'<div><div style="color:var(--text-secondary)">'+r.t.slice(0,11)+'03:08:12</div><div>检测到异常外联：'+r.vip+' → '+(isR?(r.aip||'45.155.204.117'):r.pool)+'</div>'
+  +'<div>'+r.t.slice(11)+' 命中'+(isR?'勒索特征（'+r.fam+'）':'挖矿通信特征（'+r.fam+'）')+'</div>'
+  +'<div style="color:var(--danger);font-weight:600">生成'+r.level+'告警</div></div></div></div>';
+ }else if(state.drawerTab===1){
+  tabBody='<div style="background:var(--bg);border-radius:6px;padding:14px;border:1px solid var(--border-light)"><div style="font-weight:600;margin-bottom:8px">'+(isR?'勒索软件检测-'+r.fam:'挖矿行为检测-'+r.fam)+'</div>'
+  +'<div style="display:grid;grid-template-columns:auto 1fr;gap:6px;font-size:12px">'
+  +'<div style="color:var(--text-secondary)">严重等级</div><div>'+(r.level==='高威胁'?'<span class="tag tag-red">高</span>':'<span class="tag tag-orange">中</span>')+'</div>'
+  +'<div style="color:var(--text-secondary)">命中次数</div><div><b class="num">'+r.n+'</b></div>'
+  +'<div style="color:var(--text-secondary)">规则来源</div><div>'+(isR?'内置情报（IOC）':'本地挖矿规则库')+'</div>'
+  +'<div style="color:var(--text-secondary)">最近命中</div><div><span class="num">'+r.t+'</span></div>'
+  +'</div></div>';
+ }else if(state.drawerTab===2){
+  tabBody='<table class="data-table" style="font-size:12px"><thead><tr><th>时间</th><th>源IP:端口</th><th>目的IP:端口</th><th>协议</th><th>动作</th></tr></thead><tbody>'
+  +'<tr><td class="num">'+r.t+'</td><td class="num">'+r.vip+':'+(isR?'51234':'49876')+'</td><td class="num">'+(isR?(r.aip||'45.155.204.117'):r.pool)+'</td><td>'+(isR?'TLS':'Stratum/TCP')+'</td><td>'+(isR?'已阻断':'已记录')+'</td></tr>'
+  +'</tbody></table>';
+ }else{
+  const sug=isR
+   ?['立即隔离受害'+(r.vtype==='服务器'?'服务器':'终端')+' '+r.vip+'，阻断内外网通信','在出口封禁攻击者 IP '+(r.aip||'45.155.204.117'),'对 '+r.vip+' 进行勒索病毒专杀与全盘扫描','检查是否存在未打补丁的勒索常用漏洞（如 MS17-010）','修改该资产及域内相关账号口令，排查横向移动痕迹']
+   :['立即隔离失陷'+(r.vtype==='服务器'?'服务器':'终端')+' '+r.vip+'，阻断内外网通信','在出口封禁矿池地址 '+r.pool,'查杀挖矿进程与持久化项（计划任务/自启动）','排查同类资产是否被植入挖矿木马','基线加固：关闭高危端口、修复弱口令'];
+  tabBody='<ol style="padding-left:18px;line-height:2.2;font-size:13px;color:var(--text-secondary)">'+sug.map(s=>'<li>'+s+'</li>').join('')+'</ol>';
+ }
+ root.innerHTML='<div class="drawer-mask" id="dMask"></div>'
+ +'<div class="drawer open" role="dialog" aria-modal="true">'
+ +'<div class="drawer-head">告警详情 <button class="modal-x" id="dX">✕</button></div>'
+ +'<div class="drawer-body">'
+ +'<div style="margin-bottom:14px">'
+ +'<div style="font-size:15px;font-weight:700">'+I.virus+' '+esc(r.desc)
+ +' <button class="btn btn-sm" id="dCopy" title="复制">'+I.copy+'</button></div>'
+ +'<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;font-size:12px">'
+ +'<span>状态：'+stHtml+'</span>'
+ +'<span>| 类型：'+(isR?'勒索':'挖矿')+'</span>'
+ +'<span>| 等级：<b style="'+(r.level==='高威胁'?'color:var(--danger)':'color:#d48806')+'">'+r.level+'</b></span>'
+ +'<span>| 告警ID：<span class="num">'+alarmId+'</span></span>'
+ +'</div></div>'
+ +'<div class="d-tabs">'+tabs.map((t,i)=>'<button class="d-tab'+(state.drawerTab===i?' cur':'')+'" data-tab="'+i+'">'+t+'</button>').join('')+'</div>'
+ +'<div id="dTabBody">'+tabBody+'</div>'
+ +'<div style="margin-top:16px;display:flex;gap:8px">'
+ +'<button class="btn btn-primary btn-sm" id="dAction">联动处置</button>'
+ +'<button class="btn btn-sm" id="dDone">标记已处置</button>'
+ +'</div></div>'
+ +'<div class="drawer-foot"><button class="btn" id="dPrev">← 上一条</button><button class="btn" id="dNext">下一条 →</button></div>'
+ +'</div>';
+ $('#dX').addEventListener('click',()=>closeDrawer());
+ $('#dMask').addEventListener('click',()=>closeDrawer());
+ $('#dCopy').addEventListener('click',()=>{if(navigator.clipboard)navigator.clipboard.writeText(r.desc);toast('已复制','success')});
+ $$('.drawer .d-tab').forEach(el=>el.addEventListener('click',()=>{state.drawerTab=+el.getAttribute('data-tab');renderDrawer()}));
+ $('#dPrev').addEventListener('click',()=>{state.drawer.idx=(d.idx-1+rows.length)%rows.length;renderDrawer()});
+ $('#dNext').addEventListener('click',()=>{state.drawer.idx=(d.idx+1)%rows.length;renderDrawer()});
+ $('#dDone').addEventListener('click',()=>{state.handled[key]='done';toast('已标记为已处置','success');renderDrawer();const h=location.hash;if(h==='#/threat/ransom')renderRansomTbody();if(h==='#/threat/mining')renderMiningTbody()});
+ $('#dAction').addEventListener('click',()=>{
+  openModal('<div class="modal-head">联动处置确认<button class="modal-x" id="cmX">✕</button></div>'
+  +'<div class="modal-body">将对 <b class="num">'+r.vip+'</b> 执行隔离并联动封禁攻击源，是否确认？</div>'
+  +'<div class="modal-foot"><button class="btn" id="cmNo">取消</button><button class="btn btn-primary" id="cmYes" data-autofocus>确认处置</button></div>');
+  $('#cmX').addEventListener('click',closeModal);
+  $('#cmNo').addEventListener('click',closeModal);
+  $('#cmYes').addEventListener('click',()=>{
+   const b=$('#cmYes');b.disabled=true;b.innerHTML='<span class="spin"></span> 下发中…';
+   setTimeout(()=>{closeModal();state.handled[key]='doing';toast('隔离指令已下发（演示）','success');renderDrawer()},800);
+  });
+ });
+}
+document.addEventListener('keydown',e=>{
+ if(e.key==='Escape'){if($('#modalRoot').innerHTML)closeModal();else if(state.drawer)closeDrawer();}
+});
+
+/* ================= 页面：威慑力大屏（截图2暗色风格） ================= */
+function pageScreen(){
+ const attackSrc=[
+  {flag:'🇺🇸',name:'United States',val:87},
+  {flag:'🇷🇺',name:'Russian Federation',val:64},
+  {flag:'🇨🇳',name:'China',val:52},
+  {flag:'🇧🇷',name:'Brazil',val:38},
+  {flag:'🇮🇳',name:'India',val:27},
+ ];
+ const regions=[
+  {flag:'🇺🇸',name:'北美洲地区',detail:'185.48.59.52 等',stat:152},
+  {flag:'🇩🇪',name:'欧洲地区',detail:'46.165.254.194 等',stat:67},
+  {flag:'🇻🇳',name:'东南亚地区',detail:'112.213.89.136 等',stat:41},
+  {flag:'🇧🇷',name:'南美地区',detail:'103.78.112.0 等',stat:23},
+ ];
+ const typeBars=[
+  {label:'钓鱼网站攻击',val:49,color:'#faad14'},
+  {label:'恶意木马传播',val:38,color:'#ff4d4f'},
+  {label:'僵尸网络C&C',val:24,color:'#722ed1'},
+  {label:'漏洞利用扫描',val:17,color:'#1890ff'},
+  {label:'其他攻击类型',val:10,color:'#8c8c8c'},
+ ];
+ const maxType=Math.max(...typeBars.map(t=>t.val));
+
+ $('#fullRoot').innerHTML='<div class="screen-page">'
+ +'<div class="screen-header">'
+ +'<div class="screen-exit" id="scExit">‹ 退出大屏</div>'
+ +'<div class="screen-title">威慑力</div>'
+ +'<div class="screen-time num" id="scTime"></div>'
+ +'</div>'
+ +'<div class="screen-grid">'
+ /* 左列 */
+ +'<div>'
+ /* 世界地图 */
+ +'<div class="screen-panel" style="grid-column:1/-1;margin-bottom:16px"><div class="screen-panel-head">全球攻击态势分布</div><div class="screen-panel-body"><div class="world-map" id="worldMap">'
+ /* 简化的世界地图 SVG 占位 */
+ +'<svg width="100%" height="100%" viewBox="0 0 800 280" preserveAspectRatio="xMidYMid meet">'
+ /* 大陆轮廓简化表示 */
+ +'<path d="M120 80 Q180 60 240 70 L280 90 Q300 110 290 140 L260 160 Q220 170 180 150 L140 130 Z" fill="rgba(250,173,20,.25)" stroke="rgba(250,173,20,.4)" stroke-width="1"/>' /* 北美 */
+ +'<path d="M320 100 Q380 80 440 95 L480 120 Q500 150 490 180 L450 200 Q400 210 360 190 L330 160 Z" fill="rgba(24,144,255,.15)" stroke="rgba(24,144,255,.3)" stroke-width="1"/>' /* 欧洲 */
+ +'<path d="M500 90 Q560 70 620 85 L660 110 Q680 140 670 170 L630 190 Q580 200 540 180 L510 150 Z" fill="rgba(250,173,20,.2)" stroke="rgba(250,173,20,.35)" stroke-width="1"/>' /* 亚洲 */
+ +'<path d="M520 190 Q560 180 600 195 L620 220 Q630 240 620 260 L580 270 Q540 275 510 260 L500 230 Z" fill="rgba(114,46,209,.15)" stroke="rgba(114,46,209,.3)" stroke-width="1"/>' /* 东南亚/澳洲 */
+ +'<path d="M200 170 Q260 155 310 165 L340 185 Q355 205 345 225 L310 240 Q270 245 235 230 L210 205 Z" fill="rgba(250,173,20,.15)" stroke="rgba(250,173,20,.3)" stroke-width="1"/>' /* 南美 */
+ +'<path d="M420 200 Q460 190 500 200 L520 220 Q530 235 520 250 L490 260 Q460 265 430 255 L415 235 Z" fill="rgba(24,144,255,.12)" stroke="rgba(24,144,255,.25)" stroke-width="1"/>' /* 非洲 */
+ /* 连接线 - 攻击路径 */
+ +'<line x1="265" y1="115" x2="580" y2="135" stroke="rgba(255,77,79,.5)" stroke-width="1.5" stroke-dasharray="6 4"><animate attributeName="stroke-dashoffset" from="0" to="20" dur="1s" repeatCount="indefinite"/></line>'
+ +'<line x1="400" y1="140" x2="560" y2="145" stroke="rgba(255,77,79,.4)" stroke-width="1" stroke-dasharray="4 4"><animate attributeName="stroke-dashoffset" from="0" to="16" dur="1.2s" repeatCount="indefinite"/></line>'
+ +'<line x1="270" y1="200" x2="550" y2="175" stroke="rgba(250,173,20,.4)" stroke-width="1" stroke-dasharray="5 3"><animate attributeName="stroke-dashoffset" from="0" to="16" dur="0.8s" repeatCount="indefinite"/></line>'
+ /* 热点标记 */
+ +'<circle cx="265" cy="115" r="4" fill="#ff4d4f"><animate attributeName="r" values="3;6;3" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;.4;1" dur="2s" repeatCount="indefinite"/></circle>'
+ +'<circle cx="580" cy="135" r="4" fill="#faad14"><animate attributeName="r" values="3;5;3" dur="2.5s" repeatCount="indefinite"/></circle>'
+ +'<circle cx="400" cy="140" r="3" fill="#1890ff"><animate attributeName="r" values="2;5;2" dur="1.8s" repeatCount="indefinite"/></circle>'
+ +'<circle cx="270" cy="200" r="3" fill="#722ed1"><animate attributeName="r" values="2;4;2" dur="2.2s" repeatCount="indefinite"/></circle>'
+ +'</svg></div></div></div>'
+ /* 攻击来源 Top5 */
+ +'<div class="screen-panel"><div class="screen-panel-head">攻击来源 Top5</div><div class="screen-panel-body"><div class="attack-list">'
+ +attackSrc.map(a=>'<div class="attack-item"><span class="attack-flag">'+a.flag+'</span><span class="attack-name">'+a.name+'</span><div class="attack-bar-track"><div class="attack-bar-fill" style="width:'+a.val+'%"></div></div><span class="attack-count">'+a.val+'</span></div>').join('')
+ +'</div></div></div>'
+ /* 主要攻击类型 Top5 */
+ +'<div class="screen-panel"><div class="screen-panel-head">主要攻击类型 Top5</div><div class="screen-panel-body">'
+ +typeBars.map(t=>'<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><span style="width:90px;font-size:11px;color:rgba(255,255,255,.6);text-align:right">'+t.label+'</span><div style="flex:1;height:18px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden"><div style="height:100%;background:'+t.color+';border-radius:3px;width:0" data-sw="'+(t.val/maxType*100)+'"></div></div><span style="width:32px;font-size:12px;font-weight:700;color:'+t.color+';text-align:right">'+t.val+'</span></div>').join('')
+ +'</div></div></div>'
+ +'</div>'
+ /* 右列 */
+ +'<div>'
+ /* 重点攻击地区 Top5 */
+ +'<div class="screen-panel"><div class="screen-panel-head">重点攻击地区 Top5</div><div class="screen-panel-body"><div class="region-cards">'
+ +regions.map(r=>'<div class="region-card"><span class="region-flag">'+r.flag+'</span><div class="region-info"><div class="region-name">'+r.name+'</div><div class="region-detail">'+r.detail+'</div></div><div class="region-stat num">'+r.stat+'</div></div>').join('')
+ +'</div></div></div>'
+ /* 核心指标 */
+ +'<div class="screen-panel"><div class="screen-panel-head">核心指标</div><div class="screen-panel-body" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">'
+ +'<div style="text-align:center;padding:12px;background:rgba(255,77,79,.08);border-radius:6px;border:1px solid rgba(255,77,79,.15)"><div style="font-size:24px;font-weight:800;color:#ff4d4f" class="num" id="scN1">0</div><div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:4px">今日告警</div></div>'
+ +'<div style="text-align:center;padding:12px;background:rgba(250,173,20,.08);border-radius:6px;border:1px solid rgba(250,173,20,.15)"><div style="font-size:24px;font-weight:800;color:#faad14" class="num" id="scN2">0</div><div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:4px">安全事件</div></div>'
+ +'<div style="text-align:center;padding:12px;background:rgba(24,144,255,.08);border-radius:6px;border:1px solid rgba(24,144,255,.15)"><div style="font-size:24px;font-weight:800;color:#1890ff" class="num" id="scN3">0</div><div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:4px">失陷主机</div></div>'
+ +'<div style="text-align:center;padding:12px;background:rgba(82,196,26,.08);border-radius:6px;border:1px solid rgba(82,196,26,.15)"><div style="font-size:24px;font-weight:800;color:#52c41a" class="num" id="scN4">0</div><div style="font-size:11px;color:rgba(255,255,255,.45);margin-top:4px">已处置</div></div>'
+ +'</div></div></div>'
+ +'</div>'
+ +'</div>';
+
+ const tick=()=>{const el=$('#scTime');if(el){const d=new Date();el.textContent=d.toLocaleString('zh-CN',{hour12:false})}};
+ tick();state.clockTimer=setInterval(tick,1000);
+ $('#scExit').addEventListener('click',()=>go('#/overview'));
+ countup($('#scN1'),157,1200);countup($('#scN2'),20,1200);countup($('#scN3'),3,1200);countup($('#scN4'),89,1200);
+ requestAnimationFrame(()=>setTimeout(()=>$('[data-sw]').forEach(b=>{b.style.width=b.getAttribute('sw')+'%'}),80));
+}
+
+/* ================= 启动 ================= */
+router();
+if(location.search.indexOf('dbg=drawer')>-1)setTimeout(()=>openDrawer('ransom',0),300);
+</script>
+</body>
+</html>
