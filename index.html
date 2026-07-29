@@ -448,7 +448,7 @@ svg{display:inline-block;vertical-align:middle}
 
 <script>
 /* ================= 工具函数 ================= */
-const $=id=>document.getElementById(id);
+const $=id=>document.getElementById(typeof id==='string'&&id[0]==='#'?id.slice(1):id);
 const $$=sel=>Array.from(document.querySelectorAll(sel));
 const esc=s=>String(s).replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const RM=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
