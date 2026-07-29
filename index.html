@@ -559,27 +559,33 @@ function renderLayout(h){
 function buildSidebar(activeHash){
  const items=[
   {ico:I.home,label:'首页',go:'#/overview'},
-  {ico:I.threat,label:'安全态势',children:[
-   {label:'态势概览',go:'#/overview'},
-   {label:'威胁分析',go:'#/threat/ransom'},
+  {ico:I.threat,label:'安全态势',open:true,children:[
+   {label:'综合态势',go:'#/overview'},
+   {label:'威胁态势',go:'#/threat/ransom'},
+   {label:'资产态势',go:'#/overview'},
+   {label:'漏洞态势',go:'#/overview'},
+   {label:'文件态势',go:'#/overview'},
+  ]},
+  {ico:I.analysis,label:'安全分析',children:[
+   {label:'风险研判',go:'#/threat/ransom'},
+   {label:'威胁情报',go:'#/overview'},
+   {label:'攻击取证',go:'#/overview'},
+  ]},
+  {ico:I.shield,label:'威胁分析',open:true,children:[
+   {label:'威胁总览',go:'#/overview'},
    {label:'外部威胁',go:'#/threat/ransom'},
-   {label:'内部威胁',go:'#/threat/mining'},
-   {label:'用户行为',go:'#/threat/mining'},
-  ]},
-  {ico:I.analysis,label:'安全分析',open:true,children:[
-   {label:'威胁分析',go:'#/threat/ransom',active:true},
-   {label:'威胁概览',go:'#/overview'},
-   {label:'外连威胁',go:'#/overview'},
+   {label:'外连威胁',go:'#/threat/ransom'},
    {label:'对外威胁',go:'#/overview'},
-   {label:'内联威胁',go:'#/overview'},
-   {label:'用户威胁',go:'#/overview'},
+   {label:'内部威胁',go:'#/threat/mining'},
+   {label:'用户威胁',go:'#/threat/mining'},
+   {label:'5G威胁',go:'#/threat/mining'},
   ]},
-  {ico:I.server,label:'5G信创',go:'#/overview'},
-  {ico:I.monitor,label:'深度分析',children:[
-   {label:'资产发现',go:'#/overview'},
-   {label:'资产监控',go:'#/overview'},
-   {label:'探测处理',go:'#/overview'},
+  {ico:I.bell,label:'重保分析',go:'#/overview'},
+  {ico:I.server,label:'资产监控',children:[
+   {label:'资产管理',go:'#/overview'},
+   {label:'资产详情',go:'#/overview'},
   ]},
+  {ico:I.monitor,label:'预警处置',go:'#/overview'},
   {ico:I.lock,label:'系统管理',go:'#/overview'},
  ];
  let html='<div class="sb-logo">'
@@ -640,10 +646,7 @@ function bindTopbarEvents(h){
 
 /* ================= 页面：登录 ================= */
 const ACCOUNTS={
- 'admin':{pw:'Dptech@2026',role:'系统管理员'},
- 'school':{pw:'Ycyz@2026',role:'学校信息中心'},
- 'operator':{pw:'Sac@202607',role:'安全运营'},
- 'guest':{pw:'Guest@2026',role:'只读访客'}
+  'dptech':{pw:'dptech',role:'系统管理员'}
 };
 function pageLogin(){
  $('#fullRoot').innerHTML='<div class="login-page">'
@@ -651,8 +654,8 @@ function pageLogin(){
  +'<div class="login-logo"><div class="login-logo-icon">'+I.shield+'</div></div>'
  +'<div class="login-title">威胁感知大数据平台</div>'
  +'<div class="login-sub">DPtech · 让网络更简单、智能、安全</div>'
- +'<div class="login-field">'+I.user+'<input id="lgUser" value="admin" autocomplete="username"></div>'
- +'<div class="login-field">'+I.lock+'<input id="lgPass" type="password" value="Dptech@2026" autocomplete="current-password"></div>'
+ +'<div class="login-field">'+I.user+'<input id="lgUser" value="dptech" autocomplete="username"></div>'
+ +'<div class="login-field">'+I.lock+'<input id="lgPass" type="password" value="dptech" autocomplete="current-password"></div>'
  +'<div id="lgErr" style="display:none;color:var(--danger);font-size:12px;margin:-6px 0 10px;text-align:left">账号或密码错误，请重试</div>'
  +'<button class="login-btn" id="lgBtn">登 录 系 统</button>'
  +'<div class="login-foot">迪普科技 SAC3000-P-GA-H 威胁感知大数据平台 · 功能演示环境<br>杭州迪普科技股份有限公司</div>'
@@ -702,12 +705,12 @@ function pageOverview(){
  ];
  /* 表格数据 */
  const tableRows=[
-  {seq:1,addr:'',port:0,victim:'86.1.1.11',org:'ips',group:'ips',typeTag:'钓鱼网站',typeName:'发现钓鱼网站威胁情报信息',count:49},
-  {seq:2,addr:'',port:0,victim:'86.1.1.10',org:'ips',group:'ips',typeTag:'钓鱼网站',typeName:'发现钓鱼网站威胁情报信息',count:48},
-  {seq:3,addr:'',port:0,victim:'86.6.6.9',org:'ips',group:'ips',typeTag:'钓鱼网站',typeName:'发现钓鱼网站威胁情报信息',count:24},
-  {seq:4,addr:'',port:0,victim:'10.121.62.61',org:'ips',group:'ips',typeTag:'钓鱼网站',typeName:'发现钓鱼网站威胁情报信息',count:10},
-  {seq:5,addr:'🇩🇪 46.165.254.194',port:0,victim:'10.121.62.61',org:'ips',group:'ips',typeTag:'钓鱼网站',typeName:'发现钓鱼网站威胁情报信息',count:10},
-  {seq:6,addr:'🇻🇳 112.213.89.136',port:0,victim:'10.121.62.61',org:'ips',group:'ips',typeTag:'恶意木马',typeName:'发现C&C节点威胁情报信息',count:8},
+  {seq:1,addr:'',port:0,victim:'36.110.223.15',org:'ips',group:'ips',typeTag:'钓鱼网站',typeName:'发现钓鱼网站威胁情报信息',count:49},
+  {seq:2,addr:'',port:0,victim:'120.77.245.34',org:'ips',group:'ips',typeTag:'钓鱼网站',typeName:'发现钓鱼网站威胁情报信息',count:48},
+  {seq:3,addr:'',port:0,victim:'47.92.118.66',org:'ips',group:'ips',typeTag:'钓鱼网站',typeName:'发现钓鱼网站威胁情报信息',count:24},
+  {seq:4,addr:'',port:0,victim:'203.119.25.18',org:'ips',group:'ips',typeTag:'钓鱼网站',typeName:'发现钓鱼网站威胁情报信息',count:10},
+  {seq:5,addr:'🇩🇪 46.165.254.194',port:0,victim:'203.119.25.18',org:'ips',group:'ips',typeTag:'钓鱼网站',typeName:'发现钓鱼网站威胁情报信息',count:10},
+  {seq:6,addr:'🇻🇳 112.213.89.136',port:0,victim:'203.119.25.18',org:'ips',group:'ips',typeTag:'恶意木马',typeName:'发现C&C节点威胁情报信息',count:8},
   {seq:7,addr:'',port:0,victim:'202.201.0.131',org:'ips',group:'ips',typeTag:'恶意网站',typeName:'发现色情勒索情报信息',count:2},
  ];
 
@@ -772,7 +775,7 @@ function pageOverview(){
 }
 
 /* ================= 页面：勒索专项 ================= */
-const ransomDims=[['感染勒索病毒',2,-150],['黑客勒索攻击',0,-90],['勒索C&C通信',3,-30],['勒索常用端口',0,30],['勒索常用漏洞',1,90],['RDP爆破',1,150]];
+const ransomDims=[['感染勒索病毒',9,-150],['黑客勒索攻击',4,-90],['勒索C&C通信',7,-30],['勒索常用端口',5,30],['勒索常用漏洞',6,90],['RDP爆破',3,150]];
 function radarSvg(){
  const cx=200,cy=132,R=88;
  const pt=(ang,r)=>{const a=ang*Math.PI/180;return [cx+r*Math.cos(a),cy+r*Math.sin(a)]};
@@ -796,13 +799,13 @@ function radarSvg(){
  const areaPts=[];
  ransomDims.forEach(d=>{
   if(d[1]===0){areaPts.push(pt(d[2],0).map(v=>v.toFixed(1)).join(','));return}
-  const maxV=3;const ratio=Math.min(d[1]/maxV,1)*0.85+0.15;
+  const maxV=Math.max.apply(null,ransomDims.map(d=>d[1]));const ratio=Math.min(d[1]/maxV,1)*0.85+0.15;
   areaPts.push(pt(d[2],R*ratio).map(v=>v.toFixed(1)).join(','));
   for(let k=0;k<d[1];k++){
    const s=dotSeed[(di*3+k)%dotSeed.length];
    const p=pt(d[2]+s[1],R*ratio*s[0]/0.7);
    const src=srcs[(di+k)%2];
-   dots+='<circle data-src="'+src+'" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="4.5" fill="#ef4444" opacity=".95" style="filter:drop-shadow(0 0 4px rgba(239,68,68,.7))"><title>'+d[0]+' · '+src+'</title></circle>';
+   dots+='<circle data-src="'+src+'" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="4.5" fill="#1890ff" opacity=".95" style="filter:drop-shadow(0 0 4px rgba(24,144,255,.7))"><title>'+d[0]+' · '+src+'</title></circle>';
   }
   di++;
  });
