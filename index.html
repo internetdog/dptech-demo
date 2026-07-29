@@ -281,10 +281,11 @@ svg{display:inline-block;vertical-align:middle}
     radial-gradient(circle at 80% 20%,rgba(114,124,255,.1) 0%,transparent 50%);
 }
 .login-card{
-  width:400px;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);
+  width:400px;max-width:92vw;background:rgba(255,255,255,.95);backdrop-filter:blur(20px);
   border-radius:12px;padding:40px 36px;box-shadow:0 20px 60px rgba(0,0,0,.3);
-  position:relative;z-index:1;text-align:center;
+  position:relative;z-index:1;text-align:center;overflow:hidden;
 }
+.login-card img,.login-card svg,.login-card button,.login-card input,.login-card .login-field{max-width:100%}
 .login-logo{margin-bottom:24px}
 .login-logo-icon{width:52px;height:52px;color:var(--primary)}
 .login-title{font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:6px}
