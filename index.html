@@ -433,6 +433,9 @@ svg{display:inline-block;vertical-align:middle}
 .radar-dim{cursor:pointer;transition:fill .15s}
 .radar-dim:hover{fill:#fff}
 .radar-dim.zero{fill:#475569}
+/* 扫光旋转动画（参考山石智·感雷达实现） */
+.radar-sweep{transform-origin:200px 132px;animation:sweep 4.5s linear infinite}
+@keyframes sweep{to{transform:rotate(360deg)}}
 
 /* 工具类 */
 .num{font-variant-numeric:tabular-nums}
