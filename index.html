@@ -1148,7 +1148,15 @@ function pageScreen(){
 }
 
 /* ================= 启动 ================= */
-router();
+window.onerror=function(msg,src,line,col,err){
+  var root=document.getElementById('fullRoot')||document.getElementById('appRoot');
+  if(root)root.innerHTML='<div style="padding:40px;font-family:monospace;background:#fff233;color:#c00;border:2px solid red;margin:20px;border-radius:8px"><h3>⚠ JS Error</h3><pre>'+String(msg)+'\n'+src+':'+line+':'+col+'</pre></div>';
+  return true;
+};
+try{router();}catch(e){
+  var root=document.getElementById('fullRoot')||document.getElementById('appRoot');
+  if(root)root.innerHTML='<div style="padding:40px;font-family:monospace;background:#fff233;color:#c00;border:2px solid red;margin:20px;border-radius:8px"><h3>⚠ Startup Error</h3><pre>'+e.stack||e.message+'</pre></div>';
+}
 if(location.search.indexOf('dbg=drawer')>-1)setTimeout(()=>openDrawer('ransom',0),300);
 </script>
 </body>
