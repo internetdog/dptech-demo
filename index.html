@@ -573,6 +573,13 @@ body.dp-zebra .data-table tbody tr:nth-child(even){background:#fafcff}
 .dp-switch.on{background:var(--primary)}
 .dp-switch::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s}
 .dp-switch.on::after{left:20px}
+
+/* ===== 时间段切换（安全事件检测） ===== */
+.seg-group{display:inline-flex;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.seg-btn{padding:0 14px;height:32px;font-size:13px;color:var(--text-secondary);background:#fff;border-right:1px solid var(--border);transition:all .12s}
+.seg-btn:last-child{border-right:none}
+.seg-btn:hover{color:var(--primary)}
+.seg-btn.cur{background:var(--primary);color:#fff}
 </style>
 </head>
 <body>
@@ -718,7 +725,8 @@ const PAGE_SPECS={
  'weakpw-scan':{title:'弱密码主动扫描',description:'使用字典对目标网段进行弱密码主动扫描，支持周期任务与并发控制。',kpis:[K('扫描任务','8','周期任务 5','blue'),K('覆盖网段','12','全校关键网段','green'),K('字典规模','12万','默认+自定义','orange'),K('今日命中','18','已通知责任人','red')],charts:[C('任务状态',[['已完成',5],['执行中',2],['待执行',1]]),C('命中协议分布',[['SSH',8],['FTP',5],['RDP',3],['MySQL',2]]),C('扫描进度趋势',[['08-08',62],['08-09',74],['08-10',78],['08-11',86],['08-12',92]])],columns:['任务名称','目标网段','使用字典','进度','命中数','状态'],rows:[['全网月度扫描','10.10.0.0/16','默认字典','100%','12','已完成'],['服务器区扫描','172.16.0.0/16','默认+自定义','62%','6','执行中'],['办公网扫描','192.168.10.0/24','默认字典','0%','0','待执行']]},
  'weakpw-web-custom':{title:'Web弱密码自定义',description:'自定义 Web 登录表单的用户名、密码字段与成功特征，实现弱口令检测。',kpis:[K('自定义表单','12','覆盖核心业务','blue'),K('已启用','10','停用 2','green'),K('今日检测','286','登录请求','orange'),K('今日检出','6','弱口令账号','red')],charts:[C('表单类型',[['OA系统',4],['门户',3],['VPN',2],['其他',3]]),C('提交方式',[['表单POST',8],['JSON接口',4]]),C('检出趋势',[['08-08',3],['08-09',5],['08-10',4],['08-11',7],['08-12',6]])],columns:['名称','登录URL','用户名字段','密码字段','成功特征','状态'],rows:[['学校OA','oa.example.local/login','username','password','欢迎您','启用'],['VPN网关','vpn.example.local/login','user','pass','登录成功','启用'],['图书馆系统','lib.example.local/signin','account','pwd','个人中心','停用']]},
  'weakpw-web-result':{title:'Web登录结果自定义',description:'自定义登录成功、失败的判定规则（关键字、状态码、跳转），提高识别准确率。',kpis:[K('判定规则','8','全部启用','blue'),K('今日判定','1,286','登录请求','orange'),K('判定准确率','98.2%','人工抽检','green'),K('未知结果','12','需补充规则','red')],charts:[C('匹配方式',[['响应关键字',5],['状态码',2],['跳转地址',1]]),C('判定结果分布',[['登录成功',86],['登录失败',92],['未知',12]]),C('规则命中 Top5',[['OA成功判定',92],['OA失败判定',86],['VPN判定',64],['门户判定',52],['邮箱判定',38]])],columns:['规则名称','匹配方式','匹配内容','判定结果','状态','操作'],rows:[['OA成功判定','响应关键字','欢迎您','成功','启用','编辑'],['OA失败判定','响应关键字','用户名或密码错误','失败','启用','编辑'],['VPN判定','状态码','302 → /index','成功','启用','编辑']]},
- 'weakpw-plaintext':{title:'Web明文传输',description:'检测 HTTP、FTP、Telnet、POP3 等明文协议中的账号口令传输并告警。',kpis:[K('今日告警','26','较昨日 +4','red'),K('涉及协议','4','HTTP为主','orange'),K('高风险账号','8','已强制改密 5','blue'),K('已通知','22','通知率 84.6%','green')],charts:[C('协议分布',[['HTTP',14],['FTP',6],['Telnet',4],['POP3',2]]),C('风险等级',[['高',8],['中',12],['低',6]]),C('告警趋势',[['08-08',18],['08-09',22],['08-10',19],['08-11',24],['08-12',26]])],columns:['协议','源IP','目的IP','URL/目标','账号','时间','风险'],rows:[['HTTP','10.10.2.15','oa.example.local','/login','zhang**','10:38','高'],['FTP','10.10.3.16','10.10.1.10','-','admin','10:12','高'],['Telnet','172.16.2.45','172.16.1.1','-','root','09:46','中']]}
+ 'weakpw-plaintext':{title:'Web明文传输',description:'检测 HTTP、FTP、Telnet、POP3 等明文协议中的账号口令传输并告警。',kpis:[K('今日告警','26','较昨日 +4','red'),K('涉及协议','4','HTTP为主','orange'),K('高风险账号','8','已强制改密 5','blue'),K('已通知','22','通知率 84.6%','green')],charts:[C('协议分布',[['HTTP',14],['FTP',6],['Telnet',4],['POP3',2]]),C('风险等级',[['高',8],['中',12],['低',6]]),C('告警趋势',[['08-08',18],['08-09',22],['08-10',19],['08-11',24],['08-12',26]])],columns:['协议','源IP','目的IP','URL/目标','账号','时间','风险'],rows:[['HTTP','10.10.2.15','oa.example.local','/login','zhang**','10:38','高'],['FTP','10.10.3.16','10.10.1.10','-','admin','10:12','高'],['Telnet','172.16.2.45','172.16.1.1','-','root','09:46','中']]},
+ 'threat-botnet':{title:'僵木蠕检测',description:'结合威胁情报与多种行为检测引擎，检测各类流行、新型僵尸网络及蠕虫病毒：威胁情报域名/IP/MD5检测、DGA检测、僵尸网络硬编码检测、恶意附件、恶意脚本、恶意程序下载、HTTP行为指纹检测。',kpis:[K('今日检出','86','僵尸网络与蠕虫','red'),K('僵尸网络家族','12','Emotet/Qakbot等','orange'),K('蠕虫病毒','8','含变种 23 个','blue'),K('DGA域名','34','算法生成域名','green')],charts:[C('检测方式分布',[['威胁情报检测',46],['DGA检测',34],['硬编码检测',28],['HTTP行为指纹',22],['恶意附件/脚本',18]]),C('僵尸网络家族 Top5',[['Emotet',42],['Qakbot',31],['AgentTesla',26],['Mirai',18],['Gafgyt',12]]),C('检出趋势',[['08-08',62],['08-09',74],['08-10',68],['08-11',79],['08-12',86]])],columns:['时间','家族/名称','类型','检测方式','命中指标','受害者','级别','处置状态'],rows:[['10:38:17','Emotet','僵尸网络','威胁情报MD5','6f5902ac...63dc4','10.10.2.15','高危','已隔离'],['10:12:46','Mirai','僵尸网络','DGA检测','xj2k9q.example','172.16.2.45','中危','已阻断'],['09:44:28','飞客蠕虫','蠕虫病毒','HTTP行为指纹','/update.exe','10.10.3.16','高危','处置中']]}
 };
 
 /* ================= 单一导航与路由元数据（递归三级，48 叶子） ================= */
@@ -740,6 +748,7 @@ const NAV=[
   {navId:'threat-view',label:'威胁视角',hash:'#/analysis/threat-view'}]},
  {groupId:'threat-analysis',label:'威胁分析',icon:'shield',children:[
   {navId:'threat-overview',label:'威胁总览',hash:'#/threat/overview'},
+  {navId:'threat-event-detect',label:'安全事件检测',hash:'#/threat/event-detect',custom:true},
   {navId:'threat-external',label:'外部威胁',hash:'#/threat/external'},
   {navId:'threat-outbound',label:'外连威胁',hash:'#/threat/outbound'},
   {navId:'threat-egress',label:'对外威胁',hash:'#/threat/egress'},
@@ -748,7 +757,8 @@ const NAV=[
   {navId:'threat-5g',label:'5G威胁',hash:'#/threat/5g'},
   {navId:'threat-file',label:'文件威胁分析',hash:'#/threat/file'},
   {navId:'threat-sandbox',label:'云沙箱',hash:'#/threat/sandbox'},
-  {navId:'threat-intel-detect',label:'威胁情报检测',hash:'#/threat/intel-detect'}]},
+  {navId:'threat-intel-detect',label:'威胁情报检测',hash:'#/threat/intel-detect'},
+  {navId:'threat-botnet',label:'僵木蠕检测',hash:'#/threat/botnet'}]},
  {navId:'assurance',label:'重保分析',hash:'#/assurance',icon:'bell'},
  {groupId:'asset-monitor',label:'资产监控',icon:'server',children:[
   {groupId:'asset-identify',label:'资产识别',children:[
@@ -795,6 +805,7 @@ const routes={
  '#/screen':{render:pageScreen,full:true,title:'威慑力大屏'},
  '#/home':{render:pageHome,navId:'home',title:'首页',breadcrumb:['首页']},
  '#/logs':{render:pageLogs,navId:'logs',title:'日志检索',breadcrumb:['日志检索']},
+ '#/threat/event-detect':{render:pageEventDetect,navId:'threat-event-detect',title:'安全事件检测',breadcrumb:['威胁分析','安全事件检测']},
  '#/special/ransom':{render:pageRansom,navId:'special-ransom',title:'勒索专项检测',breadcrumb:['系统管理','安全检测','勒索专项检测']},
  '#/special/mining':{render:pageMining,navId:'special-mining',title:'挖矿专项检测',breadcrumb:['系统管理','安全检测','挖矿专项检测']}
 };
@@ -1164,6 +1175,87 @@ function pageLogs(){
  bindRefresh('#rfBtn');
  draw();
 }
+/* ================= 页面：安全事件检测（攻击链六阶段） ================= */
+const EVENT_DATA=[
+ ['08-12 10:42','WebShell上传行为','入口点','严重','攻击者已在门户服务器落地 WebShell，获得持久化入口，可直接执行系统命令','AI文件检测','待处置'],
+ ['08-12 10:38','失陷主机外联C&C','C&C通信','高','失陷主机与 Tor 出口节点建立加密心跳通道，攻击者已接管控制权','威胁情报','处置中'],
+ ['08-12 09:56','RDP暴力破解','入口点','中','外部攻击源对办公终端发起 128 次爆破尝试，账号存在被攻破风险','行为分析','已阻断'],
+ ['08-11 16:22','内网445端口扫描','内网探测','中','失陷主机对同网段 42 台资产发起 SMB 探测，正在绘制内网拓扑','行为基线','待研判'],
+ ['08-11 14:03','SMB横向复制载荷','内网扩散攻击','高','攻击者通过 SMB 将载荷复制至 6 台服务器，感染面持续扩大','智能关联','处置中'],
+ ['08-10 23:41','敏感文件打包外发','数据盗取','严重','数据库服务器 2.3GB 文件压缩后经 HTTPS 外发，疑似数据泄露','AI流量分析','处置中'],
+ ['08-10 11:26','挖矿矿池通信','黑产牟利','高','终端连接矿池 7777 端口，算力被窃取用于门罗币挖掘','规则+探测','已阻断'],
+ ['08-09 15:44','DGA域名请求','C&C通信','中','主机请求算法生成域名 47 个，典型僵尸网络寻址行为','DGA检测','已阻断'],
+ ['08-08 09:12','钓鱼邮件恶意附件','入口点','高','财务收到伪装发票的恶意附件，打开即释放下载者木马','沙箱检测','已隔离'],
+ ['08-07 17:33','勒索软件加密行为','黑产牟利','严重','LockBit 变种开始加密共享目录，攻击者以解密为条件勒索赎金','AI文件检测','已隔离'],
+ ['08-06 10:05','LDAP服务探测','内网探测','低','异常账号对域控发起 LDAP 查询，疑似收集域内账号信息','行为基线','已确认'],
+ ['08-05 14:52','蠕虫传播尝试','内网扩散攻击','高','飞客蠕虫变种尝试通过 MS17-010 向相邻网段传播','僵木蠕检测','已阻断'],
+ ['08-03 08:47','DNS隧道外泄','数据盗取','高','主机利用 DNS TXT 记录分片外发数据，单小时流量异常 512MB','AI流量分析','处置中'],
+ ['08-01 19:28','VPN暴力破解','入口点','中','境外 IP 对 VPN 网关发起字典攻击，命中弱口令字典 23 次','行为分析','已阻断'],
+ ['07-30 13:19','僵尸网络心跳','C&C通信','高','Emotet 感染主机按 60s 间隔回连控制端，等待下发指令','威胁情报','已隔离'],
+ ['07-28 16:54','违规代理工具','黑产牟利','低','员工终端运行违规代理，流量绕过审计通道','行为基线','已确认'],
+ ['07-26 11:37','NetBIOS扫描','内网探测','低','针对 137-139 端口的批量名称解析探测','行为分析','已确认'],
+ ['07-24 09:48','Pass-the-Hash攻击','内网扩散攻击','高','攻击者使用窃取的哈希在服务器区间横向登录','智能关联','处置中'],
+ ['07-22 15:31','数据库异常导出','数据盗取','严重','非工作时段 mysqldump 全库导出 4.6GB，账号权限被滥用','AI行为分析','待处置'],
+ ['07-20 10:16','Log4j2漏洞利用','入口点','高','外部攻击者利用 Log4j2 RCE 在应用服务器执行任意代码','入侵检测','已修复'],
+ ['07-18 14:44','暗网市场通信','黑产牟利','中','主机访问已知暗网交易市场节点，疑似出售内部数据','威胁情报','待研判'],
+ ['07-16 08:29','远控木马心跳','C&C通信','高','Gh0st 变种心跳通信，控制端位于境外','威胁情报','已隔离'],
+ ['07-15 17:51','SNMP团体名探测','内网探测','低','对网络设备发起 public/private 默认团体名枚举','行为分析','已确认'],
+ ['07-14 12:36','PsExec远程执行','内网扩散攻击','高','运维终端被利用向 3 台服务器推送远程服务','智能关联','已阻断']
+];
+const EVENT_STAGES=['入口点','C&C通信','黑产牟利','内网探测','内网扩散攻击','数据盗取'];
+function pageEventDetect(){
+ const c=$('#content');if(!c)return;
+ const stageCount=s=>EVENT_DATA.filter(r=>r[2]===s).length;
+ c.innerHTML=pageHeader('安全事件检测','<span class="tag tag-blue">攻击链六阶段全覆盖</span>')
+ +'<div class="spec-note">利用人工智能、机器学习、智能文件检测等分析技术，结合威胁情报和基础分析能力与元数据（安全日志和审计日志），通过自主研发的几十个检测引擎发现攻击链上的所有安全事件（入口点、C&C通信、黑产牟利、内网探测、内网扩散攻击、数据盗取六个攻击阶段），每个事件均包含事件评级和威胁影响分析。</div>'
+ +'<div class="stat-row">'
+ +'<div class="stat-card"><div class="stat-icon blue">'+I.threat+'</div><div class="stat-info"><div class="stat-value num" id="evTotal">24</div><div class="stat-label">安全事件（当前范围）</div><div class="stat-trend up">30天累计</div></div></div>'
+ +'<div class="stat-card"><div class="stat-icon red">'+I.virus+'</div><div class="stat-info"><div class="stat-value num" id="evHigh">14</div><div class="stat-label">严重+高危事件</div><div class="stat-trend down">需优先处置</div></div></div>'
+ +'<div class="stat-card"><div class="stat-icon orange">'+I.gear+'</div><div class="stat-info"><div class="stat-value num">42</div><div class="stat-label">自研检测引擎</div><div class="stat-trend up">AI/ML/文件/情报</div></div></div>'
+ +'<div class="stat-card"><div class="stat-icon green">'+I.chart+'</div><div class="stat-info"><div class="stat-value num">6</div><div class="stat-label">攻击链阶段覆盖</div><div class="stat-trend up">全链路可视</div></div></div></div>'
+ +'<div class="spec-chart-grid">'
+ +renderTopChart({title:'攻击链阶段分布',items:EVENT_STAGES.map(s=>[s,EVENT_DATA.filter(r=>r[2]===s).length*20])})
+ +renderTopChart({title:'事件评级分布',items:[['严重',80],['高',100],['中',60],['低',20]]})
+ +renderTopChart({title:'检测引擎命中 Top5',items:[['威胁情报',96],['行为分析',82],['AI文件/流量',74],['智能关联',56],['规则+探测',48]]})
+ +'</div>'
+ +'<div class="table-card"><div class="card-head">安全事件列表<span class="sub">事件评级与威胁影响分析</span></div>'
+ +'<div class="table-toolbar">'
+ +'<div class="seg-group" role="tablist">'
+ +'<button class="seg-btn" data-range="24h">最近24小时</button><button class="seg-btn" data-range="7d">最近7天</button><button class="seg-btn cur" data-range="30d">最近30天</button></div>'
+ +'<select id="evStage" style="height:32px;padding:0 8px;border:1px solid var(--border);border-radius:4px"><option value="">全部阶段</option>'+EVENT_STAGES.map(s=>'<option>'+s+'</option>').join('')+'</select>'
+ +'<input id="evQ" placeholder="事件名 / 引擎" style="height:32px;padding:0 10px;border:1px solid var(--border);border-radius:4px;width:200px">'
+ +'<button class="btn btn-sm btn-primary" id="evSearch">查询</button>'
+ +'<span style="flex:1"></span><span id="evCount" style="color:var(--text-secondary)"></span>'
+ +'<button class="btn btn-sm" id="evExport">导出</button></div>'
+ +'<div class="table-wrap"><table class="data-table"><thead><tr><th>发生时间</th><th>事件名称</th><th>攻击阶段</th><th>事件评级</th><th>威胁影响分析</th><th>检测引擎</th><th>处置状态</th><th>操作</th></tr></thead><tbody id="evTbody"></tbody></table></div></div>';
+ let range='30d';
+ const inRange=d=>{const day=d.slice(0,5);if(range==='24h')return day==='08-12';if(range==='7d')return day>='08-06';return true};
+ const draw=()=>{
+  const st=$('#evStage').value,q=($('#evQ').value||'').trim().toLowerCase();
+  const rows=EVENT_DATA.filter(r=>{
+   if(!inRange(r[0]))return false;
+   if(st&&r[2]!==st)return false;
+   if(q&&!(r[1]+' '+r[5]).toLowerCase().includes(q))return false;
+   return true;
+  });
+  $('#evCount').textContent='共 '+rows.length+' 起事件';
+  $('#evTotal').textContent=rows.length;
+  $('#evHigh').textContent=rows.filter(r=>r[3]==='严重'||r[3]==='高').length;
+  $('#evTbody').innerHTML=rows.length?rows.map(r=>'<tr><td class="num">'+r[0]+'</td><td><b>'+r[1]+'</b></td><td><span class="tag tag-blue">'+r[2]+'</span></td><td>'+(r[3]==='严重'?'<span class="tag tag-red">严重</span>':r[3]==='高'?'<span class="tag tag-red">高</span>':r[3]==='中'?'<span class="tag tag-orange">中</span>':'<span class="tag tag-blue">低</span>')+'</td><td style="white-space:normal;min-width:260px">'+r[4]+'</td><td>'+r[5]+'</td><td>'+renderCell(r[6])+'</td><td><button class="btn btn-sm" data-ev="'+EVENT_DATA.indexOf(r)+'">详情</button></td></tr>').join(''):'<tr><td colspan="8" class="empty-state">当前时间范围内没有匹配的安全事件</td></tr>';
+  $$('[data-ev]').forEach(b=>b.addEventListener('click',()=>{const r=EVENT_DATA[Number(b.dataset.ev)];
+   openModal('<div class="modal-head">安全事件详情<button class="modal-x" id="evX">×</button></div><div class="modal-body"><div style="display:grid;grid-template-columns:110px 1fr;gap:10px;font-size:13px"><b>事件名称</b><span>'+r[1]+'</span><b>发生时间</b><span class="num">2024-'+r[0]+'</span><b>攻击阶段</b><span>'+r[2]+'（攻击链第 '+(EVENT_STAGES.indexOf(r[2])+1)+' 阶段）</span><b>事件评级</b><span>'+r[3]+'</span><b>威胁影响分析</b><span>'+r[4]+'</span><b>检测引擎</b><span>'+r[5]+'</span><b>处置建议</b><span>结合攻击链上下文研判意图，隔离受影响资产并回溯入口点，形成闭环处置。</span></div></div><div class="modal-foot"><button class="btn" id="evNo">关闭</button><button class="btn btn-primary" id="evGo">进入预警处置</button></div>');
+   $('#evX').addEventListener('click',closeModal);$('#evNo').addEventListener('click',closeModal);$('#evGo').addEventListener('click',()=>{closeModal();go('#/warning')});
+  }));
+  return rows;
+ };
+ $$('.seg-btn').forEach(b=>b.addEventListener('click',()=>{$$('.seg-btn').forEach(x=>x.classList.remove('cur'));b.classList.add('cur');range=b.dataset.range;draw();toast('已切换为'+b.textContent+'的安全事件','success')}));
+ $('#evStage').addEventListener('change',draw);
+ $('#evSearch').addEventListener('click',()=>{draw();toast('检索完成','success')});
+ $('#evQ').addEventListener('input',draw);
+ $('#evExport').addEventListener('click',()=>{const rows=draw();const csv='﻿'+[['发生时间','事件名称','攻击阶段','事件评级','威胁影响分析','检测引擎','处置状态']].concat(rows).map(r=>r.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='安全事件检测.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),0);toast('已导出 '+rows.length+' 起事件','success')});
+ $$('[data-chart-filter]').forEach(btn=>btn.addEventListener('click',()=>{const f=btn.dataset.chartFilter;if(EVENT_STAGES.includes(f)){$('#evStage').value=f;draw();toast('已按“'+f+'”阶段筛选','success')}}));
+ bindRefresh('#rfBtn');draw();
+}
 function page404(hash){
  const c=$('#content');if(!c)return;c.innerHTML='<div class="card empty-state"><div style="font-size:72px;font-weight:800;color:var(--primary)">404</div><h2>页面不存在</h2><p style="margin:10px 0 20px">未找到路由 '+esc(hash)+'</p><button class="btn btn-primary" id="backHome">返回首页</button></div>';$('#backHome').addEventListener('click',()=>go('#/home'));
 }
@@ -1408,6 +1500,7 @@ function pageMining(){
  const c=$('#content');if(!c)return;
  const stages=[['与控制端建立通信',3],['登录矿池',1],['获取挖矿任务',1],['提交结果',0]];
  c.innerHTML=pageHeader('挖矿专项检测')
+ +'<div class="spec-note">基于规则的本地挖矿检测与基于主动探测技术的云端挖矿检测相结合，实现主流挖矿协议、矿池地址识别检测，深度解析挖矿病毒完整传播运行流程，针对挖矿病毒下载行为、挖矿配置文件下载行为开展识别拦截，依托 AI 模型对各类挖矿恶意流量聚类分析并提取特征指纹，全面覆盖各大挖矿病毒及其变种识别能力。</div>'
  +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">'
  +'<div class="card"><div class="card-head">双引擎检测<span class="sub">本地规则引擎 + 云端主动探测</span></div><div class="card-body" style="display:flex;gap:16px">'
  +'<div style="flex:1;padding:16px;background:var(--danger-light);border-radius:8px;border:1px solid #ffccc7;text-align:center">'
@@ -1655,7 +1748,7 @@ function validateNavigationModel(){
  const activeViolations=hashes.filter(hash=>(buildSidebar(hash).match(/class="sb-item[^"]* active"/g)||[]).length!==1);
  const hrefs=Array.from(buildSidebar('#/home').matchAll(/href="([^"]+)"/g),match=>match[1]);
  const report={count:NAV_LEAVES.length,uniqueHashCount:uniqueHashes.size,uniqueNavIdCount:uniqueIds.size,hrefCount:hrefs.length,uniqueHrefCount:new Set(hrefs).size,missingRoutes,missingSpecs,activeViolations};
- report.ok=report.count===48&&report.uniqueHashCount===48&&report.uniqueNavIdCount===48&&report.hrefCount===48&&report.uniqueHrefCount===48&&!missingRoutes.length&&!missingSpecs.length&&!activeViolations.length;
+ report.ok=report.count===50&&report.uniqueHashCount===50&&report.uniqueNavIdCount===50&&report.hrefCount===50&&report.uniqueHrefCount===50&&!missingRoutes.length&&!missingSpecs.length&&!activeViolations.length;
  if(!report.ok)throw new Error('导航一致性验证失败：'+JSON.stringify(report));
  return report;
 }
