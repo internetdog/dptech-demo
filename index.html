@@ -967,7 +967,7 @@ function renderTopChart(chart){
 }
 function renderSpecPage(spec){
  const c=$('#content');if(!c||!spec)return;
- c.innerHTML=pageHeader(spec.title,'<span class="tag tag-blue">手册功能还原</span>')
+ c.innerHTML=pageHeader(spec.title)
  +'<div class="spec-note">'+esc(spec.description)+'</div>'
  +'<div class="stat-row">'+spec.kpis.map((k,i)=>'<div class="stat-card"><div class="stat-icon '+esc(k.color||['blue','red','orange','green'][i])+'">'+metricIcon(i)+'</div><div class="stat-info"><div class="stat-value num">'+esc(k.value)+'</div><div class="stat-label">'+esc(k.label)+'</div><div class="stat-trend '+(i===1?'up':'down')+'">'+esc(k.trend)+'</div></div></div>').join('')+'</div>'
  +'<div class="spec-chart-grid">'+spec.charts.map(renderTopChart).join('')+'</div>'
