@@ -12,7 +12,7 @@
   --sb-hover:#24558f;
   --sb-text:#e8f0fc;
   --sb-text-dim:#9bb8e0;
-  --sb-width:220px;
+  --sb-width:230px;
   --topbar-h:56px;
   --primary:#1890ff;
   --primary-hover:#40a9ff;
@@ -71,11 +71,22 @@ svg{display:inline-block;vertical-align:middle}
   padding:10px 20px 6px;font-size:12px;color:var(--sb-text-dim);
   text-transform:uppercase;letter-spacing:1px;font-weight:500;
 }
+.sb-group-head{
+  display:flex;align-items:center;padding:9px 16px;color:var(--sb-text);
+  cursor:pointer;user-select:none;gap:10px;font-weight:500;transition:background .15s;
+  line-height:1.35;font-size:14px;
+}
+.sb-group-head:hover{background:var(--sb-hover)}
+.sb-group-head .sb-ico{width:16px;height:16px;opacity:.85;flex-shrink:0}
+.sb-group-head .sb-arrow{margin-left:auto;font-size:11px;opacity:.6;transition:transform .2s;flex-shrink:0}
+.sb-group-head[aria-expanded="true"] .sb-arrow{transform:rotate(90deg)}
+.sb-sub{max-height:0;overflow:hidden;transition:max-height .25s ease}
+.sb-sub.open{max-height:2400px}
 .sb-item{
-  display:flex;align-items:center;padding:10px 20px;
+  display:flex;align-items:center;padding:8px 16px;
   cursor:pointer;transition:all .15s;
   font-size:14px;gap:10px;position:relative;
-  user-select:none;
+  user-select:none;line-height:1.35;word-break:break-all;
 }
 .sb-item:hover{background:var(--sb-hover)}
 .sb-item.active{
@@ -90,7 +101,9 @@ svg{display:inline-block;vertical-align:middle}
 .sb-item .sb-arrow{margin-left:auto;font-size:11px;opacity:.5;transition:transform .2s}
 .sb-item.open>.sb-arrow{transform:rotate(90deg)}
 .sb-sub{overflow:hidden;transition:max-height .25s ease}
-.sb-sub .sb-item{padding-left:44px;font-size:13px}
+/* 三级嵌套：L2/L3 缩进与字号（叶子与父级头共用） */
+.sb-l2{padding-left:38px!important;font-size:13px!important}
+.sb-l3{padding-left:54px!important;font-size:12.5px!important;font-weight:400}
 .sb-footer{
   padding:16px 20px;border-top:1px solid rgba(255,255,255,.08);
   font-size:11px;color:var(--sb-text-dim);line-height:1.6;
@@ -106,27 +119,41 @@ svg{display:inline-block;vertical-align:middle}
   border-bottom:1px solid var(--border-light);
   flex-shrink:0;z-index:50;
 }
-.tb-breadcrumb{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--text-secondary);flex-shrink:0;margin-right:auto}
+.tb-breadcrumb{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--text-secondary);flex-shrink:1;min-width:0;margin-right:auto;overflow:hidden;white-space:nowrap}
 .tb-breadcrumb .cur{color:var(--text-primary);font-weight:500}
-.tb-date-range{
-  display:flex;align-items:center;gap:8px;
-  padding:5px 12px;border:1px solid var(--border);border-radius:var(--radius);
-  font-size:13px;color:var(--text-secondary);cursor:pointer;
-  background:#fff;transition:border-color .15s;
-}
-.tb-date-range:hover{border-color:var(--primary)}
-.tb-actions{display:flex;align-items:center;gap:16px;margin-left:16px}
+.tb-actions{display:flex;align-items:center;gap:8px;margin-left:16px;flex-shrink:0}
 .tb-icon-btn{
-  width:32px;height:32px;border-radius:var(--radius);
+  width:36px;height:36px;border-radius:8px;
   display:flex;align-items:center;justify-content:center;
   cursor:pointer;transition:all .15s;color:var(--text-secondary);
-  position:relative;
+  position:relative;border:1px solid transparent;
 }
 .tb-icon-btn:hover{color:var(--primary);background:var(--primary-light)}
-.tb-icon-btn .dot{
-  position:absolute;top:6px;right:6px;width:6px;height:6px;
-  background:var(--danger);border-radius:50%;
+.tb-badge{
+  position:absolute;top:-5px;right:-7px;min-width:17px;height:16px;padding:0 4px;
+  background:#f5222d;color:#fff;border-radius:9px;border:2px solid #fff;
+  font-size:10px;line-height:12px;text-align:center;font-weight:600;font-style:normal;
 }
+.tb-org-btn{
+  display:flex;align-items:center;gap:5px;height:36px;padding:0 10px;
+  border-radius:8px;cursor:pointer;font-size:13px;color:var(--text-primary);
+  transition:background .15s;white-space:nowrap;
+}
+.tb-org-btn:hover{background:var(--primary-light);color:var(--primary)}
+.tb-drop-wrap{position:relative}
+.tb-drop{
+  position:absolute;top:42px;right:0;min-width:150px;
+  background:#fff;border:1px solid var(--border-light);border-radius:8px;
+  box-shadow:0 6px 20px rgba(0,0,0,.12);z-index:120;padding:6px 0;
+}
+.tb-drop-item{
+  display:flex;align-items:center;gap:8px;width:100%;text-align:left;
+  padding:8px 16px;font-size:13px;color:var(--text-primary);cursor:pointer;
+  transition:background .12s;white-space:nowrap;
+}
+.tb-drop-item:hover{background:var(--primary-light);color:var(--primary)}
+.tb-drop-item.sel{color:var(--primary);font-weight:600}
+.tb-drop-sep{height:1px;background:var(--border-light);margin:4px 0}
 .tb-user-dropdown{
   display:flex;align-items:center;gap:6px;
   cursor:pointer;padding:4px 8px;border-radius:var(--radius);
@@ -450,6 +477,100 @@ svg{display:inline-block;vertical-align:middle}
 .mt-8{margin-top:8px}.mt-16{margin-top:16px}.mb-8{margin-bottom:8px}.mb-16{margin-bottom:16px}
 .flex{display:flex}.items-center{align-items:center}.gap-8{gap:8px}.gap-16{gap:16px}
 .gap-auto{gap:auto}.flex-1{flex:1}
+.spec-note{padding:10px 14px;margin-bottom:16px;background:var(--primary-light);border:1px solid #bae7ff;border-radius:var(--radius);color:#096dd9;font-size:13px}
+.spec-chart-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+.top-list{width:100%;display:flex;flex-direction:column;gap:10px}
+.top-item{display:grid;grid-template-columns:28px minmax(90px,1fr) 2fr 50px;gap:8px;align-items:center;font-size:12px}
+.top-rank{width:24px;height:24px;border-radius:4px;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700}
+.top-track{height:8px;background:var(--bg);border-radius:4px;overflow:hidden}.top-fill{height:100%;background:var(--primary);border-radius:4px}
+.empty-state{padding:44px;text-align:center;color:var(--text-secondary)}
+
+/* ===== 显示设置（localStorage 持久化到 body class） ===== */
+body.dense .card-body{padding:10px 14px}
+body.dense .card-head{padding:10px 16px}
+body.dense .data-table td,body.dense .data-table th{padding:6px 10px}
+body.dense .stat-card{padding:14px}
+body.dense .content-area{padding:14px 18px}
+body.no-zebra .data-table tbody tr:nth-child(even){background:transparent}
+
+/* ===== 开关 ===== */
+.sw{position:relative;display:inline-block;width:38px;height:20px;flex-shrink:0}
+.sw input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer;z-index:2}
+.sw span{position:absolute;inset:0;background:#bfbfbf;border-radius:10px;transition:background .2s}
+.sw span::after{content:'';position:absolute;left:2px;top:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.sw input:checked+span{background:var(--primary)}
+.sw input:checked+span::after{transform:translateX(18px)}
+
+/* ===== 首页（pageHome） ===== */
+.home-row1{display:grid;grid-template-columns:1.25fr 1fr;gap:16px;margin-bottom:16px}
+.home-row2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.risk-flex{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.risk-text{flex:1;min-width:240px}
+.risk-text p{font-size:13px;line-height:1.9;color:var(--text-secondary);margin-top:10px}
+.risk-text b{font-weight:700}
+.n-red{color:#f5222d}.n-orange{color:#fa8c16}.n-blue{color:#1890ff}.n-green{color:#52c41a}
+.asset-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.asset-mini{
+  position:relative;border-radius:6px;padding:14px 16px;color:#fff;overflow:hidden;
+  cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:var(--shadow-card);
+}
+.asset-mini:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.16)}
+.asset-mini::after{
+  content:'';position:absolute;right:-34px;bottom:-44px;width:120px;height:120px;
+  border-radius:50%;background:rgba(255,255,255,.14);
+}
+.asset-mini::before{
+  content:'';position:absolute;right:26px;bottom:-58px;width:110px;height:110px;
+  border-radius:26px;background:rgba(255,255,255,.1);transform:rotate(24deg);
+}
+.asset-mini .am-head{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;position:relative;z-index:1}
+.asset-mini .am-head svg{width:18px;height:18px}
+.am-stats{position:relative;z-index:1;margin-top:10px;display:flex;flex-wrap:wrap;gap:6px 14px}
+.am-stat{display:flex;align-items:center;gap:5px;font-size:12px;color:rgba(255,255,255,.92);white-space:nowrap}
+.am-stat i{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
+.am-stat b{font-weight:700;font-variant-numeric:tabular-nums}
+.g1{background:linear-gradient(135deg,#7c6cf0,#9d8cff)}
+.g2{background:linear-gradient(135deg,#3f8ef7,#69b4ff)}
+.g3{background:linear-gradient(135deg,#2fbf8f,#56d9ad)}
+.g4{background:linear-gradient(135deg,#22b8cf,#4fd8e8)}
+.lvl-badge{display:inline-block;min-width:20px;height:18px;line-height:18px;text-align:center;border-radius:4px;font-size:11px;font-weight:600;color:#fff;padding:0 4px;margin-right:6px}
+.lvl-badge.low{background:#1890ff}.lvl-badge.mid{background:#fa8c16}
+.home-alarm-table tbody tr{cursor:pointer}
+
+/* ===== 日志检索条 ===== */
+.log-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.log-bar select,.log-bar input{
+  height:32px;padding:0 10px;border:1px solid var(--border);border-radius:4px;
+  font-size:13px;background:#fff;color:var(--text-primary);
+}
+.log-bar select:focus,.log-bar input:focus{border-color:var(--primary)}
+
+/* ===== 消息/通知 drawer 列表 ===== */
+.msg-item{
+  display:flex;gap:10px;padding:12px;border:1px solid var(--border-light);
+  border-radius:6px;margin-bottom:10px;cursor:pointer;transition:all .15s;background:#fff;
+}
+.msg-item:hover{border-color:var(--primary);box-shadow:var(--shadow-card)}
+.msg-item .m-ico{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.msg-item .m-body{flex:1;min-width:0}
+.msg-item .m-title{font-size:13px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;gap:6px}
+.msg-item .m-desc{font-size:12px;color:var(--text-secondary);margin-top:3px;line-height:1.5}
+.msg-item .m-time{font-size:11px;color:var(--text-third);margin-top:4px}
+.task-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-light);font-size:13px}
+.task-row:last-child{border-bottom:none}
+.pf-row{display:flex;padding:8px 0;border-bottom:1px solid var(--border-light);font-size:13px}
+.pf-row b{width:96px;color:var(--text-secondary);font-weight:500;flex-shrink:0}
+@media(max-width:1100px){.stat-row,.spec-chart-grid{grid-template-columns:repeat(2,1fr)}.chart-row{grid-template-columns:1fr}.home-row1,.home-row2{grid-template-columns:1fr}}
+@media(max-width:720px){.sidebar{width:190px;min-width:190px}.content-area{padding:14px}.stat-row,.spec-chart-grid{grid-template-columns:1fr}.topbar{padding:0 12px}.tb-org-label{display:none}.tb-breadcrumb{font-size:12px}}
+
+/* ===== 显示设置（紧凑/斑马纹） ===== */
+body.dp-compact .data-table td,body.dp-compact .data-table th{padding-top:5px;padding-bottom:5px}
+body.dp-zebra .data-table tbody tr:nth-child(even){background:#fafcff}
+.dp-toggle{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid var(--border-light);font-size:13px;color:var(--text-primary)}
+.dp-switch{position:relative;width:38px;height:20px;border-radius:10px;background:#d9d9d9;transition:background .15s;flex-shrink:0;cursor:pointer}
+.dp-switch.on{background:var(--primary)}
+.dp-switch::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s}
+.dp-switch.on::after{left:20px}
 </style>
 </head>
 <body>
@@ -486,10 +607,16 @@ const I={
  info:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 11v5" stroke-linecap="round"/><circle cx="12" cy="8" r="1.1" fill="currentColor" stroke="none"/></svg>',
  copy:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 012-2h9" stroke-linecap="round"/></svg>',
  more:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="19" r="1.5" fill="currentColor"/></svg>',
+ gear:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1-1.55 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.7 1.7 0 004.6 15a1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09a1.7 1.7 0 001.55-1 1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06A1.7 1.7 0 009 4.6a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06A1.7 1.7 0 0019.4 9c.23.6.86 1 1.51 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.51 1z" stroke-linejoin="round"/></svg>',
+ pin:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-5.5 7-11a7 7 0 10-14 0c0 5.5 7 11 7 11z" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.6"/></svg>',
+ mail:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6" stroke-linejoin="round"/></svg>',
+ taskShield:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2l8 3.5v5.2c0 5-3.4 9.4-8 11.3-4.6-1.9-8-6.3-8-11.3V5.5L12 2z" stroke-linejoin="round"/><path d="M8.5 12l2.4 2.4L15.6 9.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ key:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2L20 3m-3 3l3 3" stroke-linecap="round"/></svg>',
+ logout:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke-linecap="round" stroke-linejoin="round"/></svg>',
 };
 
 /* ================= 全局状态 ================= */
-const state={user:null,role:null,clockTimer:null,
+const state={user:null,role:null,clockTimer:null,org:'所有机构',
  ransomQ:'',ransomDim:'',miningQ:'',miningStage:'',
  handled:{},drawer:null,drawerTab:0,bcClosed:false,modalShown:false};
 
@@ -506,7 +633,7 @@ function toast(msg,type){
 function openModal(html){
  $('#modalRoot').innerHTML='<div class="modal-mask" id="modalMask"><div class="modal" role="dialog" aria-modal="true">'+html+'</div></div>';
  $('#modalMask').addEventListener('click',e=>{if(e.target.id==='modalMask')closeModal()});
- const f=$('#modalRoot .modal [data-autofocus]'); if(f)f.focus();
+ const f=document.querySelector('#modalRoot .modal [data-autofocus]'); if(f)f.focus();
 }
 function closeModal(){ $('#modalRoot').innerHTML='' }
 
@@ -530,29 +657,169 @@ function bindRefresh(id){
   const ic=b.querySelector('.refresh-ico'); if(ic){ic.classList.remove('spinning');void ic.offsetWidth;ic.classList.add('spinning')}
   toast('数据已刷新','success');
  });
+ const range=document.querySelector('[data-page-range]');if(range)range.addEventListener('click',()=>toast('时间范围已切换为最近 7 天','success'));
+}
+function bindLegacyToolbar(fileName){
+ $$('.table-toolbar .btn').forEach(btn=>{
+  if(/导出/.test(btn.textContent))btn.addEventListener('click',()=>{const blob=new Blob(['DPtech '+fileName+' 演示数据'],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fileName+'.txt';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),0);toast(fileName+'已导出','success')});
+  if(/批量操作/.test(btn.textContent))btn.addEventListener('click',()=>openModal('<div class="modal-head">批量操作<button class="modal-x" id="legacyX">×</button></div><div class="modal-body">已选择当前筛选范围，可创建批量研判与处置任务。</div><div class="modal-foot"><button class="btn" id="legacyNo">取消</button><button class="btn btn-primary" id="legacyYes">创建任务</button></div>'));
+ });
+ document.addEventListener('click',e=>{if(e.target&&['legacyX','legacyNo'].includes(e.target.id))closeModal();if(e.target&&e.target.id==='legacyYes'){closeModal();toast('批量任务已创建','success')}});
 }
 
-/* ================= 路由 ================= */
-const routes={'#/login':pageLogin,'#/overview':pageOverview,'#/threat/ransom':pageRansom,'#/threat/mining':pageMining,'#/screen':pageScreen};
+/* ================= 21个正式页面独立规格 ================= */
+const K=(label,value,trend,color)=>({label,value,trend,color});
+const C=(title,items)=>({title,items});
+const PAGE_SPECS={
+ home:{title:'首页',description:'全局安全运营工作台，汇总平台今日风险、资产、告警与处置状态。',kpis:[K('今日安全事件','157','较昨日 +8%','blue'),K('高危待处置','12','需优先响应','red'),K('在线资产','2,486','在线率 98.6%','green'),K('自动处置率','92.4%','较昨日 +2.1%','orange')],charts:[C('威胁类型 Top5',[['漏洞利用',96],['恶意代码',78],['C&C通信',62],['暴力破解',48],['异常访问',31]]),C('风险资产 Top5',[['10.10.8.21',92],['10.10.3.16',78],['172.16.2.45',64],['10.20.1.8',52],['192.168.7.9',41]]),C('近7日事件趋势',[['08-06',48],['08-07',56],['08-08',44],['08-09',72],['08-10',66],['08-11',84],['08-12',96]])],columns:['时间','事件名称','风险等级','受影响资产','处置状态'],rows:[['10:42:18','WebShell上传行为','高危','10.10.8.21','待处置'],['10:21:03','恶意域名外联','中危','10.10.3.16','处置中'],['09:55:47','弱口令登录','中危','172.16.2.45','已处置']]},
+ 'situation-overall':{title:'综合态势',description:'综合展示威胁级别、外部攻击者、攻击类型、受害者与威胁日志。',kpis:[K('攻击总次数','8,429','今日累计','blue'),K('高危攻击','36','占比 4.3%','red'),K('受害资产','128','涉及 6 个机构','orange'),K('已阻断攻击','7,886','阻断率 93.6%','green')],charts:[C('外部威胁源 Top5',[['185.48.59.52',96],['64.106.246.244',82],['112.213.89.136',68],['46.165.254.194',54],['91.121.87.44',42]]),C('外部攻击者国家 Top5',[['美国',91],['俄罗斯',76],['德国',64],['越南',52],['巴西',37]]),C('外部威胁类型 Top5',[['钓鱼网站',94],['恶意木马',78],['漏洞利用',62],['僵尸网络',46],['扫描探测',30]])],columns:['发现时间','攻击源','受害者','威胁类型','级别','次数'],rows:[['10:38:22','185.48.59.52','10.10.8.21','漏洞利用','高危','49'],['10:24:16','64.106.246.244','10.10.3.16','钓鱼网站','中危','31'],['09:47:05','112.213.89.136','172.16.2.45','恶意木马','高危','18']]},
+ 'situation-threat':{title:'威胁态势',description:'呈现攻击全景、主要威胁类型、资产受害者、活跃攻击源与威胁日志。',kpis:[K('活跃攻击源','326','覆盖 18 个地区','red'),K('主要威胁类型','23','今日新增 2 类','orange'),K('受害资产','84','服务器 31 台','blue'),K('威胁日志','12,608','已聚合 78%','green')],charts:[C('主要威胁类型',[['漏洞攻击',96],['恶意代码',74],['口令攻击',58],['Web攻击',43],['拒绝服务',29]]),C('资产受害者 Top5',[['10.10.8.21',94],['10.20.3.11',82],['172.16.5.6',61],['10.30.1.9',48],['192.168.6.4',35]]),C('活跃攻击源 Top5',[['185.48.59.52',97],['45.155.204.117',80],['103.78.112.10',65],['91.121.87.44',50],['206.189.210.88',36]])],columns:['时间','攻击源IP','目的IP','攻击类型','攻击阶段','风险等级'],rows:[['10:41:09','45.155.204.117','10.10.8.21','远程代码执行','渗透利用','高危'],['10:18:33','91.121.87.44','10.20.3.11','RDP暴破','初始访问','中危'],['09:56:12','103.78.112.10','172.16.5.6','木马通信','命令控制','高危']]},
+ 'situation-asset':{title:'资产态势',description:'展示资产类型、状态、价值分布及最新资产动态。',kpis:[K('资产总数','2,486','较上周 +26','blue'),K('在线资产','2,451','在线率 98.6%','green'),K('高价值资产','186','核心业务资产','orange'),K('异常资产','35','离线或失联','red')],charts:[C('资产类型分布',[['服务器',96],['终端',84],['网络设备',62],['安全设备',49],['物联网设备',34]]),C('资产状态分布',[['在线',98],['离线',26],['异常',18],['待确认',11]]),C('资产价值分布',[['核心',91],['重要',72],['一般',48],['低价值',23]])],columns:['资产IP','资产名称','资产类型','操作系统','资产价值','状态'],rows:[['10.10.1.10','门户Web服务器','服务器','CentOS 7.9','核心','在线'],['10.10.2.15','办公终端-015','终端','Windows 11','一般','在线'],['172.16.1.1','核心交换机','网络设备','Comware','核心','异常']]},
+ 'situation-vulnerability':{title:'漏洞态势',description:'分析资产类型漏洞分布、漏洞级别、漏洞类型及模拟人工渗透结果。',kpis:[K('漏洞总数','1,294','今日新增 19','orange'),K('高危漏洞','86','需立即修复','red'),K('影响资产','347','覆盖率 14.0%','blue'),K('已修复漏洞','1,067','修复率 82.5%','green')],charts:[C('资产类型漏洞分布',[['服务器',96],['终端',73],['网络设备',55],['安全设备',38],['数据库',24]]),C('漏洞级别分布',[['严重',86],['高危',72],['中危',48],['低危',21]]),C('漏洞类型 Top5',[['远程代码执行',94],['权限提升',78],['信息泄露',60],['SQL注入',43],['弱口令',31]])],columns:['漏洞名称','CVE编号','等级','影响资产','发现时间','修复状态'],rows:[['Apache Log4j2 远程代码执行','CVE-2021-44228','严重','18','2024-08-12','修复中'],['OpenSSH 权限提升','CVE-2023-38408','高危','26','2024-08-11','待修复'],['Nginx 信息泄露','CVE-2023-44487','中危','42','2024-08-10','已修复']]},
+ 'situation-file':{title:'文件态势',description:'展示感染资产、恶意文件传播、恶意文件类型、家族与来源。',kpis:[K('感染资产数','23','较昨日 -4','red'),K('恶意文件数','186','今日发现','orange'),K('传播次数','1,428','已阻断 1,317','blue'),K('隔离成功率','96.8%','自动隔离','green')],charts:[C('恶意文件类型 Top5',[['木马',96],['勒索软件',78],['蠕虫',61],['后门',47],['挖矿程序',34]]),C('恶意文件家族 Top3',[['LockBit',93],['XMRig',68],['Emotet',49]]),C('恶意文件来源 Top5',[['邮件附件',91],['网页下载',74],['移动介质',53],['文件共享',39],['即时通信',28]])],columns:['文件名','MD5','文件类型','感染资产','来源','处置状态'],rows:[['invoice_2024.exe','6f5902ac237024bdd0c176cb93063dc4','勒索软件','10.10.2.15','邮件附件','已隔离'],['update.bin','b1946ac92492d2347c6235b4d2611184','挖矿程序','10.10.1.10','网页下载','待处置'],['document.scr','098f6bcd4621d373cade4e832627b4f6','木马','172.16.2.45','文件共享','已阻断']]},
+ 'analysis-risk':{title:'风险研判',description:'聚合攻击事件、风险资产、恶意文件事件并输出研判结论与处置建议。',kpis:[K('待研判事件','38','高优先级 12','red'),K('风险资产','74','服务器 26 台','orange'),K('今日完成研判','126','平均 8.6 分钟','green'),K('研判准确率','94.7%','人工复核结果','blue')],charts:[C('攻击阶段分布',[['初始访问',88],['渗透利用',74],['命令控制',63],['横向移动',46],['数据窃取',28]]),C('风险等级趋势',[['严重',84],['高危',71],['中危',48],['低危',22]]),C('研判结论 Top5',[['真实攻击',95],['可疑行为',72],['误报',46],['测试流量',31],['待确认',20]])],columns:['事件编号','事件名称','攻击阶段','风险资产','研判结论','研判人'],rows:[['EVT-20240812-031','WebShell攻击链','命令控制','10.10.8.21','真实攻击','张磊'],['EVT-20240812-026','口令爆破事件','初始访问','172.16.2.45','可疑行为','李敏'],['EVT-20240812-019','批量端口扫描','侦察','10.20.1.8','误报','王伟']]},
+ 'analysis-intelligence':{title:'威胁情报',description:'提供威胁情报检索、访问关系分析、自定义与第三方情报管理。',kpis:[K('情报指标总数','18.6M','多源融合','blue'),K('恶意IP','6.2M','今日新增 8,426','red'),K('恶意域名','4.8M','今日新增 3,112','orange'),K('情报命中率','87.3%','近 30 天','green')],charts:[C('情报类型分布',[['恶意IP',96],['恶意域名',78],['文件Hash',64],['URL',46],['邮箱',30]]),C('情报来源 Top5',[['迪普情报',94],['生态联盟',81],['第三方订阅',65],['自定义情报',42],['开源情报',29]]),C('威胁标签 Top5',[['僵尸网络',91],['钓鱼',76],['勒索',63],['挖矿',48],['APT',35]])],columns:['情报指标','指标类型','威胁类型','可信度','来源','最近活跃'],rows:[['185.220.101.3','IP','Tor出口/攻击源','高','迪普情报','2024-08-12'],['login-secure.example','域名','钓鱼网站','高','生态联盟','2024-08-12'],['6f5902ac237024bdd0c176cb93063dc4','MD5','勒索软件','中','第三方订阅','2024-08-11']]},
+ 'analysis-forensics':{title:'攻击取证',description:'基于全包存储与流量日志进行攻击会话还原、报文取证和证据导出。',kpis:[K('可取证会话','12,486','保留 30 天','blue'),K('攻击会话','326','今日新增 42','red'),K('证据文件','1,873','完整性已校验','orange'),K('取证任务完成率','98.2%','平均 2.4 分钟','green')],charts:[C('协议分布',[['HTTP/HTTPS',96],['TCP',78],['DNS',62],['SMB',43],['RDP',31]]),C('攻击阶段 Top5',[['漏洞利用',91],['命令控制',74],['载荷投递',56],['横向移动',42],['数据外传',29]]),C('取证资产 Top5',[['10.10.8.21',95],['10.10.1.10',77],['172.16.2.45',60],['10.20.3.11',46],['192.168.7.9',33]])],columns:['任务编号','源IP','目的IP','协议','报文数','证据状态'],rows:[['FOR-20240812-018','45.155.204.117','10.10.8.21','HTTPS','486','已固化'],['FOR-20240812-014','10.10.3.16','185.220.101.3','DNS','126','分析中'],['FOR-20240812-009','91.121.87.44','172.16.2.45','RDP','2,031','已导出']]},
+ 'threat-overview':{title:'威胁总览',description:'通过攻击总次数、类型、来源、受害者、趋势及级别分布统计全局威胁。',kpis:[K('攻击总次数','42,683','最近 24 小时','red'),K('威胁源','1,284','活跃源 326','orange'),K('受害者','218','高价值资产 31','blue'),K('已阻断','39,876','阻断率 93.4%','green')],charts:[C('威胁类型 Top5',[['漏洞利用',96],['恶意代码',82],['口令攻击',66],['Web攻击',49],['扫描探测',34]]),C('威胁源 Top5',[['185.48.59.52',95],['64.106.246.244',82],['45.155.204.117',68],['91.121.87.44',50],['103.78.112.10',36]]),C('受害者 Top5',[['10.10.8.21',94],['10.10.3.16',80],['172.16.2.45',61],['10.20.1.8',47],['192.168.7.9',32]])],columns:['时间','方向','威胁源','受害者','威胁类型','级别'],rows:[['10:42:31','外部→内部','185.48.59.52','10.10.8.21','漏洞利用','高危'],['10:30:22','内部→外部','10.10.3.16','185.220.101.3','C&C通信','高危'],['10:12:08','内部→内部','172.16.2.45','10.20.1.8','口令攻击','中危']]},
+ 'threat-external':{title:'外部威胁',description:'分析外部设备对内网主机的非法入侵或威胁行为。',kpis:[K('外部攻击次数','18,426','最近 24 小时','red'),K('外部攻击者','824','来自 42 个地区','orange'),K('受害资产','116','核心资产 18','blue'),K('已阻断','17,693','阻断率 96.0%','green')],charts:[C('威胁级别分布',[['高危',88],['中危',64],['低危',29]]),C('攻击者 Top5',[['185.48.59.52',96],['45.155.204.117',81],['91.121.87.44',64],['103.78.112.10',47],['206.189.210.88',33]]),C('地理位置 Top5',[['美国',93],['俄罗斯',79],['德国',62],['荷兰',44],['新加坡',31]])],columns:['时间','攻击者IP','攻击者位置','受害者IP','威胁类型','攻击次数'],rows:[['10:42:31','185.48.59.52','美国','10.10.8.21','远程代码执行','49'],['10:27:18','45.155.204.117','荷兰','10.10.3.16','WebShell上传','28'],['09:58:04','91.121.87.44','法国','172.16.2.45','RDP爆破','17']]},
+ 'threat-outbound':{title:'外连威胁',description:'检测内网资产直连恶意地址、C&C节点或请求恶意域名的外联行为。',kpis:[K('外连事件','3,286','今日新增 426','red'),K('恶意外连地址','168','C&C节点 47','orange'),K('失陷主机','23','服务器 9 台','blue'),K('已阻断连接','3,041','阻断率 92.5%','green')],charts:[C('外连威胁类型 Top5',[['C&C通信',96],['恶意域名DNS',81],['挖矿矿池',63],['木马回连',48],['数据外传',32]]),C('外连地址 Top5',[['185.220.101.3',94],['198.23.214.117',76],['45.155.204.117',62],['103.78.112.10',47],['194.169.0.88',35]]),C('受害者 Top5',[['10.10.3.16',96],['10.10.1.10',78],['172.16.2.45',60],['10.20.3.11',44],['192.168.7.9',31]])],columns:['时间','受害者IP','外连地址','外连端口','威胁类型','处置状态'],rows:[['10:38:17','10.10.3.16','185.220.101.3','443','C&C通信','已阻断'],['10:12:46','10.10.1.10','198.23.214.117','7777','挖矿矿池','待处置'],['09:44:28','172.16.2.45','malware.example','53','恶意域名DNS','已阻断']]},
+ 'threat-egress':{title:'对外威胁',description:'分析内部主机对外网设备发出的具有危害性的行为或操作。',kpis:[K('对外攻击次数','2,418','最近 24 小时','red'),K('内部威胁源','42','重点关注 11','orange'),K('外部受害者','386','涉及 21 个地区','blue'),K('已控制资产','37','控制率 88.1%','green')],charts:[C('威胁类型 Top5',[['扫描探测',95],['口令爆破',79],['漏洞攻击',62],['垃圾邮件',48],['DDoS参与',31]]),C('内部威胁源 Top5',[['10.10.3.16',93],['172.16.2.45',75],['10.20.1.8',59],['192.168.7.9',43],['10.30.5.12',29]]),C('外部受害者地区 Top5',[['美国',90],['德国',74],['新加坡',58],['日本',42],['英国',30]])],columns:['时间','内部攻击源','外部受害者','目的端口','威胁类型','处置状态'],rows:[['10:33:18','10.10.3.16','203.0.113.21','22','口令爆破','已隔离'],['10:08:52','172.16.2.45','198.51.100.17','445','漏洞攻击','处置中'],['09:39:11','10.20.1.8','192.0.2.88','80','扫描探测','已确认']]},
+ 'threat-internal':{title:'内部威胁',description:'分析内部人员或资产利用合法访问权危害内部信息系统的行为。',kpis:[K('内部威胁事件','684','最近 24 小时','red'),K('内部威胁源','36','高风险 8 个','orange'),K('受害资产','92','核心资产 17','blue'),K('已完成核查','619','完成率 90.5%','green')],charts:[C('威胁类型 Top5',[['越权访问',94],['横向移动',78],['异常下载',62],['口令攻击',45],['违规外设',32]]),C('内部威胁源 Top5',[['10.10.2.15',96],['10.10.3.16',76],['172.16.2.45',59],['10.20.1.8',43],['192.168.7.9',30]]),C('受害者资产类型',[['服务器',92],['终端',76],['数据库',58],['网络设备',42],['文件服务器',31]])],columns:['时间','发起方','受害者','用户','威胁行为','风险等级'],rows:[['10:29:33','10.10.2.15','10.10.1.10','zhangsan','异常批量下载','高危'],['10:03:17','10.10.3.16','172.16.1.20','administrator','横向移动','高危'],['09:35:41','172.16.2.45','10.20.1.8','guest','越权访问','中危']]},
+ 'threat-user':{title:'用户威胁',description:'从内网用户受害者与攻击者双视角分析其对内、对外威胁活动。',kpis:[K('风险用户','48','新增 6 人','red'),K('受害用户','36','高风险 9 人','orange'),K('攻击用户','19','已锁定 7 人','blue'),K('已核查用户','42','完成率 87.5%','green')],charts:[C('风险用户 Top5',[['zhangsan',96],['administrator',81],['lisi',63],['wangwu',47],['guest',31]]),C('用户威胁类型',[['异常登录',92],['批量下载',74],['越权访问',58],['弱口令',43],['账号共享',29]]),C('用户威胁趋势',[['08-08',35],['08-09',42],['08-10',58],['08-11',74],['08-12',92]])],columns:['时间','用户名','用户IP','视角','威胁行为','风险等级'],rows:[['10:40:12','zhangsan','10.10.2.15','攻击者','批量下载敏感文件','高危'],['10:16:45','administrator','10.10.3.16','受害者','异地异常登录','高危'],['09:52:26','lisi','172.16.2.45','攻击者','越权访问数据库','中危']]},
+ 'threat-5g':{title:'5G威胁',description:'检测5G核心网中的各类信令风暴与异常信令攻击。',kpis:[K('信令威胁','1,268','最近 24 小时','red'),K('异常手机号','84','重点号码 12','orange'),K('攻击网元','16','涉及 4 类网元','blue'),K('已抑制风暴','1,142','抑制率 90.1%','green')],charts:[C('威胁类型 Top5',[['注册风暴',96],['切换风暴',78],['寻呼风暴',62],['会话建立风暴',45],['异常鉴权',31]]),C('手机号 Top5',[['138****1024',92],['139****6812',76],['186****3390',58],['135****7721',43],['188****2046',30]]),C('攻击者网元 Top5',[['AMF-01',94],['UPF-03',78],['SMF-02',61],['gNB-17',46],['UDM-01',32]])],columns:['时间','手机号','攻击网元','受害网元','威胁类型','级别'],rows:[['10:37:09','138****1024','gNB-17','AMF-01','注册信令风暴','高危'],['10:11:28','139****6812','AMF-01','UDM-01','异常鉴权','中危'],['09:43:57','186****3390','SMF-02','UPF-03','会话建立风暴','高危']]},
+ assurance:{title:'重保分析',description:'围绕重保值守实时监控资产、威胁、攻击事件与重点关注对象。',kpis:[K('重保资产','326','核心资产 48','blue'),K('实时攻击事件','84','高危 16 起','red'),K('值守任务','28','执行中 6 个','orange'),K('事件闭环率','96.4%','平均 11 分钟','green')],charts:[C('攻击事件类型',[['Web攻击',96],['漏洞利用',79],['恶意代码',61],['口令攻击',46],['异常访问',33]]),C('重保资产风险 Top5',[['门户系统',94],['统一认证',78],['邮件系统',62],['数据库集群',48],['文件交换平台',34]]),C('值守单位处置 Top5',[['安全运营组',96],['网络组',82],['系统组',67],['应用组',48],['厂商支持组',36]])],columns:['时间','攻击事件','重保资产','攻击阶段','值守人','处置状态'],rows:[['10:41:20','门户WebShell攻击','门户系统','命令控制','李敏','处置中'],['10:15:08','统一认证口令爆破','统一认证','初始访问','王伟','已阻断'],['09:48:36','数据库漏洞利用','数据库集群','渗透利用','张磊','待研判']]},
+ 'asset-management':{title:'资产管理',description:'展示平台管理资产详细信息，支持标签、类型与精确条件筛选。',kpis:[K('资产总数','2,486','今日新增 18','blue'),K('服务器','486','在线 474','orange'),K('终端','1,672','在线 1,648','green'),K('高风险资产','38','需立即核查','red')],charts:[C('资产类型分布',[['终端',96],['服务器',72],['网络设备',48],['安全设备',36],['物联网',25]]),C('操作系统分布',[['Windows',91],['Linux',76],['网络OS',54],['Android',38],['其他',25]]),C('资产标签 Top5',[['生产区',94],['办公区',78],['核心资产',61],['互联网区',45],['测试区',31]])],columns:['资产IP','资产名称','类型','操作系统','所属机构','风险状态'],rows:[['10.10.1.10','门户Web服务器','服务器','CentOS 7.9','信息中心','高风险'],['10.10.2.15','办公终端-015','终端','Windows 11','综合部','安全'],['172.16.1.1','核心交换机','网络设备','Comware','网络中心','中风险']]},
+ 'asset-detail':{title:'资产详情',description:'查看单个资产的基本信息、端口服务、风险趋势、遭受与发起攻击情况。',kpis:[K('开放端口','12','高危服务 2 个','orange'),K('关联漏洞','8','高危漏洞 3 个','red'),K('遭受攻击','126','近 30 天','blue'),K('资产健康度','72','建议立即加固','green')],charts:[C('端口服务',[['443/HTTPS',96],['80/HTTP',82],['22/SSH',64],['3306/MySQL',49],['8080/HTTP',35]]),C('风险等级趋势',[['08-08',38],['08-09',52],['08-10',68],['08-11',61],['08-12',79]]),C('攻击阶段分布',[['侦察',92],['初始访问',74],['渗透利用',58],['命令控制',41],['影响',28]])],columns:['发现时间','风险项','类型','关联端口','风险等级','状态'],rows:[['2024-08-12 10:32','Log4j2漏洞','漏洞','8080','严重','待修复'],['2024-08-12 09:18','SSH弱口令','配置风险','22','高危','核查中'],['2024-08-11 16:42','WebShell攻击','攻击事件','443','高危','已阻断']]},
+ warning:{title:'预警处置',description:'基于安全剧本对聚合攻击事件进行溯源匹配并联动设备处置。',kpis:[K('待处置预警','42','高优先级 13','red'),K('处置中','18','联动设备 7 台','orange'),K('今日已闭环','126','自动处置 89 起','green'),K('剧本命中率','91.8%','启用剧本 24 个','blue')],charts:[C('预警类型 Top5',[['失陷主机',96],['漏洞攻击',78],['恶意外联',63],['账号异常',47],['数据泄露',32]]),C('联动设备 Top5',[['DPtech-FW-01',94],['SAC3000-NDR',78],['EDR-Center',61],['WAF-01',46],['核心交换机',33]]),C('处置状态分布',[['已闭环',96],['处置中',64],['待确认',41],['处置失败',18]])],columns:['预警编号','预警名称','风险资产','匹配剧本','等级','处置状态'],rows:[['ALM-20240812-086','失陷主机恶意外联','10.10.3.16','失陷主机隔离剧本','高危','待处置'],['ALM-20240812-073','Web漏洞攻击','10.10.8.21','Web攻击封禁剧本','高危','处置中'],['ALM-20240812-051','用户异常登录','172.16.2.45','账号风险核查剧本','中危','已闭环']]},
+ system:{title:'系统管理',description:'统一管理探针、设备、平台策略、日志、管理员及系统运行状态。',kpis:[K('在线探针','18','全部正常','green'),K('联动设备','26','在线 24 台','blue'),K('管理员','12','在线 4 人','orange'),K('系统告警','3','需关注 1 项','red')],charts:[C('设备类型分布',[['流量探针',94],['防火墙',78],['终端检测',61],['WAF',44],['交换机',30]]),C('日志接入量 Top5',[['NDR日志',96],['防火墙日志',81],['终端日志',66],['认证日志',48],['应用日志',34]]),C('系统资源使用',[['存储空间',78],['内存',62],['CPU',46],['授权资产数',35]])],columns:['对象名称','对象类型','管理地址','版本','运行状态','最近心跳'],rows:[['SAC3000-NDR-01','流量探针','10.1.1.10','V3.2.6','在线','10:42:18'],['DPtech-FW-01','联动设备','10.1.1.20','V2.8.1','在线','10:42:11'],['日志存储节点-02','平台节点','10.1.1.32','V3.2.6','告警','10:41:56']]},
+ 'screen-settings':{title:'大屏设置',description:'配置威慑力大屏的显示模块、刷新频率、轮播策略与分辨率适配。',kpis:[K('已启用模块','6','共 8 个模块','blue'),K('全局刷新频率','30s','实时事件流 15s','green'),K('轮播间隔','15s','多屏轮播','orange'),K('分辨率','1920×1080','自适应缩放','red')],charts:[C('模块启用分布',[['威胁地图',92],['攻击趋势',85],['实时事件流',78],['TOP榜',70],['核心指标',64]]),C('刷新频率设置',[['15s',48],['30s',96],['60s',62],['5分钟',28]]),C('最近修改记录',[['08-12',6],['08-11',3],['08-10',5],['08-09',2],['08-08',4]])],columns:['模块名称','显示位置','刷新频率','轮播','状态','最近修改'],rows:[['威胁地图','中部主区','30s','开启','启用','2024-08-10'],['攻击趋势','中部下方','60s','开启','启用','2024-08-09'],['实时事件流','右侧栏','15s','关闭','启用','2024-08-08']]},
+ 'risk-view':{title:'风险视角',description:'以资产为中心聚合漏洞、弱密码、配置与告警风险，输出整改优先级。',kpis:[K('风险资产','74','高风险 12','red'),K('平均风险评分','62.4','较上周 -3.2','green'),K('高风险占比','8.2%','核心资产 2 个','orange'),K('本周已整改','126','整改率 71.6%','blue')],charts:[C('风险评分分布',[['90分以上',12],['80-89分',26],['60-79分',48],['40-59分',72],['40分以下',92]]),C('风险构成',[['漏洞风险',86],['告警关联',63],['弱密码',42],['配置风险',38],['暴露面',27]]),C('风险资产 Top5',[['10.10.8.21',92],['10.10.3.16',85],['172.16.2.45',78],['10.20.1.8',71],['192.168.7.9',64]])],columns:['资产','风险评分','主要风险','暴露面','责任人','整改状态'],rows:[['10.10.8.21','92','Log4j2漏洞+SSH弱密码','3个高危端口','张磊','整改中'],['10.10.3.16','85','配置基线不合规','2个高危端口','李敏','待整改'],['172.16.2.45','78','高危漏洞2个','1个高危端口','王伟','已整改']]},
+ 'threat-view':{title:'威胁视角',description:'以攻击者为中心构建画像，聚合归属、标签、攻击链阶段与涉及资产。',kpis:[K('活跃攻击者','326','今日新增 18','red'),K('疑似攻击组织','12','重点跟踪 3 个','orange'),K('重点画像','48','已归档 126','blue'),K('涉及资产','218','核心资产 9','green')],charts:[C('攻击者画像标签',[['僵尸网络',94],['扫描器',78],['爬虫',52],['勒索团伙',46],['APT组织',31]]),C('攻击链阶段',[['侦察',88],['武器化',64],['载荷投递',57],['渗透利用',42],['命令控制',36]]),C('攻击者 Top5',[['185.48.59.52',97],['45.155.204.117',84],['91.121.87.44',66],['103.78.112.10',52],['206.189.210.88',38]])],columns:['攻击者','归属地','画像标签','攻击阶段','涉及资产','最近活跃'],rows:[['185.48.59.52','美国','僵尸网络·扫描','命令控制','18','10:42'],['45.155.204.117','荷兰','扫描器','渗透利用','9','10:27'],['91.121.87.44','法国','爬虫','初始访问','6','09:58']]},
+ 'threat-file':{title:'文件威胁分析',description:'对网络传输文件进行多引擎静态检测与威胁判定，还原传播路径。',kpis:[K('今日检测文件','1,286','较昨日 +12%','blue'),K('恶意判定','186','检出率 14.5%','red'),K('多引擎检出率','94.2%','23 引擎并行','green'),K('已隔离','173','自动隔离','orange')],charts:[C('文件类型分布',[['PE可执行文件',92],['Office文档',74],['压缩包',61],['PDF',48],['脚本文件',38]]),C('检测引擎检出',[['静态特征引擎',86],['行为启发引擎',78],['情报比对',64],['沙箱联动',52]]),C('恶意家族 Top5',[['LockBit',93],['XMRig',68],['Emotet',49],['Qakbot',42],['AgentTesla',35]])],columns:['文件名','MD5','类型','大小','检出引擎','判定','处置'],rows:[['invoice_2024.exe','6f5902ac237024bdd0c176cb93063dc4','PE','2.4MB','23/56','恶意','已隔离'],['report.pdf','b1946ac92492d2347c6235b4d2611184','PDF','864KB','2/56','可疑','待复核'],['update.zip','098f6bcd4621d373cade4e832627b4f6','压缩包','5.1MB','0/56','安全','已放行']]},
+ 'threat-sandbox':{title:'云沙箱',description:'将可疑样本提交云端沙箱进行动态行为分析，输出行为评分与检出报告。',kpis:[K('今日分析样本','326','队列等待 4','blue'),K('恶意检出','58','检出率 17.8%','red'),K('平均分析时长','96s','峰值 180s','orange'),K('报告已归档','1,873','保留 90 天','green')],charts:[C('行为评分分布',[['高危(70+)',58],['中危(40-69)',74],['低危(10-39)',92],['安全(<10)',102]]),C('检出家族 Top5',[['LockBit',88],['XMRig',72],['Emotet',56],['AgentTesla',44],['Qakbot',32]]),C('样本类型',[['PE',96],['Office宏',68],['脚本',52],['APK',28],['JAR',19]])],columns:['样本名称','SHA256','行为评分','检出结果','分析状态','报告'],rows:[['setup.exe','a94a8fe5ccb19ba61c4c0873d391e987','92','勒索行为·文件加密','已完成','查看报告'],['doc_macro.xls','c81e728d9d4c2f636f067f89cc1486','74','下载者·恶意宏','已完成','查看报告'],['patch.jar','e4da3b7fbbce2345d7772b0674a318','12','未发现恶意行为','已完成','查看报告']]},
+ 'threat-intel-detect':{title:'威胁情报检测',description:'对 IP、域名、URL、文件Hash 等指标进行多源情报批量比对检测。',kpis:[K('今日检测指标','8,426','批量导入 2,104','blue'),K('命中恶意','1,286','命中率 15.3%','red'),K('接入情报源','12','含迪普情报云','orange'),K('自定义情报','486','人工录入','green')],charts:[C('指标类型分布',[['IP地址',96],['域名',78],['URL',54],['文件Hash',42]]),C('威胁家族命中',[['僵尸网络',92],['钓鱼',76],['勒索',58],['挖矿',44],['APT',30]]),C('情报源命中',[['迪普情报',94],['生态联盟',76],['第三方订阅',58],['开源情报',34]])],columns:['检测指标','类型','威胁家族','置信度','情报源','命中状态'],rows:[['185.220.101.3','IP','Tor出口节点','高','迪普情报','已命中'],['cdn-update.example','域名','钓鱼C2','高','生态联盟','已命中'],['6f5902ac237024bdd0c176cb93063dc4','MD5','LockBit','中','第三方订阅','已命中']]},
+ 'asset-id-host':{title:'主机资产识别',description:'通过 NetFlow 流量与主动探测识别主机操作系统、开放端口与运行服务。',kpis:[K('已识别主机','2,486','今日新增 18','blue'),K('识别准确率','96.8%','多源交叉验证','green'),K('主动探测任务','12','覆盖 26 网段','orange'),K('未识别','38','待人工确认','red')],charts:[C('操作系统分布',[['Windows',96],['Linux',82],['网络设备OS',48],['其他',25]]),C('识别方式',[['NetFlow流量',94],['主动探测',76],['ARP表',52],['DHCP日志',38]]),C('开放端口 Top5',[['443/HTTPS',96],['80/HTTP',88],['22/SSH',64],['3389/RDP',42],['3306/MySQL',35]])],columns:['IP地址','MAC地址','主机名','操作系统','开放端口','识别方式','置信度'],rows:[['10.10.1.10','00:1A:2B:3C:4D:01','web-srv-01','CentOS 7.9','443,80,22','NetFlow+探测','高'],['10.10.2.15','00:1A:2B:3C:4D:02','pc-015','Windows 11','445,139','NetFlow','高'],['172.16.1.1','00:1A:2B:3C:4D:03','core-sw','Comware V7','23,80','主动探测','中']]},
+ 'asset-id-fingerprint':{title:'资产指纹识别',description:'基于指纹库匹配资产的 Web 服务、中间件、框架与网络设备指纹。',kpis:[K('指纹库规模','12.8万','今日更新 326','blue'),K('已匹配资产','2,104','匹配率 84.6%','green'),K('自定义指纹','86','人工维护','orange'),K('低置信待确认','42','需人工复核','red')],charts:[C('Web服务指纹',[['Nginx',88],['Apache',74],['IIS',52],['Tomcat',46],['Jetty',28]]),C('指纹来源',[['官方指纹库',92],['社区贡献',58],['自定义',34]]),C('设备指纹 Top5',[['H3C交换机',82],['华为AP',64],['海康摄像头',52],['联想服务器',46],['戴尔终端',38]])],columns:['IP地址','端口','服务','识别指纹','指纹库来源','置信度'],rows:[['10.10.1.10','443','HTTPS','Nginx 1.20.1','官方库','高'],['10.10.1.20','8080','HTTP','Apache-Coyote Tomcat 9.0','官方库','高'],['172.16.2.45','80','HTTP','Microsoft-IIS 10.0','社区贡献','中']]},
+ 'asset-id-mac':{title:'识别资产MAC地址',description:'识别资产 MAC 地址并解析厂商 OUI，关联接入交换机端口与活跃情况。',kpis:[K('已识别MAC','2,486','在线 2,451','blue'),K('厂商覆盖率','86%','OUI 库 3.2万条','green'),K('接入交换机','24','全部在线','orange'),K('今日MAC变更','6','已触发复核','red')],charts:[C('厂商OUI Top5',[['华为',86],['H3C',72],['戴尔',58],['苹果',44],['联想',38]]),C('接入方式',[['有线接入',92],['无线接入',64],['虚拟化',38]]),C('MAC变更趋势',[['08-08',2],['08-09',4],['08-10',3],['08-11',5],['08-12',6]])],columns:['MAC地址','厂商','关联IP','接入端口','首次发现','最近活跃'],rows:[['00:1A:2B:3C:4D:01','戴尔','10.10.1.10','SW-01 GE1/0/1','2024-06-18','10:42'],['3C:52:82:1F:9A:66','华为','10.10.2.15','SW-02 GE1/0/8','2024-07-02','10:38'],['F0:18:98:2C:77:3B','苹果','172.16.9.66','AP-03 无线','2024-07-28','09:56']]},
+ 'asset-id-owner':{title:'资产责任人识别',description:'绑定资产所属部门与责任人，支持 AD 同步、人工登记与自动匹配认领。',kpis:[K('已绑定责任人','2,208','绑定率 88.8%','green'),K('待认领资产','278','较上周 -32','orange'),K('本周变更','12','均已审批','blue'),K('AD同步账号','1,862','每日 02:00','red')],charts:[C('部门分布',[['信息中心',92],['教务处',74],['财务处',48],['后勤保障',38],['其他部门',61]]),C('认领状态',[['已认领',92],['待认领',26],['变更中',12]]),C('绑定方式',[['AD域同步',78],['人工登记',64],['自动匹配',42]])],columns:['资产','所属部门','责任人','联系方式','认领状态','操作'],rows:[['10.10.1.10','信息中心','张磊','138****6621','已认领','变更'],['10.10.2.15','综合部','李敏','139****0834','已认领','变更'],['172.16.9.66','待确认','-','-','待认领','认领']]},
+ 'asset-discovery':{title:'资产发现',description:'通过网段扫描与流量学习持续发现网络资产，标记未纳管设备。',kpis:[K('发现任务','12','周期任务 8','blue'),K('覆盖网段','26','全校网段','green'),K('未纳管资产','38','今日新增 6','red'),K('今日新发现','18','已通知纳管','orange')],charts:[C('发现方式',[['网段扫描',92],['流量学习',78],['ARP表分析',54],['SNMP轮询',46]]),C('未纳管资产类型',[['终端',62],['IoT设备',48],['网络设备',28],['服务器',19]]),C('新发现趋势',[['08-08',12],['08-09',16],['08-10',9],['08-11',14],['08-12',18]])],columns:['网段','发现方式','发现资产数','未纳管','最近扫描','状态'],rows:[['10.10.0.0/16','周期扫描','1,286','12','10:30','执行中'],['172.16.0.0/16','流量学习','842','18','10:35','执行中'],['192.168.10.0/24','手动扫描','126','8','09:40','已完成']]},
+ 'asset-lifecycle':{title:'资产生命周期管理',description:'管理资产从上线、运行、变更到下线的全生命周期流转与审批记录。',kpis:[K('运行中资产','2,386','在线率 98.6%','green'),K('本月上线','26','审批通过率 100%','blue'),K('本月下线','8','数据已清除','orange'),K('变更中','14','待审批 3','red')],charts:[C('阶段分布',[['运行',92],['上线',26],['变更',14],['下线',8]]),C('流转类型',[['新增入库',48],['配置变更',36],['退网报废',16],['部门转移',22]]),C('月度流转趋势',[['05月',36],['06月',42],['07月',38],['08月',48]])],columns:['资产','当前阶段','最近流转','操作人','流转时间','操作'],rows:[['10.10.6.18','上线','新购入库','张磊','2024-08-10','流转'],['10.10.1.10','变更','配置变更','李敏','2024-08-09','流转'],['172.16.4.22','下线','设备报废','王伟','2024-08-08','流转']]},
+ 'asset-integration':{title:'第三方资产系统对接',description:'与 CMDB、AD 域、EDR 等第三方资产系统对接，定时同步资产台账。',kpis:[K('已对接系统','6','全部启用','blue'),K('今日同步','2,486','成功率 99.2%','green'),K('同步周期','1小时','可配置','orange'),K('同步异常','0','连续 30 天无异常','red')],charts:[C('对接系统类型',[['CMDB',2],['AD域',1],['EDR',2],['工单系统',1]]),C('同步量趋势',[['08-08',92],['08-09',88],['08-10',96],['08-11',90],['08-12',94]]),C('字段映射完整度',[['完全映射',86],['部分映射',12],['未映射',2]])],columns:['系统名称','类型','地址','同步周期','最近同步','状态'],rows:[['学校CMDB','资产台账','10.1.2.10:8443','每小时','10:00','正常'],['AD域控','账号系统','10.1.2.21:636','每4小时','08:00','正常'],['EDR中心','终端管理','10.1.2.30:443','实时','10:42','正常']]},
+ 'linkage-brand':{title:'同品牌设备联动',description:'与 DPtech 防火墙、IPS、WAF 等同品牌安全设备联动下发封禁策略。',kpis:[K('联动设备','12','在线 12','blue'),K('已下发规则','386','今日新增 24','green'),K('今日联动','42','自动联动 38','orange'),K('下发成功率','98.6%','失败自动重试','red')],charts:[C('联动设备类型',[['防火墙',6],['IPS',3],['ADS自安全',2],['WAF',1]]),C('联动动作',[['IP封禁',86],['URL过滤',64],['域名阻断',52],['流量牵引',38]]),C('联动趋势',[['08-08',28],['08-09',36],['08-10',32],['08-11',38],['08-12',42]])],columns:['设备名称','设备类型','联动策略','已下发规则','最近联动','状态'],rows:[['DPtech-FW-01','防火墙','失陷主机封禁','128','10:38','正常'],['DPtech-IPS-02','IPS','漏洞攻击阻断','96','10:26','正常'],['DPtech-WAF-01','WAF','Web攻击封禁','74','09:58','正常']]},
+ 'linkage-endpoint':{title:'联动同品牌终端安全管理系统',description:'联动 DPtech 终端安全管理系统执行病毒查杀、终端隔离与进程处置。',kpis:[K('纳管终端','1,672','在线 1,648','blue'),K('今日查杀','126','发现威胁 12','orange'),K('已隔离终端','6','等待核查','red'),K('处置成功率','97.4%','失败自动重试','green')],charts:[C('联动动作',[['快速查杀',92],['全盘查杀',58],['进程处置',46],['终端隔离',18]]),C('终端分组 Top5',[['综合部',86],['教务处',74],['图书馆',52],['实验室',46],['宿舍区',38]]),C('处置结果',[['成功',96],['部分成功',18],['失败',6]])],columns:['终端','所属分组','联动动作','执行结果','执行时间','状态'],rows:[['pc-015','综合部','快速查杀','发现木马1个','10:32','已完成'],['pc-088','教务处','终端隔离','已隔离待核查','10:18','已完成'],['nb-204','图书馆','进程处置','已结束恶意进程','09:46','已完成']]},
+ 'linkage-thirdparty':{title:'第三方应用联动处置',description:'通过 RESTful、Syslog、SNMP 等接口与第三方应用联动执行处置动作。',kpis:[K('对接系统','8','接口全部可用','blue'),K('今日调用','286','峰值 42/分钟','orange'),K('调用成功率','96.8%','SLA 达标','green'),K('平均耗时','1.8s','P95 3.2s','red')],charts:[C('接口方式',[['RESTful',4],['Syslog',2],['SNMP',1],['消息队列',1]]),C('联动内容',[['准入控制',86],['工单联动',64],['邮件网关',52],['短信通知',38]]),C('调用量趋势',[['08-08',68],['08-09',82],['08-10',74],['08-11',92],['08-12',86]])],columns:['系统名称','接口方式','联动内容','今日调用量','成功率','状态'],rows:[['核心交换机','SNMP','端口准入关闭','86','98.8%','正常'],['工单系统','RESTful','自动创建处置工单','64','100%','正常'],['邮件网关','RESTful','恶意附件拦截','52','94.2%','正常']]},
+ 'warning-report':{title:'安全风险报告',description:'按日、周、月周期自动生成安全风险报告，支持订阅推送与在线预览。',kpis:[K('报告模板','6','系统预置 4','blue'),K('今日已生成','12','订阅推送 8','green'),K('订阅人','28','覆盖 6 个部门','orange'),K('平均生成耗时','46s','含图表渲染','red')],charts:[C('报告类型',[['安全日报',8],['周报',3],['月报',1]]),C('内容构成',[['告警统计',96],['资产风险',82],['威胁分析',74],['处置闭环',68]]),C('生成趋势',[['08-08',9],['08-09',11],['08-10',8],['08-11',12],['08-12',12]])],columns:['报告名称','周期','统计范围','生成时间','状态','操作'],rows:[['校园安全日报','每日','全校资产','08:00','已生成','预览'],['重保专项周报','每周','重保资产','周一 09:00','已生成','预览'],['月度风险报告','每月','全校资产','每月1日','排队中','预览']]},
+ 'vuln-overview':{title:'脆弱性总览',description:'汇总漏洞、配置风险与弱密码检测结果，输出资产脆弱性综合评分。',kpis:[K('综合评分','72.4','较上周 +2.1','green'),K('漏洞总数','1,294','严重 86','red'),K('配置风险','186','不合规项','orange'),K('弱密码账号','42','高风险 12','blue')],charts:[C('脆弱性构成',[['漏洞风险',96],['配置风险',62],['弱密码',38]]),C('综合评分趋势',[['08-08',68],['08-09',69],['08-10',71],['08-11',70],['08-12',72]]),C('脆弱资产 Top5',[['10.10.8.21',92],['10.10.3.16',78],['172.16.2.45',71],['10.20.1.8',64],['192.168.7.9',58]])],columns:['资产','漏洞数','配置风险','弱密码','综合评分','等级'],rows:[['10.10.8.21','18','6','3','92','高'],['10.10.3.16','12','4','1','78','中'],['172.16.2.45','8','2','0','61','中']]},
+ 'vuln-vulnerability':{title:'漏洞风险',description:'管理资产漏洞扫描结果，跟踪 CVE、CVSS 评分与修复闭环。',kpis:[K('漏洞总数','1,294','今日新增 19','orange'),K('严重漏洞','86','需立即修复','red'),K('高危漏洞','72','7 日内修复','red'),K('修复率','82.5%','较上月 +3.2%','green')],charts:[C('级别分布',[['严重',86],['高危',72],['中危',48],['低危',21]]),C('漏洞类型 Top5',[['远程代码执行',94],['权限提升',78],['信息泄露',60],['SQL注入',43],['跨站脚本',31]]),C('修复趋势',[['08-08',42],['08-09',56],['08-10',48],['08-11',62],['08-12',58]])],columns:['漏洞名称','CVE编号','CVSS','影响资产','发现时间','修复状态'],rows:[['Apache Log4j2 远程代码执行','CVE-2021-44228','10.0','18','2024-08-12','修复中'],['OpenSSH 权限提升','CVE-2023-38408','7.8','26','2024-08-11','待修复'],['Nginx HTTP/3 信息泄露','CVE-2023-44487','5.3','42','2024-08-10','已修复']]},
+ 'vuln-config':{title:'配置风险',description:'基于安全基线核查账号口令、服务最小化、审计与网络配置合规性。',kpis:[K('基线检查项','86','覆盖 5 大类','blue'),K('不合规项','186','涉及 42 资产','red'),K('合规率','78.6%','较上月 +4.1%','green'),K('今日核查','42','自动核查','orange')],charts:[C('不合规类别',[['账号口令',82],['服务最小化',64],['审计日志',52],['网络配置',46],['补丁管理',38]]),C('不合规资产 Top5',[['10.10.8.21',12],['10.10.3.16',9],['172.16.2.45',7],['10.20.1.8',6],['192.168.7.9',5]]),C('合规率趋势',[['08-08',74],['08-09',75],['08-10',77],['08-11',77],['08-12',79]])],columns:['检查项','类别','不合规资产','风险等级','整改建议','状态'],rows:[['允许SSH Root直登','账号口令','12','高','禁止root直接登录','待整改'],['Telnet服务开启','服务最小化','8','高','关闭Telnet改用SSH','待整改'],['日志留存不足90天','审计日志','23','中','调整日志留存策略','整改中']]},
+ 'weakpw-detect':{title:'弱密码检测',description:'通过流量识别 FTP、Telnet、SMB、RDP 等协议的弱密码登录行为。',kpis:[K('今日检出','42','较昨日 +6','red'),K('涉及协议','7','FTP/Telnet为主','orange'),K('高风险账号','12','admin/root类','blue'),K('已通知整改','36','通知率 85.7%','green')],charts:[C('协议分布',[['FTP',12],['SMB',9],['Telnet',8],['RDP',6],['POP3',4],['IMAP',2],['SMTP',1]]),C('弱密码账号类型',[['admin类',18],['test类',12],['user类',8],['其他',4]]),C('检出趋势',[['08-08',28],['08-09',34],['08-10',31],['08-11',38],['08-12',42]])],columns:['协议','账号','源IP','目的IP','时间','强度','状态'],rows:[['FTP','admin','10.10.2.15','10.10.1.10','10:38','弱','待整改'],['Telnet','root','172.16.2.45','172.16.1.1','10:12','弱','已通知'],['SMB','administrator','10.10.3.16','10.10.1.20','09:46','中','已整改']]},
+ 'weakpw-scan':{title:'弱密码主动扫描',description:'使用字典对目标网段进行弱密码主动扫描，支持周期任务与并发控制。',kpis:[K('扫描任务','8','周期任务 5','blue'),K('覆盖网段','12','全校关键网段','green'),K('字典规模','12万','默认+自定义','orange'),K('今日命中','18','已通知责任人','red')],charts:[C('任务状态',[['已完成',5],['执行中',2],['待执行',1]]),C('命中协议分布',[['SSH',8],['FTP',5],['RDP',3],['MySQL',2]]),C('扫描进度趋势',[['08-08',62],['08-09',74],['08-10',78],['08-11',86],['08-12',92]])],columns:['任务名称','目标网段','使用字典','进度','命中数','状态'],rows:[['全网月度扫描','10.10.0.0/16','默认字典','100%','12','已完成'],['服务器区扫描','172.16.0.0/16','默认+自定义','62%','6','执行中'],['办公网扫描','192.168.10.0/24','默认字典','0%','0','待执行']]},
+ 'weakpw-web-custom':{title:'Web弱密码自定义',description:'自定义 Web 登录表单的用户名、密码字段与成功特征，实现弱口令检测。',kpis:[K('自定义表单','12','覆盖核心业务','blue'),K('已启用','10','停用 2','green'),K('今日检测','286','登录请求','orange'),K('今日检出','6','弱口令账号','red')],charts:[C('表单类型',[['OA系统',4],['门户',3],['VPN',2],['其他',3]]),C('提交方式',[['表单POST',8],['JSON接口',4]]),C('检出趋势',[['08-08',3],['08-09',5],['08-10',4],['08-11',7],['08-12',6]])],columns:['名称','登录URL','用户名字段','密码字段','成功特征','状态'],rows:[['学校OA','oa.example.local/login','username','password','欢迎您','启用'],['VPN网关','vpn.example.local/login','user','pass','登录成功','启用'],['图书馆系统','lib.example.local/signin','account','pwd','个人中心','停用']]},
+ 'weakpw-web-result':{title:'Web登录结果自定义',description:'自定义登录成功、失败的判定规则（关键字、状态码、跳转），提高识别准确率。',kpis:[K('判定规则','8','全部启用','blue'),K('今日判定','1,286','登录请求','orange'),K('判定准确率','98.2%','人工抽检','green'),K('未知结果','12','需补充规则','red')],charts:[C('匹配方式',[['响应关键字',5],['状态码',2],['跳转地址',1]]),C('判定结果分布',[['登录成功',86],['登录失败',92],['未知',12]]),C('规则命中 Top5',[['OA成功判定',92],['OA失败判定',86],['VPN判定',64],['门户判定',52],['邮箱判定',38]])],columns:['规则名称','匹配方式','匹配内容','判定结果','状态','操作'],rows:[['OA成功判定','响应关键字','欢迎您','成功','启用','编辑'],['OA失败判定','响应关键字','用户名或密码错误','失败','启用','编辑'],['VPN判定','状态码','302 → /index','成功','启用','编辑']]},
+ 'weakpw-plaintext':{title:'Web明文传输',description:'检测 HTTP、FTP、Telnet、POP3 等明文协议中的账号口令传输并告警。',kpis:[K('今日告警','26','较昨日 +4','red'),K('涉及协议','4','HTTP为主','orange'),K('高风险账号','8','已强制改密 5','blue'),K('已通知','22','通知率 84.6%','green')],charts:[C('协议分布',[['HTTP',14],['FTP',6],['Telnet',4],['POP3',2]]),C('风险等级',[['高',8],['中',12],['低',6]]),C('告警趋势',[['08-08',18],['08-09',22],['08-10',19],['08-11',24],['08-12',26]])],columns:['协议','源IP','目的IP','URL/目标','账号','时间','风险'],rows:[['HTTP','10.10.2.15','oa.example.local','/login','zhang**','10:38','高'],['FTP','10.10.3.16','10.10.1.10','-','admin','10:12','高'],['Telnet','172.16.2.45','172.16.1.1','-','root','09:46','中']]}
+};
+
+/* ================= 单一导航与路由元数据（递归三级，48 叶子） ================= */
+const NAV=[
+ {navId:'home',label:'首页',hash:'#/home',icon:'home',custom:true},
+ {groupId:'situation',label:'安全态势',icon:'threat',children:[
+  {navId:'situation-overall',label:'综合态势',hash:'#/situation/overall'},
+  {navId:'situation-threat',label:'威胁态势',hash:'#/situation/threat'},
+  {navId:'situation-asset',label:'资产态势',hash:'#/situation/asset'},
+  {navId:'situation-vulnerability',label:'漏洞态势',hash:'#/situation/vulnerability'},
+  {navId:'situation-file',label:'文件态势',hash:'#/situation/file'},
+  {navId:'screen',label:'大屏可视化',hash:'#/screen',custom:true},
+  {navId:'screen-settings',label:'大屏设置',hash:'#/situation/screen-settings'}]},
+ {groupId:'security-analysis',label:'安全分析',icon:'analysis',children:[
+  {navId:'analysis-risk',label:'风险研判',hash:'#/analysis/risk'},
+  {navId:'analysis-intelligence',label:'威胁情报',hash:'#/analysis/intelligence'},
+  {navId:'analysis-forensics',label:'攻击取证',hash:'#/analysis/forensics'},
+  {navId:'risk-view',label:'风险视角',hash:'#/analysis/risk-view'},
+  {navId:'threat-view',label:'威胁视角',hash:'#/analysis/threat-view'}]},
+ {groupId:'threat-analysis',label:'威胁分析',icon:'shield',children:[
+  {navId:'threat-overview',label:'威胁总览',hash:'#/threat/overview'},
+  {navId:'threat-external',label:'外部威胁',hash:'#/threat/external'},
+  {navId:'threat-outbound',label:'外连威胁',hash:'#/threat/outbound'},
+  {navId:'threat-egress',label:'对外威胁',hash:'#/threat/egress'},
+  {navId:'threat-internal',label:'内部威胁',hash:'#/threat/internal'},
+  {navId:'threat-user',label:'用户威胁',hash:'#/threat/user'},
+  {navId:'threat-5g',label:'5G威胁',hash:'#/threat/5g'},
+  {navId:'threat-file',label:'文件威胁分析',hash:'#/threat/file'},
+  {navId:'threat-sandbox',label:'云沙箱',hash:'#/threat/sandbox'},
+  {navId:'threat-intel-detect',label:'威胁情报检测',hash:'#/threat/intel-detect'}]},
+ {navId:'assurance',label:'重保分析',hash:'#/assurance',icon:'bell'},
+ {groupId:'asset-monitor',label:'资产监控',icon:'server',children:[
+  {groupId:'asset-identify',label:'资产识别',children:[
+   {navId:'asset-id-host',label:'主机资产识别',hash:'#/asset/identify/host'},
+   {navId:'asset-id-fingerprint',label:'资产指纹识别',hash:'#/asset/identify/fingerprint'},
+   {navId:'asset-id-mac',label:'识别资产MAC地址',hash:'#/asset/identify/mac'},
+   {navId:'asset-id-owner',label:'资产责任人识别',hash:'#/asset/identify/owner'}]},
+  {navId:'asset-discovery',label:'资产发现',hash:'#/asset/discovery'},
+  {navId:'asset-lifecycle',label:'资产生命周期管理',hash:'#/asset/lifecycle'},
+  {navId:'asset-integration',label:'第三方资产系统对接',hash:'#/asset/integration'}]},
+ {navId:'logs',label:'日志检索',hash:'#/logs',icon:'search',custom:true},
+ {groupId:'warning',label:'预警处置',icon:'monitor',children:[
+  {navId:'warning',label:'预警处置',hash:'#/warning'},
+  {groupId:'linkage',label:'联动响应',children:[
+   {navId:'linkage-brand',label:'同品牌设备联动',hash:'#/warning/linkage/brand'},
+   {navId:'linkage-endpoint',label:'联动同品牌终端安全管理系统',hash:'#/warning/linkage/endpoint'},
+   {navId:'linkage-thirdparty',label:'第三方应用联动处置',hash:'#/warning/linkage/thirdparty'}]},
+  {navId:'warning-report',label:'安全风险报告',hash:'#/warning/report'}]},
+ {groupId:'system',label:'系统管理',icon:'lock',children:[
+  {navId:'system',label:'系统配置',hash:'#/system'},
+  {groupId:'vuln',label:'脆弱性',children:[
+   {navId:'vuln-overview',label:'脆弱性总览',hash:'#/system/vuln/overview'},
+   {navId:'vuln-vulnerability',label:'漏洞风险',hash:'#/system/vuln/vulnerability'},
+   {navId:'vuln-config',label:'配置风险',hash:'#/system/vuln/config'},
+   {groupId:'weakpw',label:'弱密码',children:[
+    {navId:'weakpw-detect',label:'弱密码检测',hash:'#/system/vuln/weakpw/detect'},
+    {navId:'weakpw-scan',label:'弱密码主动扫描',hash:'#/system/vuln/weakpw/scan'},
+    {navId:'weakpw-web-custom',label:'Web弱密码自定义',hash:'#/system/vuln/weakpw/web-custom'},
+    {navId:'weakpw-web-result',label:'Web登录结果自定义',hash:'#/system/vuln/weakpw/web-result'},
+    {navId:'weakpw-plaintext',label:'Web明文传输',hash:'#/system/vuln/weakpw/plaintext'}]}]},
+  {groupId:'special',label:'安全检测',children:[
+   {navId:'special-ransom',label:'勒索专项检测',hash:'#/special/ransom',custom:true},
+   {navId:'special-mining',label:'挖矿专项检测',hash:'#/special/mining',custom:true}]}]}
+];
+/* 递归展开：叶子携带祖先链（面包屑/自动展开用） */
+const NAV_LEAVES=[];
+(function flatten(items,chain){items.forEach(item=>{
+ if(item.children){flatten(item.children,chain.concat(item.label))}
+ else{NAV_LEAVES.push(Object.assign({},item,{ancestors:chain}))}
+})})(NAV,[]);
+const NAV_BY_HASH=Object.fromEntries(NAV_LEAVES.map(item=>[item.hash,item]));
+const routes={
+ '#/login':{render:pageLogin,full:true,title:'登录'},
+ '#/screen':{render:pageScreen,full:true,title:'威慑力大屏'},
+ '#/home':{render:pageHome,navId:'home',title:'首页',breadcrumb:['首页']},
+ '#/logs':{render:pageLogs,navId:'logs',title:'日志检索',breadcrumb:['日志检索']},
+ '#/special/ransom':{render:pageRansom,navId:'special-ransom',title:'勒索专项检测',breadcrumb:['系统管理','安全检测','勒索专项检测']},
+ '#/special/mining':{render:pageMining,navId:'special-mining',title:'挖矿专项检测',breadcrumb:['系统管理','安全检测','挖矿专项检测']}
+};
+NAV_LEAVES.forEach(item=>{if(!item.custom&&!routes[item.hash])routes[item.hash]={render:()=>renderSpecPage(PAGE_SPECS[item.navId]),navId:item.navId,title:item.label}});
+function routeMeta(hash){
+ const route=routes[hash];if(!route)return null;
+ const leaf=route.navId?NAV_LEAVES.find(item=>item.navId===route.navId):null;
+ const crumb=route.breadcrumb||(leaf?leaf.ancestors.concat(leaf.label):[route.title]);
+ return Object.assign({},route,{breadcrumb:crumb});
+}
 function router(){
  const h=location.hash||'#/login';
- const fn=routes[h]||pageLogin;
- const full=(h==='#/login'||h==='#/screen');
+ const route=routeMeta(h);
  closeDrawer(true);closeModal();
  if(state.clockTimer){clearInterval(state.clockTimer);state.clockTimer=null}
- if(full){
-  $('#appRoot').innerHTML='';
-  fn(); window.scrollTo(0,0);return;
- }
- renderLayout(h);
- fn(); window.scrollTo(0,0);
+ $('#fullRoot').innerHTML='';
+ if(!route){renderLayout(h,null);page404(h);window.scrollTo(0,0);return}
+ if(route.full){$('#appRoot').innerHTML='';route.render();window.scrollTo(0,0);return}
+ renderLayout(h,route);
+ route.render();window.scrollTo(0,0);
 }
 window.addEventListener('hashchange',router);
 
 /* ================= 布局渲染：侧边栏+顶栏+内容区 ================= */
-function renderLayout(h){
+function renderLayout(h,route){
  const menuHtml = buildSidebar(h);
- const topbarHtml = buildTopbar(h);
+ const topbarHtml = buildTopbar(route);
  $('#appRoot').innerHTML=
  '<div class="app-layout">'
  +'<div class="sidebar">'+menuHtml+'</div>'
@@ -563,92 +830,98 @@ function renderLayout(h){
 }
 
 function buildSidebar(activeHash){
- const items=[
-  {ico:I.home,label:'首页',go:'#/overview'},
-  {ico:I.threat,label:'安全态势',open:true,children:[
-   {label:'综合态势',go:'#/overview'},
-   {label:'威胁态势',go:'#/threat/ransom'},
-   {label:'资产态势',go:'#/overview'},
-   {label:'漏洞态势',go:'#/overview'},
-   {label:'文件态势',go:'#/overview'},
-  ]},
-  {ico:I.analysis,label:'安全分析',children:[
-   {label:'风险研判',go:'#/threat/ransom'},
-   {label:'威胁情报',go:'#/overview'},
-   {label:'攻击取证',go:'#/overview'},
-  ]},
-  {ico:I.shield,label:'威胁分析',open:true,children:[
-   {label:'威胁总览',go:'#/overview'},
-   {label:'外部威胁',go:'#/threat/ransom'},
-   {label:'外连威胁',go:'#/threat/ransom'},
-   {label:'对外威胁',go:'#/overview'},
-   {label:'内部威胁',go:'#/threat/mining'},
-   {label:'用户威胁',go:'#/threat/mining'},
-   {label:'5G威胁',go:'#/threat/mining'},
-  ]},
-  {ico:I.bell,label:'重保分析',go:'#/overview'},
-  {ico:I.server,label:'资产监控',children:[
-   {label:'资产管理',go:'#/overview'},
-   {label:'资产详情',go:'#/overview'},
-  ]},
-  {ico:I.monitor,label:'预警处置',go:'#/overview'},
-  {ico:I.lock,label:'系统管理',go:'#/overview'},
- ];
- let html='<div class="sb-logo">'
-  +'<div class="sb-logo-icon">'+I.shield+'</div>'
-  +'<div class="sb-logo-text">威胁感知大数据平台</div>'
-  +'</div><div class="sb-menu">';
- items.forEach(g=>{
-  if(!g.children){
-   const ac=(activeHash===g.go)?' active':'';
-   html+='<div class="sb-item'+ac+'" data-go="'+g.go+'"><span class="sb-ico">'+(g.ico||I.chart)+'</span>'+g.label+'</div>';
-  }else{
-   const isOpen=g.open?' open':'';
-   html+='<div class="sb-group-title">'+g.label+'</div><div class="sb-sub'+isOpen+'">';
-   g.children.forEach(c=>{
-    const ac=(activeHash===c.go||(c.active&&activeHash.startsWith('#/threat')))?' active':'';
-    html+='<div class="sb-item'+ac+'" data-go="'+c.go+'">'+c.label+'</div>';
-   });
-   html+='</div>';
-  }
- });
- html+='</div>'
- +'<div class="sb-footer">SAC3000-P-GA-H<br>DPtech © 2026</div>';
- return html;
+ let html='<div class="sb-logo"><div class="sb-logo-icon">'+I.shield+'</div><div class="sb-logo-text">威胁感知大数据平台</div></div><div class="sb-menu">';
+ html+=NAV.map(item=>renderNavItem(item,activeHash,0)).join('');
+ return html+'</div><div class="sb-footer">SAC3000-P-GA-H<br>DPtech © 2026</div>';
+}
+function renderNavItem(item,activeHash,depth){
+ const lvl=depth>=2?' sb-l3':depth===1?' sb-l2':'';
+ if(!item.children){
+  return '<a class="sb-item'+lvl+(activeHash===item.hash?' active':'')+'" href="'+item.hash+'" data-nav-id="'+item.navId+'" role="menuitem">'
+  +(depth===0?'<span class="sb-ico">'+(I[item.icon]||I.chart)+'</span>':'')
+  +'<span>'+item.label+'</span></a>';
+ }
+ const open=containsHash(item,activeHash);
+ return '<div class="sb-group-head'+lvl+'" data-group="'+item.groupId+'" role="button" tabindex="0" aria-expanded="'+open+'">'
+ +(depth===0?'<span class="sb-ico">'+(I[item.icon]||I.chart)+'</span>':'')
+ +'<span>'+item.label+'</span><span class="sb-arrow">▶</span></div>'
+ +'<div class="sb-sub'+(open?' open':'')+'" data-group-panel="'+item.groupId+'">'
+ +item.children.map(c=>renderNavItem(c,activeHash,depth+1)).join('')+'</div>';
+}
+function containsHash(item,hash){
+ if(!item.children)return item.hash===hash;
+ return item.children.some(c=>containsHash(c,hash));
 }
 
-function buildTopbar(h){
- const tabs = h.includes('threat') ? ['威胁分析','外连威胁'] : ['威胁分析'];
- const curTab = h.includes('mining') ? '外连威胁' : (h.includes('ransom')||h.includes('threat') ? '威胁分析' : '威胁分析');
- return '<div class="topbar">'
- +'<div class="tb-breadcrumb">'
- +'<span style="color:var(--primary);font-weight:600">威胁感知大数据平台</span>'
- +'<span>/</span>'
- +tabs.map(t=>'<span class="'+(t===curTab?'cur':'')+'">'+t+'</span>').join(' / ')
- +'</div>'
- +'<div class="tb-date-range">📅 2024-08-12 ～ 2024-08-12</div>'
- +'<div class="tb-actions">'
- +'<select style="padding:4px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;color:var(--text-secondary)"><option>所有架构</option><option>教学区</option><option>办公区</option><option>宿舍区</option></select>'
- +'<div class="tb-icon-btn" title="通知">'+I.bell+'<span class="dot"></span></div>'
- +'<div class="tb-user-dropdown" id="userDrop">'
- +'<div class="tb-avatar-sm">'+esc((state.user||'A').slice(0,1).toUpperCase())+'</div>'
- +'<span>'+(esc(state.user)||'admin')+'</span>'
- +' <span style="font-size:10px;color:var(--text-third)">▼</span>'
- +'</div>'
- +'<button class="btn-primary-dp">🔍 威胁检索</button>'
+function buildTopbar(route){
+ const crumbs=route?route.breadcrumb:['页面不存在'];
+ return '<div class="topbar"><div class="tb-breadcrumb"><span style="color:var(--primary);font-weight:600">威胁感知大数据平台</span><span>/</span>'
+ +crumbs.map((t,i)=>'<span class="'+(i===crumbs.length-1?'cur':'')+'">'+esc(t)+'</span>').join('<span>/</span>')
+ +'</div><div class="tb-actions">'
+ +'<button class="tb-icon-btn" id="tbSettings" title="显示设置" aria-label="显示设置">'+I.gear+'</button>'
+ +'<div class="tb-drop-wrap"><button class="tb-org-btn" id="tbOrg" aria-label="选择机构">'+I.pin+'<span class="tb-org-label" id="tbOrgLabel">'+esc(state.org||'所有机构')+'</span><span style="font-size:10px;color:var(--text-third)">▼</span></button>'
+ +'<div class="tb-drop" id="tbOrgDrop" style="display:none">'+['所有机构','信息中心','教学区','办公区','宿舍区'].map(o=>'<button class="tb-drop-item'+(o===(state.org||'所有机构')?' sel':'')+'" data-org="'+o+'">'+o+'</button>').join('')+'</div></div>'
+ +'<button class="tb-icon-btn" id="tbMsg" title="告警消息" aria-label="告警消息">'+I.mail+'<i class="tb-badge">42</i></button>'
+ +'<button class="tb-icon-btn" id="tbTask" title="联动处置任务" aria-label="联动处置任务">'+I.taskShield+'</button>'
+ +'<button class="tb-icon-btn" id="tbBell" title="系统通知" aria-label="系统通知">'+I.bell+'<i class="tb-badge">99+</i></button>'
+ +'<div class="tb-drop-wrap"><button class="tb-user-dropdown" id="tbUser"><div class="tb-avatar-sm">'+esc((state.user||'A').slice(0,1).toUpperCase())+'</div><span>'+(esc(state.user)||'admin')+'</span><span style="font-size:10px;color:var(--text-third)">▼</span></button>'
+ +'<div class="tb-drop" id="tbUserDrop" style="display:none"><button class="tb-drop-item" id="tbProfile">'+I.user+' 个人信息</button><button class="tb-drop-item" id="tbPasswd">'+I.key+' 修改密码</button><div class="tb-drop-sep"></div><button class="tb-drop-item" id="tbLogout">'+I.logout+' 退出登录</button></div></div>'
  +'</div></div>';
 }
 
 function bindSidebarEvents(){
- $$('#appRoot .sb-item[data-go]').forEach(el=>{
-  el.addEventListener('click',()=>go(el.getAttribute('data-go')));
+ $$('.sb-group-head').forEach(head=>{
+  const toggle=()=>{const panel=document.querySelector('[data-group-panel="'+head.dataset.group+'"]');const open=head.getAttribute('aria-expanded')==='true';head.setAttribute('aria-expanded',String(!open));panel.classList.toggle('open',!open)};
+  head.addEventListener('click',toggle);
+  head.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}});
+ });
+ $$('.sb-item[href]').forEach(link=>link.addEventListener('keydown',e=>{if(e.key===' '){e.preventDefault();go(link.getAttribute('href'))}}));
+}
+function bindTopbarEvents(){
+ const closeDrops=()=>{const a=$('#tbOrgDrop'),b=$('#tbUserDrop');if(a)a.style.display='none';if(b)b.style.display='none'};
+ document.addEventListener('click',e=>{if(!e.target.closest('.tb-drop-wrap'))closeDrops()});
+ $('#tbOrg').addEventListener('click',e=>{e.stopPropagation();const d=$('#tbOrgDrop');const wasOpen=d.style.display!=='none';closeDrops();d.style.display=wasOpen?'none':'block'});
+ $$('#tbOrgDrop .tb-drop-item').forEach(btn=>btn.addEventListener('click',()=>{state.org=btn.dataset.org;$('#tbOrgLabel').textContent=state.org;closeDrops();toast('已切换到“'+state.org+'”','success')}));
+ $('#tbUser').addEventListener('click',e=>{e.stopPropagation();const d=$('#tbUserDrop');const wasOpen=d.style.display!=='none';closeDrops();d.style.display=wasOpen?'none':'block'});
+ $('#tbProfile').addEventListener('click',()=>{closeDrops();openModal('<div class="modal-head">个人信息<button class="modal-x" id="pfX">×</button></div><div class="modal-body"><div class="pf-row"><b>账号</b><span>'+esc(state.user||'admin')+'</span></div><div class="pf-row"><b>角色</b><span>'+esc(state.role||'系统管理员')+'</span></div><div class="pf-row"><b>所属机构</b><span>'+esc(state.org||'所有机构')+'</span></div><div class="pf-row"><b>最近登录</b><span>2024-08-12 09:12:36（10.10.1.66）</span></div></div><div class="modal-foot"><button class="btn btn-primary" id="pfOk" data-autofocus>关闭</button></div>');$('#pfX').addEventListener('click',closeModal);$('#pfOk').addEventListener('click',closeModal)});
+ $('#tbPasswd').addEventListener('click',()=>{closeDrops();openModal('<div class="modal-head">修改密码<button class="modal-x" id="pwX">×</button></div><div class="modal-body"><label style="display:block;margin-bottom:6px">原密码</label><input id="pw0" type="password" data-autofocus style="width:100%;height:34px;border:1px solid var(--border);border-radius:4px;padding:0 10px;margin-bottom:10px"><label style="display:block;margin-bottom:6px">新密码</label><input id="pw1" type="password" style="width:100%;height:34px;border:1px solid var(--border);border-radius:4px;padding:0 10px"></div><div class="modal-foot"><button class="btn" id="pwNo">取消</button><button class="btn btn-primary" id="pwYes">确认修改</button></div>');$('#pwX').addEventListener('click',closeModal);$('#pwNo').addEventListener('click',closeModal);$('#pwYes').addEventListener('click',()=>{if(!$('#pw0').value||!$('#pw1').value){toast('请填写完整','error');return}closeModal();toast('密码已修改，下次登录生效','success')})});
+ $('#tbLogout').addEventListener('click',()=>{closeDrops();state.user=null;go('#/login')});
+ $('#tbSettings').addEventListener('click',()=>{
+  const prefs=getDisplayPrefs();
+  openModal('<div class="modal-head">显示设置<button class="modal-x" id="dsX">×</button></div><div class="modal-body">'
+  +'<div class="dp-toggle"><span>紧凑表格（减小行高）</span><button class="dp-switch'+(prefs.compact?' on':'')+'" id="dsCompact" role="switch" aria-checked="'+!!prefs.compact+'"></button></div>'
+  +'<div class="dp-toggle" style="border-bottom:none"><span>表格斑马纹</span><button class="dp-switch'+(prefs.zebra?' on':'')+'" id="dsZebra" role="switch" aria-checked="'+!!prefs.zebra+'"></button></div>'
+  +'</div><div class="modal-foot"><button class="btn btn-primary" id="dsOk" data-autofocus>完成</button></div>');
+  $('#dsX').addEventListener('click',closeModal);$('#dsOk').addEventListener('click',closeModal);
+  $('#dsCompact').addEventListener('click',()=>{const p=getDisplayPrefs();p.compact=!p.compact;setDisplayPrefs(p);$('#dsCompact').classList.toggle('on',p.compact);$('#dsCompact').setAttribute('aria-checked',String(p.compact))});
+  $('#dsZebra').addEventListener('click',()=>{const p=getDisplayPrefs();p.zebra=!p.zebra;setDisplayPrefs(p);$('#dsZebra').classList.toggle('on',p.zebra);$('#dsZebra').setAttribute('aria-checked',String(p.zebra))});
+ });
+ $('#tbMsg').addEventListener('click',()=>{
+  const msgs=[['高危','失陷主机外联 C&C','10.10.3.16 → 185.220.101.3:443 已自动阻断','10:38:17'],['高危','WebShell 上传行为','门户服务器 10.10.8.21 检测到文件落地','10:21:03'],['中危','RDP 暴力破解','172.16.2.45 遭到 91.121.87.44 爆破 128 次','09:56:12'],['中危','恶意域名 DNS 请求','malware.example 命中迪普情报云','09:44:28'],['低危','端口扫描','202.201.0.131 对内网发起 TCP SYN 扫描','09:12:40']];
+  openModal('<div class="modal-head">告警消息（42 条未读）<button class="modal-x" id="msgX">×</button></div><div class="modal-body">'+msgs.map(m=>'<div class="msg-item"><div class="m-ico" style="background:'+(m[0]==='高危'?'var(--danger-light)':m[0]==='中危'?'var(--warn-light)':'var(--primary-light)')+'">'+I.threat+'</div><div class="m-body"><div class="m-title"><span class="tag '+(m[0]==='高危'?'tag-red':m[0]==='中危'?'tag-orange':'tag-blue')+'">'+m[0]+'</span> '+m[1]+'</div><div class="m-desc">'+m[2]+'</div><div class="m-time">'+m[3]+'</div></div></div>').join('')+'</div><div class="modal-foot"><button class="btn btn-primary" id="msgAll">查看全部告警</button></div>');
+  $('#msgX').addEventListener('click',closeModal);$('#msgAll').addEventListener('click',()=>{closeModal();go('#/threat/overview')});
+  $$('.msg-item').forEach(el=>el.addEventListener('click',()=>{closeModal();go('#/threat/overview')}));
+ });
+ $('#tbTask').addEventListener('click',()=>{
+  openModal('<div class="modal-head">联动处置任务<button class="modal-x" id="tkX">×</button></div><div class="modal-body">'
+  +'<div class="task-row"><span class="tag tag-red">执行中</span><span style="flex:1">DPtech-FW-01 封禁失陷主机 10.10.3.16</span><span style="color:var(--text-third);font-size:12px">10:38</span></div>'
+  +'<div class="task-row"><span class="tag tag-orange">待确认</span><span style="flex:1">EDR 隔离终端 pc-088（教务处）</span><span style="color:var(--text-third);font-size:12px">10:18</span></div>'
+  +'<div class="task-row"><span class="tag tag-green">已完成</span><span style="flex:1">工单系统创建处置工单 #GD-20240812</span><span style="color:var(--text-third);font-size:12px">09:52</span></div>'
+  +'</div><div class="modal-foot"><button class="btn btn-primary" id="tkGo">进入预警处置</button></div>');
+  $('#tkX').addEventListener('click',closeModal);$('#tkGo').addEventListener('click',()=>{closeModal();go('#/warning')});
+ });
+ $('#tbBell').addEventListener('click',()=>{
+  openModal('<div class="modal-head">系统通知<button class="modal-x" id="ntX">×</button></div><div class="modal-body">'
+  +'<div class="msg-item"><div class="m-ico" style="background:var(--warn-light)">'+I.info+'</div><div class="m-body"><div class="m-title">特征库升级提醒</div><div class="m-desc">威胁特征库 V20240812 已就绪，建议今日内完成升级</div><div class="m-time">08:30</div></div></div>'
+  +'<div class="msg-item"><div class="m-ico" style="background:var(--danger-light)">'+I.info+'</div><div class="m-body"><div class="m-title">存储空间告警</div><div class="m-desc">日志存储已达 78%，请及时扩容或调整留存策略</div><div class="m-time">07:15</div></div></div>'
+  +'<div class="msg-item"><div class="m-ico" style="background:var(--primary-light)">'+I.info+'</div><div class="m-body"><div class="m-title">授权到期提醒</div><div class="m-desc">云沙箱授权将于 30 天后到期，请提前续费</div><div class="m-time">昨天</div></div></div>'
+  +'</div><div class="modal-foot"><button class="btn btn-primary" id="ntOk" data-autofocus>知道了</button></div>');
+  $('#ntX').addEventListener('click',closeModal);$('#ntOk').addEventListener('click',closeModal);
  });
 }
-function bindTopbarEvents(h){
- const ub=$('#userDrop');
- if(ub)ub.addEventListener('click',()=>toast('当前登录：'+esc(state.user||'admin')+'（'+esc(state.role||'系统管理员')+'）'));
- $$('.tb-icon-btn').forEach(el=>el.addEventListener('click',()=>toast('演示环境，通知模块暂未开放')));
-}
+function getDisplayPrefs(){try{return JSON.parse(localStorage.getItem('dpDisplay')||'{}')}catch(e){return{}}}
+function setDisplayPrefs(p){try{localStorage.setItem('dpDisplay',JSON.stringify(p))}catch(e){}document.body.classList.toggle('dp-compact',!!p.compact);document.body.classList.toggle('dp-zebra',!!p.zebra)}
+(function initDisplayPrefs(){const p=getDisplayPrefs();document.body.classList.toggle('dp-compact',!!p.compact);document.body.classList.toggle('dp-zebra',!!p.zebra)})();
 
 /* ================= 页面：登录 ================= */
 const ACCOUNTS={
@@ -680,10 +953,217 @@ function pageLogin(){
   err.style.display='none';
   state.user=u;state.role=acc.role;
   btn.disabled=true;btn.innerHTML='<span class="spin"></span> 正在登录…';
-  setTimeout(()=>go('#/threat/ransom'),800);
+  setTimeout(()=>go('#/home'),800);
  };
  btn.addEventListener('click',doLogin);
  $('#lgPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+}
+
+/* ================= 配置驱动正式页面 ================= */
+function metricIcon(index){return [I.chart,I.threat,I.server,I.monitor][index%4]}
+function renderTopChart(chart){
+ const max=Math.max.apply(null,chart.items.map(item=>Number(item[1])))||1;
+ return '<div class="chart-box"><div class="chart-head">'+esc(chart.title)+'</div><div class="chart-body"><div class="top-list">'+chart.items.map((item,i)=>'<button class="top-item" data-chart-filter="'+esc(item[0])+'" title="点击筛选"><span class="top-rank">'+(i+1)+'</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left">'+esc(item[0])+'</span><span class="top-track"><span class="top-fill" style="display:block;width:'+(Number(item[1])/max*100).toFixed(1)+'%"></span></span><b class="num">'+esc(item[1])+'</b></button>').join('')+'</div></div></div>';
+}
+function renderSpecPage(spec){
+ const c=$('#content');if(!c||!spec)return;
+ c.innerHTML=pageHeader(spec.title,'<span class="tag tag-blue">手册功能还原</span>')
+ +'<div class="spec-note">'+esc(spec.description)+'</div>'
+ +'<div class="stat-row">'+spec.kpis.map((k,i)=>'<div class="stat-card"><div class="stat-icon '+esc(k.color||['blue','red','orange','green'][i])+'">'+metricIcon(i)+'</div><div class="stat-info"><div class="stat-value num">'+esc(k.value)+'</div><div class="stat-label">'+esc(k.label)+'</div><div class="stat-trend '+(i===1?'up':'down')+'">'+esc(k.trend)+'</div></div></div>').join('')+'</div>'
+ +'<div class="spec-chart-grid">'+spec.charts.map(renderTopChart).join('')+'</div>'
+ +'<div class="table-card"><div class="card-head">'+esc(spec.title)+'数据明细<span class="sub">字段与当前功能场景匹配</span></div>'
+ +'<div class="table-toolbar"><button class="btn btn-sm btn-primary" id="specSearchBtn">'+I.search+' 搜索</button><input id="specQuery" aria-label="过滤表格" placeholder="输入关键字过滤" style="height:32px;padding:0 10px;border:1px solid var(--border);border-radius:4px;width:220px"><button class="btn btn-sm" id="specExport">导出</button><button class="btn btn-sm" id="specBatch">批量处置</button><span style="flex:1"></span><span id="specResult" style="color:var(--text-secondary)"></span></div>'
+ +'<div class="table-wrap"><table class="data-table"><thead><tr>'+spec.columns.map(col=>'<th>'+esc(col)+'</th>').join('')+'<th>操作</th></tr></thead><tbody id="specTbody"></tbody></table></div><div class="pager-wrap"><span>第 1 页</span><div class="pager-nav"><button class="pg-btn cur">1</button></div></div></div>'
+ +(spec.title==='外连威胁'?'<div class="card mt-16"><div class="card-head">专项检测</div><div class="card-body"><button class="btn btn-primary" data-go-special="#/special/ransom">查看勒索专项 22 点蓝雷达</button></div></div>':'')
+ +(spec.title==='内部威胁'?'<div class="card mt-16"><div class="card-head">专项检测</div><div class="card-body"><button class="btn btn-primary" data-go-special="#/special/mining">查看挖矿专项检测</button></div></div>':'')
+ +(spec.title==='首页'?'<div class="card mt-16"><div class="card-head">安全态势大屏</div><div class="card-body"><button class="btn btn-primary" data-go-special="#/screen">进入威慑力大屏</button></div></div>':'');
+ bindRefresh('#rfBtn');
+ bindSpecActions(spec);
+}
+function bindSpecActions(spec){
+ const tbody=$('#specTbody'),query=$('#specQuery'),result=$('#specResult');
+ const draw=()=>{
+  const q=(query.value||'').trim().toLowerCase();
+  const filtered=spec.rows.filter(row=>!q||row.some(cell=>String(cell).toLowerCase().includes(q)));
+  result.textContent='共 '+filtered.length+' 条';
+  tbody.innerHTML=filtered.length?filtered.map((row,i)=>'<tr>'+row.map(cell=>'<td>'+renderCell(cell)+'</td>').join('')+'<td><button class="btn btn-sm spec-detail" data-row="'+i+'">详情</button> <button class="btn btn-sm spec-dispose" data-row="'+i+'">处置</button></td></tr>').join(''):'<tr><td colspan="'+(spec.columns.length+1)+'" class="empty-state">没有匹配数据，请调整搜索条件</td></tr>';
+  $$('.spec-detail').forEach(btn=>btn.addEventListener('click',()=>showSpecDetail(spec,filtered[Number(btn.dataset.row)])));
+  $$('.spec-dispose').forEach(btn=>btn.addEventListener('click',()=>confirmSpecDispose(spec,filtered[Number(btn.dataset.row)],btn)));
+ };
+ query.addEventListener('input',draw);
+ $('#specSearchBtn').addEventListener('click',()=>{draw();toast(query.value?'筛选条件已应用':'已显示全部数据','success')});
+ $('#specExport').addEventListener('click',()=>exportSpecCsv(spec));
+ $('#specBatch').addEventListener('click',()=>{
+  openModal('<div class="modal-head">批量处置确认<button class="modal-x" id="batchX">×</button></div><div class="modal-body">将对当前页面的高风险记录执行研判与联动处置流程。</div><div class="modal-foot"><button class="btn" id="batchNo">取消</button><button class="btn btn-primary" id="batchYes" data-autofocus>确认执行</button></div>');
+  $('#batchX').addEventListener('click',closeModal);$('#batchNo').addEventListener('click',closeModal);$('#batchYes').addEventListener('click',()=>{closeModal();toast('批量处置任务已创建','success')});
+ });
+ $$('[data-chart-filter]').forEach(btn=>btn.addEventListener('click',()=>{query.value=btn.dataset.chartFilter;draw();toast('已按“'+btn.dataset.chartFilter+'”联动筛选','success')}));
+ $$('[data-go-special]').forEach(btn=>btn.addEventListener('click',()=>go(btn.dataset.goSpecial)));
+ draw();
+}
+function renderCell(value){
+ const s=String(value);
+ if(/高危|严重|待处置|高风险/.test(s))return '<span class="tag tag-red">'+esc(s)+'</span>';
+ if(/中危|处置中|修复中|核查中|异常/.test(s))return '<span class="tag tag-orange">'+esc(s)+'</span>';
+ if(/已|在线|安全|正常/.test(s))return '<span class="tag tag-green">'+esc(s)+'</span>';
+ return esc(s);
+}
+function showSpecDetail(spec,row){
+ openModal('<div class="modal-head">'+esc(spec.title)+'详情<button class="modal-x" id="detailX">×</button></div><div class="modal-body"><div style="display:grid;grid-template-columns:120px 1fr;gap:10px">'+spec.columns.map((col,i)=>'<b>'+esc(col)+'</b><span>'+esc(row[i])+'</span>').join('')+'</div></div><div class="modal-foot"><button class="btn btn-primary" id="detailOk" data-autofocus>关闭</button></div>');
+ $('#detailX').addEventListener('click',closeModal);$('#detailOk').addEventListener('click',closeModal);
+}
+function confirmSpecDispose(spec,row,button){
+ openModal('<div class="modal-head">处置确认<button class="modal-x" id="disposeX">×</button></div><div class="modal-body">确认对 <b>'+esc(row[1]||row[0])+'</b> 创建“'+esc(spec.title)+'”处置任务？</div><div class="modal-foot"><button class="btn" id="disposeNo">取消</button><button class="btn btn-primary" id="disposeYes" data-autofocus>确认处置</button></div>');
+ $('#disposeX').addEventListener('click',closeModal);$('#disposeNo').addEventListener('click',closeModal);$('#disposeYes').addEventListener('click',()=>{closeModal();button.textContent='已处置';button.disabled=true;toast('处置任务已闭环','success')});
+}
+function exportSpecCsv(spec){
+ const csv='\ufeff'+[spec.columns].concat(spec.rows).map(row=>row.map(cell=>'"'+String(cell).replace(/"/g,'""')+'"').join(',')).join('\n');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download=spec.title+'-数据.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),0);toast('数据已导出','success');
+}
+function openSearchModal(){
+ openModal('<div class="modal-head">全局威胁检索<button class="modal-x" id="gsX">×</button></div><div class="modal-body"><label style="display:block;margin-bottom:8px;color:var(--text-primary)">IP、域名、文件Hash或事件名称</label><input id="gsInput" data-autofocus placeholder="例如：185.48.59.52" style="width:100%;height:38px;border:1px solid var(--border);border-radius:4px;padding:0 10px"></div><div class="modal-foot"><button class="btn" id="gsNo">取消</button><button class="btn btn-primary" id="gsYes">开始检索</button></div>');
+ $('#gsX').addEventListener('click',closeModal);$('#gsNo').addEventListener('click',closeModal);$('#gsYes').addEventListener('click',()=>{const q=$('#gsInput').value.trim();if(!q){toast('请输入检索内容','error');return}closeModal();go('#/analysis/intelligence');setTimeout(()=>toast('已检索“'+q+'”，发现 3 条关联情报','success'),50)});
+}
+/* ================= 页面：首页（按实际产品界面还原） ================= */
+function pageHome(){
+ const c=$('#content');if(!c)return;
+ /* 半圆仪表盘：蓝(低)/绿(中)/橙(高) 三段弧 + 指针 48% */
+ const gauge='<svg width="230" height="150" viewBox="0 0 220 150" role="img" aria-label="安全风险评级：中风险 50分">'
+ +'<path d="M20 115 A90 90 0 0 1 200 115" fill="none" stroke="#f0f2f5" stroke-width="15" stroke-linecap="round"/>'
+ +'<path d="M20 115 A90 90 0 0 1 65 37.1" fill="none" stroke="#1890ff" stroke-width="15" stroke-linecap="round"/>'
+ +'<path d="M65 37.1 A90 90 0 0 1 155 37.1" fill="none" stroke="#52c41a" stroke-width="15"/>'
+ +'<path d="M155 37.1 A90 90 0 0 1 200 115" fill="none" stroke="#fa541c" stroke-width="15" stroke-linecap="round"/>'
+ +'<path d="M110 115 L104.8 46" stroke="#fa541c" stroke-width="3.5" stroke-linecap="round"/>'
+ +'<circle cx="110" cy="115" r="7" fill="#fa541c"/><circle cx="110" cy="115" r="3.2" fill="#fff"/>'
+ +'<text x="110" y="136" text-anchor="middle" font-size="15" font-weight="700" fill="#fa541c">中风险</text>'
+ +'<text x="110" y="150" text-anchor="middle" font-size="12" fill="#8c8c8c">50分</text></svg>';
+ const dots=['#ff7875','#ffc069','#fff566','#91d5ff','#b7eb8f'],labels=['疑似被入侵','高风险','中风险','低风险','比较安全'];
+ const assetMini=(cls,icon,title,vals,goHash)=>'<div class="asset-mini '+cls+'" data-asset-go="'+goHash+'" role="button" tabindex="0"><div class="am-head">'+icon+'<span>'+title+'</span></div><div class="am-stats">'
+ +vals.map((v,i)=>'<span class="am-stat"><i style="background:'+dots[i]+'"></i>'+labels[i]+':<b>'+v+'</b></span>').join('')+'</div></div>';
+ /* 告警级别环图（三段式 donut） */
+ const total=83465,R=54,CC=(2*Math.PI*R).toFixed(2);
+ const segs=[['#f5222d',81690],['#fa8c16',1398],['#1890ff',377]];let acc=0;
+ const donutSvg='<svg width="150" height="150" viewBox="0 0 150 150" role="img">'+segs.map(s=>{
+  const frac=s[1]/total,dash=(frac*2*Math.PI*R).toFixed(2),off=(-acc*2*Math.PI*R).toFixed(2);acc+=frac;
+  return '<circle cx="75" cy="75" r="'+R+'" fill="none" stroke="'+s[0]+'" stroke-width="17" stroke-dasharray="'+dash+' '+(CC-dash)+'" stroke-dashoffset="'+off+'" transform="rotate(-90 75 75)"/>';
+ }).join('')+'<text x="75" y="71" text-anchor="middle" font-size="19" font-weight="800" fill="#262626">83,470</text><text x="75" y="90" text-anchor="middle" font-size="11" fill="#8c8c8c">告警总数</text></svg>';
+ const legend='<div style="display:flex;justify-content:center;gap:18px;margin-top:10px;font-size:12px;color:var(--text-secondary)">'
+ +'<span><i style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#f5222d;margin-right:5px"></i><b class="num" style="color:#f5222d">8.169万</b> 高危告警</span>'
+ +'<span><i style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#fa8c16;margin-right:5px"></i><b class="num" style="color:#fa8c16">1398</b> 中危告警</span>'
+ +'<span><i style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#1890ff;margin-right:5px"></i><b class="num" style="color:#1890ff">377</b> 低危告警</span></div>';
+ /* 告警类型柱状图（sqrt 缩放保证小柱可见） */
+ const types=[['病毒工具',80818],['缓冲区溢出',447],['其他威胁',364],['命令执行',327],['SQL注入',216],['DoS攻击',162],['暴力破解',160]];
+ const smax=Math.sqrt(80818);
+ const bars='<svg width="100%" height="180" viewBox="0 0 300 180" preserveAspectRatio="xMidYMid meet" role="img">'
+ +[0,1,2,3,4,5].map(i=>{const y=150-i*30;return '<line x1="34" y1="'+y+'" x2="296" y2="'+y+'" stroke="#f0f0f0" stroke-width="1"/><text x="30" y="'+(y+3.5)+'" text-anchor="end" font-size="9" fill="#bfbfbf">'+(i*2)+'万</text>'}).join('')
+ +types.map((t,i)=>{const x=44+i*36,h=Math.max(Math.sqrt(t[1])/smax*118,2);
+  return '<rect x="'+x+'" y="'+(150-h)+'" width="20" height="'+h+'" rx="2.5" fill="#69b1ff"/>'
+  +'<text x="'+(x+10)+'" y="'+(146-h)+'" text-anchor="middle" font-size="9" font-weight="600" fill="#595959">'+t[1]+'</text>'
+  +'<text x="'+(x+10)+'" y="163" text-anchor="end" font-size="9.5" fill="#8c8c8c" transform="rotate(-28 '+(x+10)+' 163)">'+t[0]+'</text>'}).join('')+'</svg>';
+ /* 告警列表 */
+ const alarms=[['发现端口扫描','202.201.0.131','222.28.155.54','119','low'],['发现漏洞扫描','10.10.10.127','10.10.10.2','540','low'],['发现漏洞扫描','122.206.190.85','123.125.29.99','457','low'],['发现漏洞扫描','202.201.1.238','66.71.221.8','62','mid'],['发现漏洞扫描','202.201.0.150','125.39.149.8','5','low'],['发现端口扫描','106.6.183.79','59.70.226.169','335','low']];
+ const alarmRows=alarms.map((a,i)=>'<tr data-alarm="'+i+'"><td>'+(i+1)+'</td><td><span class="lvl-badge '+a[4]+'">'+(a[4]==='low'?'低':'中')+'</span>'+a[0]+'</td><td class="num">'+a[1]+'</td><td class="num">'+a[2]+'</td><td class="num">'+a[3]+'</td></tr>').join('');
+ c.innerHTML=pageHeader('首页','<span class="tag tag-blue">实时工作台</span>')
+ +'<div class="home-row1"><div class="card"><div class="card-head">安全风险评级</div><div class="card-body risk-flex">'
+ +'<div style="flex-shrink:0">'+gauge+'</div>'
+ +'<div class="risk-text"><div style="font-size:14px">总体安全风险评级为 <b class="n-orange" style="font-size:16px">中风险</b></div>'
+ +'<p>当前共有 <b class="n-blue">100000</b> 个资产，其中疑似被入侵资产 <b class="n-red">9</b> 个，高风险资产 <b class="n-orange">12</b> 个，中风险资产 <b class="n-orange">17</b> 个，低风险资产 <b class="n-blue">123</b> 个，比较安全资产 <b class="n-green">99839</b> 个；共发现 <b class="n-blue">83470</b> 起告警，其中高危告警 <b class="n-red">8.169万</b> 起，中危告警 <b class="n-orange">1398</b> 起，低危告警 <b class="n-blue">377</b> 起；共发现 <b class="n-blue">275.4万</b> 次攻击，其中高危攻击 <b class="n-red">172.4万</b> 次，中危攻击 <b class="n-orange">63.063万</b> 次，低危攻击 <b class="n-blue">39.856万</b> 次。</p>'
+ +'</div></div></div>'
+ +'<div class="asset-grid">'
+ +assetMini('g1',I.server,'核心资产',['5','4','15','87','7656'],'#/asset/identify/host')
+ +assetMini('g2',I.monitor,'重要资产',['0','0','0','0','42'],'#/asset/identify/host')
+ +assetMini('g3',I.globe,'一般资产',['4','1','1','28','5.0万'],'#/asset/identify/host')
+ +assetMini('g4',I.shield,'边缘资产',['0','7','1','8','4.2万'],'#/asset/identify/host')
+ +'</div></div>'
+ +'<div class="home-row2">'
+ +'<div class="card"><div class="card-head">告警级别分布</div><div class="card-body" style="text-align:center;padding-top:18px">'+donutSvg+legend+'</div></div>'
+ +'<div class="card"><div class="card-head">告警类型分布</div><div class="card-body">'+bars+'</div></div>'
+ +'<div class="card"><div class="card-head">告警列表<a style="float:right;font-size:12px;font-weight:400" id="alarmMore">更多&gt;&gt;</a></div><div class="card-body" style="padding:0 16px 12px"><table class="data-table home-alarm-table"><thead><tr><th>序号</th><th>攻击名称</th><th>攻击者</th><th>受害者</th><th>攻击次数</th></tr></thead><tbody>'+alarmRows+'</tbody></table></div></div>'
+ +'</div>';
+ bindRefresh('#rfBtn');
+ $('#alarmMore').addEventListener('click',()=>go('#/threat/overview'));
+ $$('[data-asset-go]').forEach(el=>{const jump=()=>go(el.dataset.assetGo);el.addEventListener('click',jump);el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();jump()}})});
+ $$('[data-alarm]').forEach(tr=>tr.addEventListener('click',()=>{const a=alarms[Number(tr.dataset.alarm)];
+  openModal('<div class="modal-head">告警详情<button class="modal-x" id="alX">×</button></div><div class="modal-body"><div style="display:grid;grid-template-columns:96px 1fr;gap:10px;font-size:13px"><b>攻击名称</b><span>'+a[0]+'</span><b>攻击者</b><span class="num">'+a[1]+'</span><b>受害者</b><span class="num">'+a[2]+'</span><b>攻击次数</b><span class="num">'+a[3]+'</span><b>风险级别</b><span>'+(a[4]==='low'?'低危':'中危')+'</span><b>处置建议</b><span>已联动防火墙加入观察名单，建议核查受害者资产暴露面。</span></div></div><div class="modal-foot"><button class="btn" id="alNo">关闭</button><button class="btn btn-primary" id="alGo">进入威胁分析</button></div>');
+  $('#alX').addEventListener('click',closeModal);$('#alNo').addEventListener('click',closeModal);$('#alGo').addEventListener('click',()=>{closeModal();go('#/threat/overview')});
+ }));
+}
+
+/* ================= 页面：日志检索 ================= */
+const LOG_DATA=[
+ ['10:42:18','威胁日志','高危','185.48.59.52','10.10.8.21','远程代码执行攻击（Log4j2）已被检测'],
+ ['10:41:56','外连日志','高危','10.10.3.16','185.220.101.3','失陷主机外联 C&C 节点（Tor 出口）'],
+ ['10:38:22','处置日志','信息','SAC3000-NDR','DPtech-FW-01','联动防火墙封禁 10.10.3.16 执行成功'],
+ ['10:35:44','威胁日志','中危','91.121.87.44','172.16.2.45','RDP 暴力破解尝试（128 次）'],
+ ['10:32:10','审计日志','信息','dptech','10.1.1.5','管理员 dptech 登录平台（10.10.1.66）'],
+ ['10:28:36','威胁日志','高危','45.155.204.117','10.10.3.16','WebShell 上传行为（invoice.php）'],
+ ['10:24:16','系统日志','低危','日志存储节点-02','-','存储使用率达 78%，触发扩容告警'],
+ ['10:18:52','外连日志','中危','10.10.1.10','198.23.214.117','服务器异常外连矿池地址 7777 端口'],
+ ['10:12:08','威胁日志','低危','202.201.0.131','10.10.0.0/16','TCP SYN 端口扫描（1-1024）'],
+ ['10:08:44','处置日志','信息','EDR-Center','pc-088','终端快速查杀完成，发现木马 1 个'],
+ ['09:56:12','威胁日志','中危','103.78.112.10','172.16.5.6','木马通信行为（心跳间隔 60s）'],
+ ['09:52:30','审计日志','信息','dptech','10.1.1.5','修改大屏设置：实时事件流刷新 15s'],
+ ['09:47:05','威胁日志','高危','112.213.89.136','172.16.2.45','恶意木马下载行为（setup.exe）'],
+ ['09:44:28','外连日志','中危','172.16.2.45','malware.example','恶意域名 DNS 请求命中情报'],
+ ['09:39:11','威胁日志','低危','203.0.113.21','10.20.1.8','SSH 弱口令尝试（admin/123456）'],
+ ['09:35:41','审计日志','信息','system','-','威胁特征库 V20240812 自动升级完成'],
+ ['09:28:19','系统日志','低危','SAC3000-NDR-01','-','探针流量镜像丢包率 0.8%'],
+ ['09:12:40','威胁日志','中危','198.51.100.17','10.10.1.20','SQL 注入攻击（联合查询型）'],
+ ['08:56:33','处置日志','信息','工单系统','-','自动创建处置工单 #GD-20240812'],
+ ['08:42:17','威胁日志','高危','206.189.210.88','10.10.8.21','命令执行攻击（反弹 Shell）'],
+ ['08:15:02','外连日志','低危','10.10.2.15','194.169.0.88','终端访问可疑下载站点'],
+ ['07:58:46','审计日志','信息','operator','10.1.1.6','导出威胁日志报表（CSV）']
+];
+function pageLogs(){
+ const c=$('#content');if(!c)return;
+ c.innerHTML=pageHeader('日志检索','<span class="tag tag-blue">全量日志 8.6 亿条</span>')
+ +'<div class="card" style="margin-bottom:16px"><div class="card-body"><div class="log-bar">'
+ +'<select id="logTime" aria-label="时间范围"><option value="1h">最近 1 小时</option><option value="24h" selected>最近 24 小时</option><option value="7d">最近 7 天</option></select>'
+ +'<select id="logType" aria-label="日志类型"><option value="">全部类型</option><option>威胁日志</option><option>外连日志</option><option>系统日志</option><option>处置日志</option><option>审计日志</option></select>'
+ +'<select id="logLevel" aria-label="级别"><option value="">全部级别</option><option>高危</option><option>中危</option><option>低危</option><option>信息</option></select>'
+ +'<input id="logQ" placeholder="源IP / 目的IP / 事件名" style="width:220px">'
+ +'<button class="btn btn-sm btn-primary" id="logSearch">'+I.search+' 查询</button>'
+ +'<button class="btn btn-sm" id="logReset">重置</button>'
+ +'<span style="flex:1"></span><span id="logCount" style="color:var(--text-secondary);font-size:13px"></span>'
+ +'<button class="btn btn-sm" id="logExport">导出 CSV</button>'
+ +'</div></div></div>'
+ +'<div class="card"><div class="table-wrap"><table class="data-table"><thead><tr><th>时间</th><th>类型</th><th>级别</th><th>源地址</th><th>目的地址</th><th>事件描述</th><th>操作</th></tr></thead><tbody id="logTbody"></tbody></table></div></div>';
+ const draw=()=>{
+  const t=$('#logType').value,l=$('#logLevel').value,q=($('#logQ').value||'').trim().toLowerCase(),tr=$('#logTime').value;
+  const rows=LOG_DATA.filter(r=>{
+   if(t&&r[1]!==t)return false;
+   if(l&&r[2]!==l)return false;
+   if(tr==='1h'&&r[0]<'09:42:00')return false;
+   if(q&&!(r[3]+' '+r[4]+' '+r[5]).toLowerCase().includes(q))return false;
+   return true;
+  });
+  $('#logCount').textContent='共 '+rows.length+' 条';
+  $('#logTbody').innerHTML=rows.length?rows.map((r,i)=>'<tr data-log="'+LOG_DATA.indexOf(r)+'"><td class="num">'+r[0]+'</td><td>'+r[1]+'</td><td>'+renderCell(r[2])+'</td><td class="num">'+esc(r[3])+'</td><td class="num">'+esc(r[4])+'</td><td>'+esc(r[5])+'</td><td><button class="btn btn-sm" data-log-detail="'+LOG_DATA.indexOf(r)+'">详情</button></td></tr>').join(''):'<tr><td colspan="7" class="empty-state">没有匹配的日志，请调整检索条件</td></tr>';
+  $$('[data-log-detail]').forEach(btn=>btn.addEventListener('click',()=>{
+   const r=LOG_DATA[Number(btn.dataset.logDetail)];
+   openModal('<div class="modal-head">日志详情<button class="modal-x" id="lgX">×</button></div><div class="modal-body"><div style="display:grid;grid-template-columns:96px 1fr;gap:10px;font-size:13px"><b>时间</b><span class="num">2024-08-12 '+r[0]+'</span><b>类型</b><span>'+r[1]+'</span><b>级别</b><span>'+r[2]+'</span><b>源地址</b><span class="num">'+esc(r[3])+'</span><b>目的地址</b><span class="num">'+esc(r[4])+'</span><b>事件描述</b><span>'+esc(r[5])+'</span><b>原始报文</b><span style="font-family:monospace;font-size:12px;color:var(--text-secondary)">'+esc(r[3])+' -> '+esc(r[4])+' | proto=TCP | action='+(r[2]==='高危'?'block':'alert')+'</span></div></div><div class="modal-foot"><button class="btn btn-primary" id="lgOk" data-autofocus>关闭</button></div>');
+   $('#lgX').addEventListener('click',closeModal);$('#lgOk').addEventListener('click',closeModal);
+  }));
+  return rows;
+ };
+ $('#logSearch').addEventListener('click',()=>{draw();toast('检索完成','success')});
+ $('#logQ').addEventListener('input',draw);
+ $('#logQ').addEventListener('keydown',e=>{if(e.key==='Enter'){draw();toast('检索完成','success')}});
+ $('#logType').addEventListener('change',draw);
+ $('#logLevel').addEventListener('change',draw);
+ $('#logTime').addEventListener('change',()=>{draw();toast('时间范围已应用','success')});
+ $('#logReset').addEventListener('click',()=>{$('#logTime').value='24h';$('#logType').value='';$('#logLevel').value='';$('#logQ').value='';draw();toast('已重置检索条件','success')});
+ $('#logExport').addEventListener('click',()=>{
+  const rows=draw();
+  const csv='﻿'+[['时间','类型','级别','源地址','目的地址','事件描述']].concat(rows).map(r=>r.map(cell=>'"'+String(cell).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='日志检索结果.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),0);
+  toast('已导出 '+rows.length+' 条日志','success');
+ });
+ bindRefresh('#rfBtn');
+ draw();
+}
+function page404(hash){
+ const c=$('#content');if(!c)return;c.innerHTML='<div class="card empty-state"><div style="font-size:72px;font-weight:800;color:var(--primary)">404</div><h2>页面不存在</h2><p style="margin:10px 0 20px">未找到路由 '+esc(hash)+'</p><button class="btn btn-primary" id="backHome">返回首页</button></div>';$('#backHome').addEventListener('click',()=>go('#/home'));
 }
 
 /* ================= 页面：威胁分析概览（截图1主界面） ================= */
@@ -838,7 +1318,7 @@ function pageHeader(t,extra){
  +'</div>'
  +'<div style="display:flex;align-items:center;gap:8px">'
  +'<button class="btn btn-sm" id="rfBtn">'+I.refresh+' 刷新</button>'
- +'<button class="btn btn-sm">最近 7 天 ▾</button>'
+ +'<button class="btn btn-sm" data-page-range>最近 7 天 ▾</button>'
  +'</div></div>';
 }
 
@@ -874,14 +1354,14 @@ function pageRansom(){
  +'<div class="pager-wrap"><div class="pager-info">共 <span class="num" id="pgN">0</span> 项</div><div class="pager-nav"><span class="pg-btn cur">1</span></div></div>'
  +'</div>';
 
- bindRefresh('#rfBtn');
+ bindRefresh('#rfBtn');bindLegacyToolbar('勒索专项事件');
  $('#qR').addEventListener('input',e=>{state.ransomQ=e.target.value.trim();renderRansomTbody()});
  $$('.radar-dim').forEach(el=>el.addEventListener('click',()=>{
   const n=+el.getAttribute('data-n'),name=el.getAttribute('data-dim');
   if(n===0){toast('该维度暂无告警');return}
   state.ransomDim=name;renderRansomTbody();renderDimChip();
  }));
- requestAnimationFrame(()=>setTimeout(()=>$('[data-rw]').forEach(b=>b.style.width=b.getAttribute('data-rw')+'%'),60));
+ requestAnimationFrame(()=>setTimeout(()=>$$('[data-rw]').forEach(b=>b.style.width=b.dataset.rw+'%'),60));
  renderRansomTbody();renderDimChip();
 }
 function renderDimChip(){const c=$('#dimChip');if(!c)return;c.innerHTML=state.ransomDim?'<span class="chip tag tag-blue" id="dimClear">'+state.ransomDim+' ✕</span>':'';const x=$('#dimClear');if(x)x.addEventListener('click',()=>{state.ransomDim='';renderRansomTbody();renderDimChip()})}
@@ -1061,7 +1541,7 @@ function renderDrawer(){
  $$('.drawer .d-tab').forEach(el=>el.addEventListener('click',()=>{state.drawerTab=+el.getAttribute('data-tab');renderDrawer()}));
  $('#dPrev').addEventListener('click',()=>{state.drawer.idx=(d.idx-1+rows.length)%rows.length;renderDrawer()});
  $('#dNext').addEventListener('click',()=>{state.drawer.idx=(d.idx+1)%rows.length;renderDrawer()});
- $('#dDone').addEventListener('click',()=>{state.handled[key]='done';toast('已标记为已处置','success');renderDrawer();const h=location.hash;if(h==='#/threat/ransom')renderRansomTbody();if(h==='#/threat/mining')renderMiningTbody()});
+ $('#dDone').addEventListener('click',()=>{state.handled[key]='done';toast('已标记为已处置','success');renderDrawer();const h=location.hash;if(h==='#/special/ransom')renderRansomTbody();if(h==='#/special/mining')renderMiningTbody()});
  $('#dAction').addEventListener('click',()=>{
   openModal('<div class="modal-head">联动处置确认<button class="modal-x" id="cmX">✕</button></div>'
   +'<div class="modal-body">将对 <b class="num">'+r.vip+'</b> 执行隔离并联动封禁攻击源，是否确认？</div>'
@@ -1159,10 +1639,25 @@ function pageScreen(){
 
  const tick=()=>{const el=$('#scTime');if(el){const d=new Date();el.textContent=d.toLocaleString('zh-CN',{hour12:false})}};
  tick();state.clockTimer=setInterval(tick,1000);
- $('#scExit').addEventListener('click',()=>go('#/overview'));
+ $('#scExit').addEventListener('click',()=>go('#/home'));
  countup($('#scN1'),157,1200);countup($('#scN2'),20,1200);countup($('#scN3'),3,1200);countup($('#scN4'),89,1200);
- requestAnimationFrame(()=>setTimeout(()=>$('[data-sw]').forEach(b=>{b.style.width=b.getAttribute('sw')+'%'}),80));
+ requestAnimationFrame(()=>setTimeout(()=>$$('[data-sw]').forEach(b=>{b.style.width=b.dataset.sw+'%'}),80));
 }
+
+/* ================= 本地导航一致性验证 ================= */
+function validateNavigationModel(){
+ const hashes=NAV_LEAVES.map(item=>item.hash),ids=NAV_LEAVES.map(item=>item.navId);
+ const uniqueHashes=new Set(hashes),uniqueIds=new Set(ids);
+ const missingRoutes=NAV_LEAVES.filter(item=>!routes[item.hash]).map(item=>item.hash);
+ const missingSpecs=NAV_LEAVES.filter(item=>!item.custom&&!PAGE_SPECS[item.navId]).map(item=>item.navId);
+ const activeViolations=hashes.filter(hash=>(buildSidebar(hash).match(/class="sb-item[^"]* active"/g)||[]).length!==1);
+ const hrefs=Array.from(buildSidebar('#/home').matchAll(/href="([^"]+)"/g),match=>match[1]);
+ const report={count:NAV_LEAVES.length,uniqueHashCount:uniqueHashes.size,uniqueNavIdCount:uniqueIds.size,hrefCount:hrefs.length,uniqueHrefCount:new Set(hrefs).size,missingRoutes,missingSpecs,activeViolations};
+ report.ok=report.count===48&&report.uniqueHashCount===48&&report.uniqueNavIdCount===48&&report.hrefCount===48&&report.uniqueHrefCount===48&&!missingRoutes.length&&!missingSpecs.length&&!activeViolations.length;
+ if(!report.ok)throw new Error('导航一致性验证失败：'+JSON.stringify(report));
+ return report;
+}
+window.validateNavigationModel=validateNavigationModel;
 
 /* ================= 启动 ================= */
 window.onerror=function(msg,src,line,col,err){
@@ -1170,7 +1665,7 @@ window.onerror=function(msg,src,line,col,err){
   if(root)root.innerHTML='<div style="padding:40px;font-family:monospace;background:#fff233;color:#c00;border:2px solid red;margin:20px;border-radius:8px"><h3>⚠ JS Error</h3><pre>'+String(msg)+'\n'+src+':'+line+':'+col+'</pre></div>';
   return true;
 };
-try{router();}catch(e){
+try{validateNavigationModel();router();}catch(e){
   var root=document.getElementById('fullRoot')||document.getElementById('appRoot');
   if(root)root.innerHTML='<div style="padding:40px;font-family:monospace;background:#fff233;color:#c00;border:2px solid red;margin:20px;border-radius:8px"><h3>⚠ Startup Error</h3><pre>'+e.stack||e.message+'</pre></div>';
 }
