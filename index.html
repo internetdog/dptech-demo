@@ -437,7 +437,8 @@ svg{display:inline-block;vertical-align:middle}
 .radar-legend{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;justify-content:center}
 .radar-legend .lg{display:inline-flex;align-items:center;gap:6px;min-height:28px;padding:4px 6px;border-radius:4px;color:#cbd5e1;font-size:11px;cursor:pointer}
 .radar-legend .lg:hover{background:rgba(96,165,250,.09)}
-.radar-legend .dot{width:8px;height:8px;border-radius:50%;display:inline-block;box-shadow:0 0 5px rgba(96,165,250,.35)}
+.radar-legend .lg.off{opacity:.35}
+.radar-legend .dot{width:8px;height:8px;border-radius:50%;display:inline-block;box-shadow:0 0 4px rgba(96,165,250,.3)}
 /* 扫光旋转动画（参考山石智·感雷达实现） */
 .radar-sweep{transform-origin:200px 132px;animation:sweep 4.5s linear infinite}
 @keyframes sweep{to{transform:rotate(360deg)}}
@@ -780,7 +781,7 @@ function pageOverview(){
 }
 
 /* ================= 页面：勒索专项 ================= */
-const ransomDims=[['感染勒索病毒',6,-150],['黑客勒索攻击',4,-90],['勒索C&C通信',8,-30],['勒索常用端口',5,30],['勒索常用漏洞',7,90],['RDP爆破',4,150]];
+const ransomDims=[['感染勒索病毒',4,-150],['黑客勒索攻击',3,-90],['勒索C&C通信',5,-30],['勒索常用端口',3,30],['勒索常用漏洞',4,90],['RDP爆破',3,150]];
 function radarSvg(){
  const cx=200,cy=132,R=88;
  const pt=(ang,r)=>{const a=ang*Math.PI/180;return [cx+r*Math.cos(a),cy+r*Math.sin(a)]};
@@ -797,20 +798,21 @@ function radarSvg(){
   const anch=Math.abs(Math.cos(d[2]*Math.PI/180))<0.3?'middle':(Math.cos(d[2]*Math.PI/180)>0?'start':'end');
   labels+='<text class="radar-dim" data-dim="'+d[0]+'" data-n="'+d[1]+'" x="'+lp[0].toFixed(1)+'" y="'+(lp[1]+4).toFixed(1)+'" text-anchor="'+anch+'">'+d[0]+' ('+d[1]+')</text>';
  });
- const radialSeed=[0.2,0.31,0.42,0.53,0.64,0.75,0.86,0.95];
+ const dotSeed=[[0.28,-14],[0.4,10],[0.52,-6],[0.62,14],[0.72,-12],[0.84,6],[0.94,-4]];
  const srcs=['SAC3000-NDR','DPtech-FW'];
  const srcColors={'SAC3000-NDR':'#60a5fa','DPtech-FW':'#2563eb'};
- let dots='';
- ransomDims.forEach((d,di)=>{
+ let dots='',di=0;
+ ransomDims.forEach(d=>{
   for(let k=0;k<d[1];k++){
-   const radius=R*radialSeed[(k+di*2)%radialSeed.length];
-   const p=pt(d[2],radius);
+   const s=dotSeed[(di*3+k)%dotSeed.length];
+   const p=pt(d[2]+s[1],R*s[0]);
    const src=srcs[(di+k)%srcs.length];
-   dots+='<circle data-src="'+src+'" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="3.8" fill="'+srcColors[src]+'" opacity=".94" style="filter:drop-shadow(0 0 3px rgba(59,130,246,.72))"><title>'+d[0]+' · '+src+'</title></circle>';
+   dots+='<circle data-src="'+src+'" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="3.5" fill="'+srcColors[src]+'" opacity=".9" style="filter:drop-shadow(0 0 3px rgba(59,130,246,.62))"><title>'+d[0]+' · '+src+'</title></circle>';
   }
+  di++;
  });
  const g1=pt(-30,R),g2=pt(26,R);
- return '<svg width="100%" height="276" viewBox="0 0 400 276" role="img" aria-label="迪普勒索六维联动检测雷达图，34个检测散点">'
+ return '<svg width="100%" height="268" viewBox="0 0 400 268" role="img" aria-label="迪普勒索六维联动检测雷达图，22个检测散点">'
  +'<defs><linearGradient id="swg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3b82f6" stop-opacity="0"/><stop offset="1" stop-color="#60a5fa" stop-opacity=".38"/></linearGradient></defs>'
  +rings+axes
  +'<g class="radar-sweep"><path d="M'+cx+' '+cy+' L'+g1[0].toFixed(1)+' '+g1[1].toFixed(1)+' A'+R+' '+R+' 0 0 0 '+g2[0].toFixed(1)+' '+g2[1].toFixed(1)+' Z" fill="url(#swg)"/></g>'
