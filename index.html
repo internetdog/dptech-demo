@@ -580,6 +580,25 @@ body.dp-zebra .data-table tbody tr:nth-child(even){background:#fafcff}
 .seg-btn:last-child{border-right:none}
 .seg-btn:hover{color:var(--primary)}
 .seg-btn.cur{background:var(--primary);color:#fff}
+
+/* ===== 能力说明 ⓘ 悬浮弹窗（挖矿/勒索专项） ===== */
+.cap-wrap{position:relative;display:inline-flex}
+.cap-info{display:inline-flex;width:14px;height:14px;border-radius:50%;border:1px solid var(--text-third);color:var(--text-third);font-size:10px;font-style:normal;font-weight:600;align-items:center;justify-content:center;cursor:help;margin-left:5px;vertical-align:1px;transition:all .15s}
+.cap-info:hover{border-color:var(--primary);color:var(--primary)}
+.cap-pop{position:absolute;left:18px;top:-10px;z-index:300;width:330px;max-width:80vw;background:#fff;border:1px solid var(--border-light);border-radius:8px;box-shadow:0 10px 28px rgba(0,0,0,.16);padding:12px 14px;opacity:0;visibility:hidden;transform:translateY(5px);transition:opacity .18s ease,transform .18s ease,visibility .18s;text-align:left;pointer-events:none}
+.cap-wrap:hover .cap-pop,.cap-wrap:focus-within .cap-pop{opacity:1;visibility:visible;transform:translateY(0)}
+.cap-pop .cp-t{font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:6px}
+.cap-pop .cp-b{font-size:12px;color:var(--text-secondary);line-height:1.75}
+.cap-pop.down{left:auto;right:-8px;top:20px}
+
+/* ===== 专项页动态效果 ===== */
+.eng-card{transition:transform .18s ease,box-shadow .18s ease}
+.eng-card:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.12)}
+@media(prefers-reduced-motion:no-preference){
+ .anim-in{animation:fadeUp .4s ease both}
+ .anim-d1{animation-delay:.05s}.anim-d2{animation-delay:.12s}.anim-d3{animation-delay:.2s}
+ @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+}
 </style>
 </head>
 <body>
@@ -1424,11 +1443,24 @@ function assetCard(srv,term){
  +'</div></div>';
 }
 
+/* ================= 专项页：威胁横幅 + 能力说明弹窗 ================= */
+function capPop(title,body,down){
+ return '<span class="cap-wrap"><i class="cap-info" tabindex="0" aria-label="能力说明">i</i><span class="cap-pop'+(down?' down':'')+'" role="tooltip"><span class="cp-t">'+title+'</span><span class="cp-b">'+body+'</span></span></span>';
+}
+function threatBanner(cfg){
+ return '<div class="card anim-in" style="margin-bottom:16px"><div class="card-body" style="display:flex;gap:28px;align-items:flex-start;padding:14px 20px;flex-wrap:wrap">'
+ +'<div><div style="font-size:12px;color:var(--text-secondary)">威胁事件总数</div><div style="font-size:30px;font-weight:800;color:var(--primary);line-height:1.2" class="num" id="'+cfg.idTotal+'">0</div></div>'
+ +'<div><div style="font-size:12px;color:var(--text-secondary)">'+cfg.relatedLabel+'</div><div style="font-size:30px;font-weight:800;color:var(--danger);line-height:1.2" class="num" id="'+cfg.idRel+'">0</div></div>'
+ +'<div style="border-left:1px solid var(--border-light);padding-left:22px"><div style="font-size:12px;color:var(--text-secondary);margin-bottom:4px">分析结果 Top5</div>'+cfg.top5.map((t,i)=>'<div style="font-size:12px;line-height:1.85;white-space:nowrap"><b class="num" style="color:var(--text-third)">'+(i+1)+'.</b> '+t[0]+' <b class="num" style="color:var(--danger)">×'+t[1]+'</b></div>').join('')+'</div>'
+ +'<div style="margin-left:auto;text-align:right"><div style="font-size:12px;color:var(--text-secondary)">云端已分析日志数 <b class="num">'+cfg.cloudDone+'</b> 条</div><div style="font-size:12px;color:var(--text-secondary);margin-top:6px">待云端分析日志数</div><div style="font-size:17px;font-weight:700;color:var(--danger)" class="num" id="'+cfg.idPending+'">0</div></div>'
+ +'</div></div>';
+}
 function pageRansom(){
  const c=$('#content'); if(!c)return;
  c.innerHTML=pageHeader('勒索专项检测')
+ +threatBanner({idTotal:'rbTotal',idRel:'rbRel',relatedLabel:'关联勒索日志',top5:[['感染LockBit3.0家族',3],['感染Phobos家族',2],['感染Conti变种',1]],cloudDone:'0',idPending:'rbPending'})
  +'<div style="display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:16px;margin-bottom:16px">'
- +'<div class="card"><div class="card-head">六维联动检测雷达<span class="sub">点击维度联动过滤</span></div><div class="radar-dark" style="padding:16px">'+radarSvg()
+ +'<div class="card anim-in anim-d1"><div class="card-head">六维联动检测雷达<span class="sub">点击维度联动过滤</span>'+capPop('六维联动检测 · 能力说明','从感染勒索病毒、黑客勒索攻击、勒索 C&C 通信、勒索常用端口、勒索常用漏洞、RDP 爆破六个维度联动关联，聚合 NDR、SAC3000-NDR 与 DPtech-FW 多源检测数据，全面还原勒索攻击链各阶段痕迹；点击维度可联动过滤下方威胁事件列表。',true)+'</div><div class="radar-dark" style="padding:16px">'+radarSvg()
  +'<div class="radar-legend">'
  +'<span class="lg" data-src="NDR"><i class="dot" style="background:#94a3b8"></i>NDR</span>'
  +'<span class="lg" data-src="SAC3000-NDR"><i class="dot" style="background:#60a5fa"></i>SAC3000-NDR</span>'
@@ -1449,6 +1481,7 @@ function pageRansom(){
  +'</div>';
 
  bindRefresh('#rfBtn');bindLegacyToolbar('勒索专项事件');
+ countup($('#rbTotal'),96842,1100);countup($('#rbRel'),23,900);countup($('#rbPending'),86214,1300);
  $('#qR').addEventListener('input',e=>{state.ransomQ=e.target.value.trim();renderRansomTbody()});
  $$('.radar-dim').forEach(el=>el.addEventListener('click',()=>{
   const n=+el.getAttribute('data-n'),name=el.getAttribute('data-dim');
@@ -1500,21 +1533,24 @@ function pageMining(){
  const c=$('#content');if(!c)return;
  const stages=[['与控制端建立通信',3],['登录矿池',1],['获取挖矿任务',1],['提交结果',0]];
  c.innerHTML=pageHeader('挖矿专项检测')
+ +threatBanner({idTotal:'mnTotal',idRel:'mnRel',relatedLabel:'关联挖矿日志',top5:[['感染bitcoinminer家族',3],['感染xmrig家族',2],['感染kdevtmpfsi家族',1]],cloudDone:'0',idPending:'mnPending'})
  +'<div class="spec-note">基于规则的本地挖矿检测与基于主动探测技术的云端挖矿检测相结合，实现主流挖矿协议、矿池地址识别检测，深度解析挖矿病毒完整传播运行流程，针对挖矿病毒下载行为、挖矿配置文件下载行为开展识别拦截，依托 AI 模型对各类挖矿恶意流量聚类分析并提取特征指纹，全面覆盖各大挖矿病毒及其变种识别能力。</div>'
  +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">'
- +'<div class="card"><div class="card-head">双引擎检测<span class="sub">本地规则引擎 + 云端主动探测</span></div><div class="card-body" style="display:flex;gap:16px">'
- +'<div style="flex:1;padding:16px;background:var(--danger-light);border-radius:8px;border:1px solid #ffccc7;text-align:center">'
+ +'<div class="card anim-in anim-d1"><div class="card-head">双引擎检测<span class="sub">本地规则引擎 + 云端主动探测</span></div><div class="card-body" style="display:flex;gap:16px">'
+ +'<div class="eng-card" style="flex:1;padding:16px;background:var(--danger-light);border-radius:8px;border:1px solid #ffccc7;text-align:center">'
+ +'<div style="font-size:13px;font-weight:600;color:var(--text-primary);text-align:left">本地挖矿检测'+capPop('本地挖矿检测 · 能力说明','本地内置 5.7W+ 挖矿规则库，平台特殊情况下每 5 分钟可获取云端最新挖矿规则库，具备检测常见挖矿威胁能力：支持用户自定义挖矿规则；具备活跃端口挖矿病毒规则库；根据端口和协议检测特定挖矿威胁流量；具备加密挖矿流量、访问加密矿池 IP 的检测能力。')+'</div>'
  +'<div style="font-size:28px;font-weight:700;color:var(--danger)" class="num" id="engLocal">0</div>'
  +'<div style="font-size:13px;color:var(--text-secondary);margin-top:4px">本地规则引擎</div>'
  +'<div style="font-size:11px;color:var(--text-third);margin-top:4px">5.7W+ 规则 · 5分钟更新</div>'
  +'</div>'
- +'<div style="flex:1;padding:16px;background:var(--warn-light);border-radius:8px;border:1px solid #ffe58f;text-align:center">'
- +'<div style="font-size:28px;font-weight:700;color:#d48806" class="num">128K</div>'
+ +'<div class="eng-card" style="flex:1;padding:16px;background:var(--warn-light);border-radius:8px;border:1px solid #ffe58f;text-align:center">'
+ +'<div style="font-size:13px;font-weight:600;color:var(--text-primary);text-align:left">云端挖矿检测'+capPop('云端挖矿检测 · 能力说明','虚拟化挖矿活动对国家、企业单位、个人带来较大危害，服务器性能严重下降，影响业务系统正常运行。云端挖矿检测化被动为主动，有效检测识别挖矿行为：领先的主动探测技术，100% 有效识别挖矿服务；覆盖比特币、莱特币、门罗币、以太坊、零币、狗狗币等 100+ 币种；支持网页挖矿、无文件挖矿、病毒挖矿、代理挖矿等主流挖矿手法。')+'</div>'
+ +'<div style="font-size:28px;font-weight:700;color:#d48806" class="num" id="engCloud">0</div>'
  +'<div style="font-size:13px;color:var(--text-secondary);margin-top:4px">云端主动探测</div>'
  +'<div style="font-size:11px;color:var(--text-third);margin-top:4px">100+ 币种 · 主动探测</div>'
  +'</div>'
  +'</div></div>'
- +'<div class="card"><div class="card-head">挖矿阶段分布</div><div class="card-body" style="padding:14px 16px">'
+ +'<div class="card anim-in anim-d2"><div class="card-head">挖矿阶段分布</div><div class="card-body" style="padding:14px 16px">'
  +stages.map(s=>'<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;padding:6px 10px;border-radius:4px;transition:background .15s" data-stage="'+s[0]+'" data-n="'+s[1]+'">'
  +I.link2+'<span style="flex:1;font-size:13px">'+s[0]+'</span>'
  +'<span class="tag '+(s[1]>0?'tag-orange':'tag-gray')+'">'+s[1]+' 台</span>'
@@ -1539,7 +1575,8 @@ function pageMining(){
   state.miningStage=state.miningStage===name?'':name;
   renderMiningTbody();renderStageChip();
  }));
- countup($('#engLocal'),7);
+ countup($('#engLocal'),7);countup($('#engCloud'),128417,1400);
+ countup($('#mnTotal'),128464,1100);countup($('#mnRel'),47,900);countup($('#mnPending'),128417,1500);
  renderMiningTbody();renderStageChip();
 }
 function renderStageChip(){const c=$('#stageChip');if(!c)return;c.innerHTML=state.miningStage?'<span class="chip tag tag-blue" id="stageClear">'+state.miningStage+' ✕</span>':'';const x=$('#stageClear');if(x)x.addEventListener('click',()=>{state.miningStage='';renderMiningTbody();renderStageChip()})}
