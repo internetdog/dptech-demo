@@ -75,9 +75,15 @@ svg{display:inline-block;vertical-align:middle}
 .sb-group-head{
   display:flex;align-items:center;padding:9px 16px;color:var(--sb-text);
   cursor:pointer;user-select:none;gap:10px;font-weight:500;transition:background .15s;
-  line-height:1.35;font-size:14px;
+  line-height:1.35;font-size:14px;position:relative;
 }
 .sb-group-head:hover{background:var(--sb-hover)}
+.sb-group-head.active-branch{
+  background:rgba(24,144,255,.12);
+  color:#fff;
+  box-shadow:inset 3px 0 0 var(--primary);
+}
+.sb-group-head.active-branch .sb-ico,.sb-group-head.active-branch .sb-arrow{opacity:1}
 .sb-group-head .sb-ico{width:16px;height:16px;opacity:.85;flex-shrink:0}
 .sb-group-head .sb-arrow{margin-left:auto;font-size:11px;opacity:.6;transition:transform .2s;flex-shrink:0}
 .sb-group-head[aria-expanded="true"] .sb-arrow{transform:rotate(90deg)}
@@ -91,13 +97,15 @@ svg{display:inline-block;vertical-align:middle}
 }
 .sb-item:hover{background:var(--sb-hover)}
 .sb-item.active{
-  background:var(--sb-active);
+  background:var(--primary);
   color:#fff;
+  font-weight:600;
 }
 .sb-item.active::before{
   content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
-  background:var(--primary);
+  background:#fff;
 }
+.sb-item.active .sb-ico{opacity:1}
 .sb-item .sb-ico{width:16px;height:16px;flex-shrink:0;opacity:.85}
 .sb-item .sb-arrow{margin-left:auto;font-size:11px;opacity:.5;transition:transform .2s}
 .sb-item.open>.sb-arrow{transform:rotate(90deg)}
@@ -480,6 +488,11 @@ svg{display:inline-block;vertical-align:middle}
 .flex{display:flex}.items-center{align-items:center}.gap-8{gap:8px}.gap-16{gap:16px}
 .gap-auto{gap:auto}.flex-1{flex:1}
 .spec-note{padding:10px 14px;margin-bottom:16px;background:var(--primary-light);border:1px solid #bae7ff;border-radius:var(--radius);color:#096dd9;font-size:13px}
+.special-workspace{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px;align-items:start;margin-bottom:16px}
+.special-main,.special-side{display:flex;flex-direction:column;gap:16px;min-width:0}
+.special-main>.card,.special-side>.card{margin-bottom:0}
+.special-side .card{box-shadow:var(--shadow-card)}
+.special-workspace .anim-in{animation:none;opacity:1;transform:none}
 .spec-chart-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
 .top-list{width:100%;display:flex;flex-direction:column;gap:10px}
 .top-item{display:grid;grid-template-columns:28px minmax(90px,1fr) 2fr 50px;gap:8px;align-items:center;font-size:12px}
@@ -562,8 +575,8 @@ body.no-zebra .data-table tbody tr:nth-child(even){background:transparent}
 .task-row:last-child{border-bottom:none}
 .pf-row{display:flex;padding:8px 0;border-bottom:1px solid var(--border-light);font-size:13px}
 .pf-row b{width:96px;color:var(--text-secondary);font-weight:500;flex-shrink:0}
-@media(max-width:1100px){.stat-row,.spec-chart-grid{grid-template-columns:repeat(2,1fr)}.chart-row{grid-template-columns:1fr}.home-row1,.home-row2{grid-template-columns:1fr}}
-@media(max-width:720px){.sidebar{width:190px;min-width:190px}.content-area{padding:14px}.stat-row,.spec-chart-grid{grid-template-columns:1fr}.topbar{padding:0 12px}.tb-org-label{display:none}.tb-breadcrumb{font-size:12px}}
+@media(max-width:1100px){.stat-row,.spec-chart-grid{grid-template-columns:repeat(2,1fr)}.chart-row{grid-template-columns:1fr}.home-row1,.home-row2{grid-template-columns:1fr}.special-workspace{grid-template-columns:1fr}.special-side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:720px){.sidebar{width:190px;min-width:190px}.content-area{padding:14px}.stat-row,.spec-chart-grid,.special-side{grid-template-columns:1fr}.topbar{padding:0 12px}.tb-org-label{display:none}.tb-breadcrumb{font-size:12px}}
 
 /* ===== 显示设置（紧凑/斑马纹） ===== */
 body.dp-compact .data-table td,body.dp-compact .data-table th{padding-top:5px;padding-bottom:5px}
@@ -868,12 +881,13 @@ function buildSidebar(activeHash){
 function renderNavItem(item,activeHash,depth){
  const lvl=depth>=2?' sb-l3':depth===1?' sb-l2':'';
  if(!item.children){
-  return '<a class="sb-item'+lvl+(activeHash===item.hash?' active':'')+'" href="'+item.hash+'" data-nav-id="'+item.navId+'" role="menuitem">'
+  const active=activeHash===item.hash;
+  return '<a class="sb-item'+lvl+(active?' active':'')+'" href="'+item.hash+'" data-nav-id="'+item.navId+'" role="menuitem"'+(active?' aria-current="page"':'')+'>'
   +(depth===0?'<span class="sb-ico">'+(I[item.icon]||I.chart)+'</span>':'')
   +'<span>'+item.label+'</span></a>';
  }
  const open=containsHash(item,activeHash);
- return '<div class="sb-group-head'+lvl+'" data-group="'+item.groupId+'" role="button" tabindex="0" aria-expanded="'+open+'">'
+ return '<div class="sb-group-head'+lvl+(open?' active-branch':'')+'" data-group="'+item.groupId+'" role="button" tabindex="0" aria-expanded="'+open+'">'
  +(depth===0?'<span class="sb-ico">'+(I[item.icon]||I.chart)+'</span>':'')
  +'<span>'+item.label+'</span><span class="sb-arrow">▶</span></div>'
  +'<div class="sb-sub'+(open?' open':'')+'" data-group-panel="'+item.groupId+'">'
@@ -1458,18 +1472,13 @@ function pageRansom(){
  const c=$('#content'); if(!c)return;
  c.innerHTML=pageHeader('勒索检测')
  +threatBanner({idTotal:'rbTotal',idRel:'rbRel',relatedLabel:'关联勒索日志',top5:[['感染LockBit3.0家族',3],['感染Phobos家族',2],['感染Conti变种',1]],cloudDone:'0',idPending:'rbPending'})
- +'<div style="display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:16px;margin-bottom:16px">'
+ +'<div class="special-workspace special-ransom"><div class="special-main">'
  +'<div class="card anim-in anim-d1"><div class="card-head">六维联动检测雷达<span class="sub">点击维度联动过滤</span>'+capPop('六维联动检测 · 能力说明','从感染勒索病毒、黑客勒索攻击、勒索 C&C 通信、勒索常用端口、勒索常用漏洞、RDP 爆破六个维度联动关联，聚合 NDR、SAC3000-NDR 与 DPtech-FW 多源检测数据，全面还原勒索攻击链各阶段痕迹；点击维度可联动过滤下方威胁事件列表。',true)+'</div><div class="radar-dark" style="padding:16px">'+radarSvg()
  +'<div class="radar-legend">'
  +'<span class="lg" data-src="NDR"><i class="dot" style="background:#94a3b8"></i>NDR</span>'
  +'<span class="lg" data-src="SAC3000-NDR"><i class="dot" style="background:#60a5fa"></i>SAC3000-NDR</span>'
  +'<span class="lg" data-src="DPtech-FW"><i class="dot" style="background:#2563eb"></i>DPtech-FW</span>'
  +'</div></div></div>'
- +assetCard(1,2)
- +'<div class="card"><div class="card-head">受害资产攻击Top5</div><div class="card-body" style="padding:14px 16px">'
- +[['120.87.43.212',14],['218.75.108.60',9],['211.82.96.115',5]].map(t=>'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:12px;color:var(--text-secondary);width:120px" class="num">'+t[0]+'</span><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="height:100%;background:var(--primary);border-radius:3px;width:0" data-rw="'+(t[1]/14*100)+'"></div></div><span style="font-size:12px;font-weight:600;width:36px;text-align:right" class="num">'+t[1]+'次</span></div>').join('')
- +'</div></div>'
- +'</div>'
  +'<div class="card"><div class="card-head">威胁事件列表</div>'
  +'<div class="table-toolbar"><button class="btn btn-sm">批量操作 ▾</button><button class="btn btn-sm">导出</button><span id="dimChip"></span><span style="flex:1"></span>'
  +'<span style="position:relative;display:inline-flex;align-items:center"><span style="position:absolute;left:8px;color:var(--text-third)">'+I.search+'</span>'
@@ -1477,7 +1486,13 @@ function pageRansom(){
  +'</div>'
  +'<div class="table-wrap"><table class="data-table"><thead><tr><th style="width:34px"><input type="checkbox" id="ckAll"></th><th>#</th><th>时间</th><th>威胁描述</th><th>定性</th><th>风险维度</th><th>阶段</th><th>等级</th><th>受害者IP</th><th>类型</th><th>攻击者</th><th>次数</th></tr></thead><tbody id="tbodyR"></tbody></table></div>'
  +'<div class="pager-wrap"><div class="pager-info">共 <span class="num" id="pgN">0</span> 项</div><div class="pager-nav"><span class="pg-btn cur">1</span></div></div>'
- +'</div>';
+ +'</div></div>'
+ +'<div class="special-side">'
+ +assetCard(1,2)
+ +'<div class="card"><div class="card-head">受害资产攻击Top5</div><div class="card-body" style="padding:14px 16px">'
+ +[['120.87.43.212',14],['218.75.108.60',9],['211.82.96.115',5]].map(t=>'<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:12px;color:var(--text-secondary);width:120px" class="num">'+t[0]+'</span><div style="flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden"><div style="height:100%;background:var(--primary);border-radius:3px;width:0" data-rw="'+(t[1]/14*100)+'"></div></div><span style="font-size:12px;font-weight:600;width:36px;text-align:right" class="num">'+t[1]+'次</span></div>').join('')
+ +'</div></div>'
+ +'</div></div>';
 
  bindRefresh('#rfBtn');bindLegacyToolbar('勒索事件');
  countup($('#rbTotal'),96842,1100);countup($('#rbRel'),23,900);countup($('#rbPending'),86214,1300);
@@ -1534,7 +1549,7 @@ function pageMining(){
  c.innerHTML=pageHeader('挖矿检测')
  +threatBanner({idTotal:'mnTotal',idRel:'mnRel',relatedLabel:'关联挖矿日志',top5:[['感染bitcoinminer家族',3],['感染xmrig家族',2],['感染kdevtmpfsi家族',1]],cloudDone:'0',idPending:'mnPending'})
  +'<div class="spec-note">基于规则的本地挖矿检测与基于主动探测技术的云端挖矿检测相结合，实现主流挖矿协议、矿池地址识别检测，深度解析挖矿病毒完整传播运行流程，针对挖矿病毒下载行为、挖矿配置文件下载行为开展识别拦截，依托 AI 模型对各类挖矿恶意流量聚类分析并提取特征指纹，全面覆盖各大挖矿病毒及其变种识别能力。</div>'
- +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">'
+ +'<div class="special-workspace special-mining"><div class="special-main">'
  +'<div class="card anim-in anim-d1"><div class="card-head">双引擎检测<span class="sub">本地规则引擎 + 云端主动探测</span></div><div class="card-body" style="display:flex;gap:16px">'
  +'<div class="eng-card" style="flex:1;padding:16px;background:var(--danger-light);border-radius:8px;border:1px solid #ffccc7;text-align:center">'
  +'<div style="font-size:13px;font-weight:600;color:var(--text-primary);text-align:left">本地挖矿检测'+capPop('本地挖矿检测 · 能力说明','本地内置 5.7W+ 挖矿规则库，平台特殊情况下每 5 分钟可获取云端最新挖矿规则库，具备检测常见挖矿威胁能力：支持用户自定义挖矿规则；具备活跃端口挖矿病毒规则库；根据端口和协议检测特定挖矿威胁流量；具备加密挖矿流量、访问加密矿池 IP 的检测能力。')+'</div>'
@@ -1549,14 +1564,6 @@ function pageMining(){
  +'<div style="font-size:11px;color:var(--text-third);margin-top:4px">100+ 币种 · 主动探测</div>'
  +'</div>'
  +'</div></div>'
- +'<div class="card anim-in anim-d2"><div class="card-head">挖矿阶段分布</div><div class="card-body" style="padding:14px 16px">'
- +stages.map(s=>'<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;padding:6px 10px;border-radius:4px;transition:background .15s" data-stage="'+s[0]+'" data-n="'+s[1]+'">'
- +I.link2+'<span style="flex:1;font-size:13px">'+s[0]+'</span>'
- +'<span class="tag '+(s[1]>0?'tag-orange':'tag-gray')+'">'+s[1]+' 台</span>'
- +'</div>').join('')
- +'</div></div>'
- +'</div>'
- +assetCard(1,2)
  +'<div class="card"><div class="card-head">挖矿事件列表</div>'
  +'<div class="table-toolbar"><button class="btn btn-sm">批量操作 ▾</button><button class="btn btn-sm">导出</button><button class="btn btn-sm">导出IOC</button><span id="stageChip"></span><span style="flex:1"></span>'
  +'<span style="position:relative;display:inline-flex;align-items:center"><span style="position:absolute;left:8px;color:var(--text-third)">'+I.search+'</span>'
@@ -1564,7 +1571,16 @@ function pageMining(){
  +'</div>'
  +'<div class="table-wrap"><table class="data-table"><thead><tr><th style="width:34px"><input type="checkbox" id="ckAll"></th><th>#</th><th>时间</th><th>描述</th><th>标签</th><th>定性</th><th>阶段</th><th>攻击阶段</th><th>等级</th><th>受害者IP</th><th>类型</th></tr></thead><tbody id="tbodyM"></tbody></table></div>'
  +'<div class="pager-wrap"><div class="pager-info">共 <span class="num" id="pgN">0</span> 项</div><div class="pager-nav"><span class="pg-btn cur">1</span></div></div>'
- +'</div>';
+ +'</div></div>'
+ +'<div class="special-side">'
+ +'<div class="card anim-in anim-d2"><div class="card-head">挖矿阶段分布</div><div class="card-body" style="padding:14px 16px">'
+ +stages.map(s=>'<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer;padding:6px 10px;border-radius:4px;transition:background .15s" data-stage="'+s[0]+'" data-n="'+s[1]+'">'
+ +I.link2+'<span style="flex:1;font-size:13px">'+s[0]+'</span>'
+ +'<span class="tag '+(s[1]>0?'tag-orange':'tag-gray')+'">'+s[1]+' 台</span>'
+ +'</div>').join('')
+ +'</div></div>'
+ +assetCard(1,2)
+ +'</div></div>';
 
  bindRefresh('#rfBtn');
  $('#qM').addEventListener('input',e=>{state.miningQ=e.target.value.trim();renderMiningTbody()});
