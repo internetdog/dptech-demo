@@ -764,7 +764,13 @@ const PAGE_SPECS={
  'threat-botnet':{title:'僵木蠕检测',description:'结合威胁情报与多种行为检测引擎，检测各类流行、新型僵尸网络及蠕虫病毒：威胁情报域名/IP/MD5检测、DGA检测、僵尸网络硬编码检测、恶意附件、恶意脚本、恶意程序下载、HTTP行为指纹检测。',kpis:[K('今日检出','86','僵尸网络与蠕虫','red'),K('僵尸网络家族','12','Emotet/Qakbot等','orange'),K('蠕虫病毒','8','含变种 23 个','blue'),K('DGA域名','34','算法生成域名','green')],charts:[C('检测方式分布',[['威胁情报检测',46],['DGA检测',34],['硬编码检测',28],['HTTP行为指纹',22],['恶意附件/脚本',18]]),C('僵尸网络家族 Top5',[['Emotet',42],['Qakbot',31],['AgentTesla',26],['Mirai',18],['Gafgyt',12]]),C('检出趋势',[['03-27',62],['03-28',74],['03-29',68],['03-30',79],['03-31',86]])],columns:['时间','家族/名称','类型','检测方式','命中指标','受害者','级别','处置状态'],rows:[['10:38:17','Emotet','僵尸网络','威胁情报MD5','6f5902ac...63dc4','10.10.2.15','高危','已隔离'],['10:12:46','Mirai','僵尸网络','DGA检测','xj2k9q.example','172.16.2.45','中危','已阻断'],['09:44:28','飞客蠕虫','蠕虫病毒','HTTP行为指纹','/update.exe','10.10.3.16','高危','处置中']]}
 };
 
-/* ================= 单一导航与路由元数据（递归三级，48 叶子） ================= */
+PAGE_SPECS['special-botnet']=Object.assign({},PAGE_SPECS['threat-botnet'],{title:'僵木蠕检测'});
+PAGE_SPECS['special-file']=Object.assign({},PAGE_SPECS['threat-file'],{title:'文件威胁'});
+PAGE_SPECS['special-tunnel']={title:'隧道协议检测',description:'识别 DNS、HTTP、HTTPS、ICMP 等协议中的异常隧道通信，定位隐蔽外联、数据回传与代理穿透行为。',kpis:[K('今日隧道告警','36','高危 9 起','red'),K('异常会话','284','较昨日 +11%','orange'),K('涉及资产','18','服务器 6 台','blue'),K('已阻断','31','阻断率 86.1%','green')],charts:[C('隧道类型 Top5',[['DNS隧道',92],['HTTPS代理',76],['HTTP长连接',58],['ICMP隧道',34],['SSH转发',28]]),C('受害资产 Top5',[['10.10.3.16',86],['172.16.2.45',64],['10.10.8.21',52],['10.20.1.8',38],['192.168.7.9',24]]),C('外联目的地 Top5',[['185.220.101.3',88],['198.23.214.117',72],['45.155.204.117',54],['103.78.112.10',36],['194.169.0.88',22]])],columns:['时间','受害者IP','隧道协议','外联地址','检测依据','风险等级','处置状态'],rows:[['2026-03-31 10:36:18','10.10.3.16','DNS隧道','185.220.101.3','高频子域+异常长度','高危','已阻断'],['2026-03-31 09:58:42','172.16.2.45','HTTPS代理','198.23.214.117','JA3异常+长连接','高危','处置中'],['2026-03-30 16:24:07','10.10.8.21','ICMP隧道','45.155.204.117','固定载荷回显','中危','已确认']]};
+PAGE_SPECS['special-mail']={title:'邮件威胁',description:'检测钓鱼邮件、恶意附件、仿冒发件人与异常邮件投递行为，关联用户、附件、URL 与处置状态。',kpis:[K('今日邮件威胁','74','钓鱼 28 封','red'),K('恶意附件','16','已隔离 15','orange'),K('恶意URL','42','命中情报 31','blue'),K('已拦截','69','拦截率 93.2%','green')],charts:[C('邮件威胁类型',[['钓鱼链接',94],['恶意附件',78],['仿冒发件人',56],['账号诱导',42],['垃圾投递',28]]),C('附件类型 Top5',[['Office宏',86],['压缩包',68],['可执行文件',52],['PDF',38],['脚本文件',24]]),C('收件人 Top5',[['zhangsan',82],['lisi',64],['wangwu',48],['admin',36],['finance',22]])],columns:['时间','邮件主题','发件人','收件人','威胁类型','命中对象','处置状态'],rows:[['2026-03-31 10:28:16','工资补贴确认通知','notice@example-mail.com','zhangsan','钓鱼链接','login-secure.example','已拦截'],['2026-03-31 09:42:03','发票明细.zip','invoice@fake-supplier.com','finance','恶意附件','invoice_2026.exe','已隔离'],['2026-03-30 15:17:55','VPN账号异常提醒','it-helpdesk@example.org','lisi','仿冒发件人','vpn-login.example','待复核']]};
+PAGE_SPECS['special-web']={title:'网站威胁',description:'检测 Web 攻击、恶意页面、挂马链接、WebShell 上传与异常访问行为，辅助定位受影响站点。',kpis:[K('今日网站威胁','128','高危 22 起','red'),K('受影响站点','14','核心站点 3 个','orange'),K('恶意URL','86','已封禁 79','blue'),K('处置完成率','91.4%','近 24 小时','green')],charts:[C('网站威胁类型',[['WebShell上传',92],['SQL注入',78],['XSS攻击',58],['目录遍历',42],['挂马页面',31]]),C('受影响站点 Top5',[['portal.example.edu',88],['oa.example.local',72],['lib.example.local',54],['mail.example.edu',38],['vpn.example.edu',24]]),C('攻击源 Top5',[['202.201.0.131',86],['45.155.204.117',70],['185.48.59.52',54],['103.78.112.10',38],['91.121.87.44',26]])],columns:['时间','站点','URL','威胁类型','攻击源','风险等级','处置状态'],rows:[['2026-03-31 10:39:22','portal.example.edu','/upload/shell.jsp','WebShell上传','202.201.0.131','高危','已隔离'],['2026-03-31 09:51:18','oa.example.local','/login?id=1 or 1=1','SQL注入','45.155.204.117','高危','已阻断'],['2026-03-30 17:04:41','lib.example.local','/search?q=<script>','XSS攻击','185.48.59.52','中危','已确认']]};
+
+/* ================= 单一导航与路由元数据（递归三级，55 叶子） ================= */
 const NAV=[
  {navId:'home',label:'首页',hash:'#/home',icon:'home',custom:true},
  {groupId:'situation',label:'安全态势',icon:'threat',children:[
@@ -812,20 +818,24 @@ const NAV=[
    {navId:'linkage-endpoint',label:'联动同品牌终端安全管理系统',hash:'#/warning/linkage/endpoint'},
    {navId:'linkage-thirdparty',label:'第三方应用联动处置',hash:'#/warning/linkage/thirdparty'}]},
   {navId:'warning-report',label:'安全风险报告',hash:'#/warning/report'}]},
- {groupId:'system',label:'系统管理',icon:'lock',children:[
-  {navId:'system',label:'系统配置',hash:'#/system'},
-  {groupId:'special',label:'安全检测',children:[
-   {navId:'vuln-overview',label:'脆弱性总览',hash:'#/system/vuln/overview'},
-   {navId:'vuln-vulnerability',label:'漏洞风险',hash:'#/system/vuln/vulnerability'},
-   {navId:'vuln-config',label:'配置风险',hash:'#/system/vuln/config'},
-   {groupId:'weakpw',label:'弱密码',children:[
-    {navId:'weakpw-detect',label:'弱密码检测',hash:'#/system/vuln/weakpw/detect'},
-    {navId:'weakpw-scan',label:'弱密码主动扫描',hash:'#/system/vuln/weakpw/scan'},
-    {navId:'weakpw-web-custom',label:'Web弱密码自定义',hash:'#/system/vuln/weakpw/web-custom'},
-    {navId:'weakpw-web-result',label:'Web登录结果自定义',hash:'#/system/vuln/weakpw/web-result'},
-    {navId:'weakpw-plaintext',label:'Web明文传输',hash:'#/system/vuln/weakpw/plaintext'}]},
-   {navId:'special-ransom',label:'勒索检测',hash:'#/special/ransom',custom:true},
-   {navId:'special-mining',label:'挖矿检测',hash:'#/special/mining',custom:true}]}]}
+ {groupId:'special',label:'安全检测',icon:'shield',children:[
+  {navId:'special-botnet',label:'僵木蠕检测',hash:'#/special/botnet'},
+  {navId:'special-tunnel',label:'隧道协议检测',hash:'#/special/tunnel'},
+  {navId:'special-file',label:'文件威胁',hash:'#/special/file'},
+  {navId:'special-mail',label:'邮件威胁',hash:'#/special/mail'},
+  {navId:'special-web',label:'网站威胁',hash:'#/special/web'},
+  {navId:'vuln-overview',label:'脆弱性总览',hash:'#/system/vuln/overview'},
+  {navId:'vuln-vulnerability',label:'漏洞风险',hash:'#/system/vuln/vulnerability'},
+  {navId:'vuln-config',label:'配置风险',hash:'#/system/vuln/config'},
+  {groupId:'weakpw',label:'弱密码',children:[
+   {navId:'weakpw-detect',label:'弱密码检测',hash:'#/system/vuln/weakpw/detect'},
+   {navId:'weakpw-scan',label:'弱密码主动扫描',hash:'#/system/vuln/weakpw/scan'},
+   {navId:'weakpw-web-custom',label:'Web弱密码自定义',hash:'#/system/vuln/weakpw/web-custom'},
+   {navId:'weakpw-web-result',label:'Web登录结果自定义',hash:'#/system/vuln/weakpw/web-result'},
+   {navId:'weakpw-plaintext',label:'Web明文传输',hash:'#/system/vuln/weakpw/plaintext'}]},
+  {navId:'special-ransom',label:'勒索检测',hash:'#/special/ransom',custom:true},
+  {navId:'special-mining',label:'挖矿检测',hash:'#/special/mining',custom:true}]},
+ {navId:'system',label:'系统管理',hash:'#/system',icon:'lock'}
 ];
 /* 递归展开：叶子携带祖先链（面包屑/自动展开用） */
 const NAV_LEAVES=[];
@@ -840,8 +850,8 @@ const routes={
  '#/home':{render:pageHome,navId:'home',title:'首页',breadcrumb:['首页']},
  '#/logs':{render:pageLogs,navId:'logs',title:'日志检索',breadcrumb:['日志检索']},
  '#/threat/event-detect':{render:pageEventDetect,navId:'threat-event-detect',title:'安全事件检测',breadcrumb:['威胁分析','安全事件检测']},
- '#/special/ransom':{render:pageRansom,navId:'special-ransom',title:'勒索检测',breadcrumb:['系统管理','安全检测','勒索检测']},
- '#/special/mining':{render:pageMining,navId:'special-mining',title:'挖矿检测',breadcrumb:['系统管理','安全检测','挖矿检测']}
+ '#/special/ransom':{render:pageRansom,navId:'special-ransom',title:'勒索检测',breadcrumb:['安全检测','勒索检测']},
+ '#/special/mining':{render:pageMining,navId:'special-mining',title:'挖矿检测',breadcrumb:['安全检测','挖矿检测']}
 };
 NAV_LEAVES.forEach(item=>{if(!item.custom&&!routes[item.hash])routes[item.hash]={render:()=>renderSpecPage(PAGE_SPECS[item.navId]),navId:item.navId,title:item.label}});
 function routeMeta(hash){
@@ -1803,7 +1813,7 @@ function validateNavigationModel(){
  const activeViolations=hashes.filter(hash=>(buildSidebar(hash).match(/class="sb-item[^"]* active"/g)||[]).length!==1);
  const hrefs=Array.from(buildSidebar('#/home').matchAll(/href="([^"]+)"/g),match=>match[1]);
  const report={count:NAV_LEAVES.length,uniqueHashCount:uniqueHashes.size,uniqueNavIdCount:uniqueIds.size,hrefCount:hrefs.length,uniqueHrefCount:new Set(hrefs).size,missingRoutes,missingSpecs,activeViolations};
- report.ok=report.count===50&&report.uniqueHashCount===50&&report.uniqueNavIdCount===50&&report.hrefCount===50&&report.uniqueHrefCount===50&&!missingRoutes.length&&!missingSpecs.length&&!activeViolations.length;
+ report.ok=report.count===55&&report.uniqueHashCount===55&&report.uniqueNavIdCount===55&&report.hrefCount===55&&report.uniqueHrefCount===55&&!missingRoutes.length&&!missingSpecs.length&&!activeViolations.length;
  if(!report.ok)throw new Error('导航一致性验证失败：'+JSON.stringify(report));
  return report;
 }
