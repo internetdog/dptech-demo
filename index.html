@@ -820,8 +820,10 @@ const NAV=[
  {groupId:'special',label:'安全检测',icon:'shield',children:[
   {navId:'special-botnet',label:'僵木蠕检测',hash:'#/special/botnet'},
   {navId:'special-tunnel',label:'隧道协议检测',hash:'#/special/tunnel'},
+  {navId:'special-mining',label:'挖矿检测',hash:'#/special/mining',custom:true},
   {navId:'special-file',label:'文件威胁',hash:'#/special/file'},
   {navId:'special-mail',label:'邮件威胁',hash:'#/special/mail'},
+  {navId:'special-ransom',label:'勒索检测',hash:'#/special/ransom',custom:true},
   {navId:'special-web',label:'网站威胁',hash:'#/special/web'},
   {navId:'vuln-overview',label:'脆弱性总览',hash:'#/system/vuln/overview'},
   {navId:'vuln-vulnerability',label:'漏洞风险',hash:'#/system/vuln/vulnerability'},
@@ -831,9 +833,7 @@ const NAV=[
    {navId:'weakpw-scan',label:'弱密码主动扫描',hash:'#/system/vuln/weakpw/scan'},
    {navId:'weakpw-web-custom',label:'Web弱密码自定义',hash:'#/system/vuln/weakpw/web-custom'},
    {navId:'weakpw-web-result',label:'Web登录结果自定义',hash:'#/system/vuln/weakpw/web-result'},
-   {navId:'weakpw-plaintext',label:'Web明文传输',hash:'#/system/vuln/weakpw/plaintext'}]},
-  {navId:'special-ransom',label:'勒索检测',hash:'#/special/ransom',custom:true},
-  {navId:'special-mining',label:'挖矿检测',hash:'#/special/mining',custom:true}]},
+   {navId:'weakpw-plaintext',label:'Web明文传输',hash:'#/system/vuln/weakpw/plaintext'}]}]},
  {navId:'system',label:'系统管理',hash:'#/system',icon:'lock'}
 ];
 /* 递归展开：叶子携带祖先链（面包屑/自动展开用） */
