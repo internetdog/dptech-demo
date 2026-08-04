@@ -1562,20 +1562,30 @@ function pageMining(){
  +threatBanner({idTotal:'mnTotal',idRel:'mnRel',relatedLabel:'挖矿相关线索',top5:[['bitcoinminer 进程线索',3],['xmrig 矿池通信',2],['kdevtmpfsi 传播迹象',1]],cloudDone:'0',idPending:'mnPending'})
  +'<div class="spec-note">通过规则库核验、协议特征识别、矿池地址比对与行为建模，对挖矿程序下载、配置拉取、矿池登录、任务获取和结果提交等行为进行持续监测；结合流量聚类与特征指纹沉淀，辅助发现挖矿木马及其变种活动。</div>'
  +'<div class="special-workspace special-mining"><div class="special-main">'
- +'<div class="card anim-in anim-d1"><div class="card-head">挖矿线索检索<span class="sub">本地检测 + 云端分析</span></div><div class="card-body" style="display:flex;flex-direction:column;gap:14px">'
- +'<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="position:relative;display:inline-flex;align-items:center;flex:1;min-width:240px"><span style="position:absolute;left:9px;color:var(--text-third)">'+I.search+'</span><input id="mineClueQ" placeholder="矿池地址 / 家族名称 / 受害资产" style="width:100%;height:34px;padding:0 10px 0 30px;border:1px solid var(--border);border-radius:4px;font-size:13px"></span><button class="btn btn-primary btn-sm" id="mineLocalBtn">本地检索</button><button class="btn btn-sm" id="mineCloudBtn">云端检索</button></div>'
- +'<div style="display:flex;gap:16px">'
+ +'<div class="card anim-in anim-d1"><div class="card-head">挖矿线索检索<span class="sub">规则库核验 / 行为探测 / 本地线索 / 云端线索</span></div><div class="card-body" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">'
  +'<div class="eng-card" style="flex:1;padding:16px;background:var(--danger-light);border-radius:8px;border:1px solid #ffccc7;text-align:center">'
- +'<div style="font-size:13px;font-weight:600;color:var(--text-primary);text-align:left">本地挖矿线索'+capPop('本地挖矿线索 · 能力说明','基于本地规则库、端口协议特征和矿池地址库进行快速检索，适合核查当前网络中已命中的挖矿流量、进程和受害资产线索。')+'</div>'
+ +'<div style="font-size:13px;font-weight:600;color:var(--text-primary);text-align:left">规则库核验'+capPop('规则库核验 · 能力说明','基于本地规则库、端口协议特征和矿池地址库进行快速核验，适合核查当前网络中已命中的挖矿流量、进程和受害资产线索。')+'</div>'
  +'<div style="font-size:28px;font-weight:700;color:var(--danger)" class="num" id="engLocal">0</div>'
- +'<div style="font-size:13px;color:var(--text-secondary);margin-top:4px">本地命中线索</div>'
+ +'<div style="font-size:13px;color:var(--text-secondary);margin-top:4px">规则命中线索</div>'
  +'<div style="font-size:11px;color:var(--text-third);margin-top:4px">5.7W+ 规则 · 5分钟更新</div>'
  +'</div>'
  +'<div class="eng-card" style="flex:1;padding:16px;background:var(--warn-light);border-radius:8px;border:1px solid #ffe58f;text-align:center">'
- +'<div style="font-size:13px;font-weight:600;color:var(--text-primary);text-align:left">云端挖矿线索'+capPop('云端挖矿线索 · 能力说明','将可疑矿池、挖矿家族和行为特征与云端情报及行为画像进行关联分析，辅助确认新型变种、代理挖矿和无文件挖矿活动。')+'</div>'
+ +'<div style="font-size:13px;font-weight:600;color:var(--text-primary);text-align:left">行为探测'+capPop('行为探测 · 能力说明','通过主动识别和行为侧画像发现挖矿服务，覆盖主流币种、网页挖矿、无文件挖矿、病毒挖矿和代理挖矿等常见手法。')+'</div>'
  +'<div style="font-size:28px;font-weight:700;color:#d48806" class="num" id="engCloud">0</div>'
- +'<div style="font-size:13px;color:var(--text-secondary);margin-top:4px">云端分析线索</div>'
- +'<div style="font-size:11px;color:var(--text-third);margin-top:4px">100+ 币种 · 情报画像</div>'
+ +'<div style="font-size:13px;color:var(--text-secondary);margin-top:4px">行为探测样本</div>'
+ +'<div style="font-size:11px;color:var(--text-third);margin-top:4px">100+ 币种 · 行为画像</div>'
+ +'</div>'
+ +'<div class="eng-card" style="flex:1;padding:16px;background:var(--primary-light);border-radius:8px;border:1px solid #91d5ff;text-align:center">'
+ +'<div style="font-size:13px;font-weight:600;color:var(--text-primary);text-align:left">本地挖矿线索'+capPop('本地挖矿线索 · 能力说明','展示本地检测侧已经命中的挖矿线索，包括矿池通信、进程特征、下载行为和受害资产关联。')+'</div>'
+ +'<div style="font-size:28px;font-weight:700;color:var(--primary)" class="num" id="mineLocalN">0</div>'
+ +'<div style="font-size:13px;color:var(--text-secondary);margin-top:4px">本地已命中线索</div>'
+ +'<div style="font-size:11px;color:var(--text-third);margin-top:4px">流量日志 · 资产关联</div>'
+ +'</div>'
+ +'<div class="eng-card" style="flex:1;padding:16px;background:var(--ok-light);border-radius:8px;border:1px solid #b7eb8f;text-align:center">'
+ +'<div style="font-size:13px;font-weight:600;color:var(--text-primary);text-align:left">云端挖矿线索'+capPop('云端挖矿线索 · 能力说明','展示待云端情报和行为模型进一步分析的挖矿线索，用于确认新型变种、代理挖矿和无文件挖矿活动。')+'</div>'
+ +'<div style="font-size:28px;font-weight:700;color:var(--ok)" class="num" id="mineCloudN">0</div>'
+ +'<div style="font-size:13px;color:var(--text-secondary);margin-top:4px">待云端分析线索</div>'
+ +'<div style="font-size:11px;color:var(--text-third);margin-top:4px">情报画像 · 模型研判</div>'
  +'</div>'
  +'</div></div>'
  +'<div class="card"><div class="card-head">挖矿事件列表</div>'
@@ -1604,18 +1614,8 @@ function pageMining(){
  state.miningStage=state.miningStage===name?'':name;
   renderMiningTbody();renderStageChip();
  }));
- const clueQ=$('#mineClueQ');
- const runClueSearch=mode=>{
-  const v=(clueQ&&clueQ.value.trim())||'';
-  state.miningQ=v;
-  const q=$('#qM');if(q)q.value=v;
-  renderMiningTbody();
-  toast((mode==='local'?'本地挖矿线索':'云端挖矿线索')+(v?'已检索：'+v:'已刷新'),'success');
- };
- $('#mineLocalBtn').addEventListener('click',()=>runClueSearch('local'));
- $('#mineCloudBtn').addEventListener('click',()=>runClueSearch('cloud'));
- if(clueQ)clueQ.addEventListener('keydown',e=>{if(e.key==='Enter')runClueSearch('local')});
- countup($('#engLocal'),7);countup($('#engCloud'),128417,1400);
+ countup($('#engLocal'),7);countup($('#engCloud'),100);
+ countup($('#mineLocalN'),47);countup($('#mineCloudN'),128417,1400);
  countup($('#mnTotal'),128464,1100);countup($('#mnRel'),47,900);countup($('#mnPending'),128417,1500);
  renderMiningTbody();renderStageChip();
 }
