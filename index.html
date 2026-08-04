@@ -798,7 +798,7 @@ const NAV=[
   {navId:'warning-report',label:'安全风险报告',hash:'#/warning/report'}]},
  {groupId:'system',label:'系统管理',icon:'lock',children:[
   {navId:'system',label:'系统配置',hash:'#/system'},
-  {groupId:'vuln',label:'脆弱性',children:[
+  {groupId:'special',label:'安全检测',children:[
    {navId:'vuln-overview',label:'脆弱性总览',hash:'#/system/vuln/overview'},
    {navId:'vuln-vulnerability',label:'漏洞风险',hash:'#/system/vuln/vulnerability'},
    {navId:'vuln-config',label:'配置风险',hash:'#/system/vuln/config'},
@@ -807,10 +807,9 @@ const NAV=[
     {navId:'weakpw-scan',label:'弱密码主动扫描',hash:'#/system/vuln/weakpw/scan'},
     {navId:'weakpw-web-custom',label:'Web弱密码自定义',hash:'#/system/vuln/weakpw/web-custom'},
     {navId:'weakpw-web-result',label:'Web登录结果自定义',hash:'#/system/vuln/weakpw/web-result'},
-    {navId:'weakpw-plaintext',label:'Web明文传输',hash:'#/system/vuln/weakpw/plaintext'}]}]},
-  {groupId:'special',label:'安全检测',children:[
-   {navId:'special-ransom',label:'勒索专项检测',hash:'#/special/ransom',custom:true},
-   {navId:'special-mining',label:'挖矿专项检测',hash:'#/special/mining',custom:true}]}]}
+    {navId:'weakpw-plaintext',label:'Web明文传输',hash:'#/system/vuln/weakpw/plaintext'}]},
+   {navId:'special-ransom',label:'勒索检测',hash:'#/special/ransom',custom:true},
+   {navId:'special-mining',label:'挖矿检测',hash:'#/special/mining',custom:true}]}]}
 ];
 /* 递归展开：叶子携带祖先链（面包屑/自动展开用） */
 const NAV_LEAVES=[];
@@ -825,8 +824,8 @@ const routes={
  '#/home':{render:pageHome,navId:'home',title:'首页',breadcrumb:['首页']},
  '#/logs':{render:pageLogs,navId:'logs',title:'日志检索',breadcrumb:['日志检索']},
  '#/threat/event-detect':{render:pageEventDetect,navId:'threat-event-detect',title:'安全事件检测',breadcrumb:['威胁分析','安全事件检测']},
- '#/special/ransom':{render:pageRansom,navId:'special-ransom',title:'勒索专项检测',breadcrumb:['系统管理','安全检测','勒索专项检测']},
- '#/special/mining':{render:pageMining,navId:'special-mining',title:'挖矿专项检测',breadcrumb:['系统管理','安全检测','挖矿专项检测']}
+ '#/special/ransom':{render:pageRansom,navId:'special-ransom',title:'勒索检测',breadcrumb:['系统管理','安全检测','勒索检测']},
+ '#/special/mining':{render:pageMining,navId:'special-mining',title:'挖矿检测',breadcrumb:['系统管理','安全检测','挖矿检测']}
 };
 NAV_LEAVES.forEach(item=>{if(!item.custom&&!routes[item.hash])routes[item.hash]={render:()=>renderSpecPage(PAGE_SPECS[item.navId]),navId:item.navId,title:item.label}});
 function routeMeta(hash){
@@ -1006,8 +1005,8 @@ function renderSpecPage(spec){
  +'<div class="table-card"><div class="card-head">'+esc(spec.title)+'数据明细<span class="sub">字段与当前功能场景匹配</span></div>'
  +'<div class="table-toolbar"><button class="btn btn-sm btn-primary" id="specSearchBtn">'+I.search+' 搜索</button><input id="specQuery" aria-label="过滤表格" placeholder="输入关键字过滤" style="height:32px;padding:0 10px;border:1px solid var(--border);border-radius:4px;width:220px"><button class="btn btn-sm" id="specExport">导出</button><button class="btn btn-sm" id="specBatch">批量处置</button><span style="flex:1"></span><span id="specResult" style="color:var(--text-secondary)"></span></div>'
  +'<div class="table-wrap"><table class="data-table"><thead><tr>'+spec.columns.map(col=>'<th>'+esc(col)+'</th>').join('')+'<th>操作</th></tr></thead><tbody id="specTbody"></tbody></table></div><div class="pager-wrap"><span>第 1 页</span><div class="pager-nav"><button class="pg-btn cur">1</button></div></div></div>'
- +(spec.title==='外连威胁'?'<div class="card mt-16"><div class="card-head">专项检测</div><div class="card-body"><button class="btn btn-primary" data-go-special="#/special/ransom">查看勒索专项 22 点蓝雷达</button></div></div>':'')
- +(spec.title==='内部威胁'?'<div class="card mt-16"><div class="card-head">专项检测</div><div class="card-body"><button class="btn btn-primary" data-go-special="#/special/mining">查看挖矿专项检测</button></div></div>':'')
+ +(spec.title==='外连威胁'?'<div class="card mt-16"><div class="card-head">安全检测</div><div class="card-body"><button class="btn btn-primary" data-go-special="#/special/ransom">查看勒索检测</button></div></div>':'')
+ +(spec.title==='内部威胁'?'<div class="card mt-16"><div class="card-head">安全检测</div><div class="card-body"><button class="btn btn-primary" data-go-special="#/special/mining">查看挖矿检测</button></div></div>':'')
  +(spec.title==='首页'?'<div class="card mt-16"><div class="card-head">安全态势大屏</div><div class="card-body"><button class="btn btn-primary" data-go-special="#/screen">进入威慑力大屏</button></div></div>':'');
  bindRefresh('#rfBtn');
  bindSpecActions(spec);
@@ -1457,7 +1456,7 @@ function threatBanner(cfg){
 }
 function pageRansom(){
  const c=$('#content'); if(!c)return;
- c.innerHTML=pageHeader('勒索专项检测')
+ c.innerHTML=pageHeader('勒索检测')
  +threatBanner({idTotal:'rbTotal',idRel:'rbRel',relatedLabel:'关联勒索日志',top5:[['感染LockBit3.0家族',3],['感染Phobos家族',2],['感染Conti变种',1]],cloudDone:'0',idPending:'rbPending'})
  +'<div style="display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:16px;margin-bottom:16px">'
  +'<div class="card anim-in anim-d1"><div class="card-head">六维联动检测雷达<span class="sub">点击维度联动过滤</span>'+capPop('六维联动检测 · 能力说明','从感染勒索病毒、黑客勒索攻击、勒索 C&C 通信、勒索常用端口、勒索常用漏洞、RDP 爆破六个维度联动关联，聚合 NDR、SAC3000-NDR 与 DPtech-FW 多源检测数据，全面还原勒索攻击链各阶段痕迹；点击维度可联动过滤下方威胁事件列表。',true)+'</div><div class="radar-dark" style="padding:16px">'+radarSvg()
@@ -1480,7 +1479,7 @@ function pageRansom(){
  +'<div class="pager-wrap"><div class="pager-info">共 <span class="num" id="pgN">0</span> 项</div><div class="pager-nav"><span class="pg-btn cur">1</span></div></div>'
  +'</div>';
 
- bindRefresh('#rfBtn');bindLegacyToolbar('勒索专项事件');
+ bindRefresh('#rfBtn');bindLegacyToolbar('勒索事件');
  countup($('#rbTotal'),96842,1100);countup($('#rbRel'),23,900);countup($('#rbPending'),86214,1300);
  $('#qR').addEventListener('input',e=>{state.ransomQ=e.target.value.trim();renderRansomTbody()});
  $$('.radar-dim').forEach(el=>el.addEventListener('click',()=>{
@@ -1532,7 +1531,7 @@ const miningRows=[
 function pageMining(){
  const c=$('#content');if(!c)return;
  const stages=[['与控制端建立通信',3],['登录矿池',1],['获取挖矿任务',1],['提交结果',0]];
- c.innerHTML=pageHeader('挖矿专项检测')
+ c.innerHTML=pageHeader('挖矿检测')
  +threatBanner({idTotal:'mnTotal',idRel:'mnRel',relatedLabel:'关联挖矿日志',top5:[['感染bitcoinminer家族',3],['感染xmrig家族',2],['感染kdevtmpfsi家族',1]],cloudDone:'0',idPending:'mnPending'})
  +'<div class="spec-note">基于规则的本地挖矿检测与基于主动探测技术的云端挖矿检测相结合，实现主流挖矿协议、矿池地址识别检测，深度解析挖矿病毒完整传播运行流程，针对挖矿病毒下载行为、挖矿配置文件下载行为开展识别拦截，依托 AI 模型对各类挖矿恶意流量聚类分析并提取特征指纹，全面覆盖各大挖矿病毒及其变种识别能力。</div>'
  +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">'
