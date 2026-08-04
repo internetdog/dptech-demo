@@ -94,13 +94,16 @@ svg{display:inline-block;vertical-align:middle}
   cursor:pointer;transition:all .15s;
   font-size:14px;gap:10px;position:relative;
   user-select:none;line-height:1.35;word-break:break-all;
+  color:var(--sb-text);text-decoration:none;
 }
+.sb-item:visited{color:var(--sb-text)}
 .sb-item:hover{background:var(--sb-hover)}
 .sb-item.active{
   background:var(--primary);
   color:#fff;
   font-weight:600;
 }
+.sb-item.active:visited{color:#fff}
 .sb-item.active::before{
   content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
   background:#fff;
